@@ -54,16 +54,10 @@ $ npm run test:cov
 3. Use command `\c nestjs-prototype-postgres` to connect to the database.
 4. Next, select a specific entity table, type:
 
-```bash
+````bash
 # users table
-SELECT * FROM public.user;
+SELECT * FROM users;
 
-# messages table
-SELECT * FROM public.messsage;
-
-# feedback table
-SELECT * FROM public.feedback;
-```
 
 ## Deployment
 
@@ -74,6 +68,6 @@ If you are looking for a cloud-based platform to deploy your NestJS application,
 ```bash
 $ npm install -g @nestjs/mau
 $ mau deploy
-```
+````
 
 With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
