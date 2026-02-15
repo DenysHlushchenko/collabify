@@ -1,4 +1,4 @@
-import { Outlet, Route, Routes } from "react-router-dom";
+import { Outlet, Route, Routes, useLocation } from "react-router-dom";
 import LeftsideBar from "./modules/navigation/components/LeftsideBar";
 import Navbar from "./modules/navigation/components/Navbar";
 import Home from "./modules/navigation/pages/Home";
@@ -9,6 +9,8 @@ import NotFound from "./modules/navigation/pages/NotFound";
 import RightsideBar from "./modules/navigation/components/RightsideBar";
 
 function App() {
+  const { pathname } = useLocation();
+  const showRightsideBar = pathname !== "/messages";
   return (
     <main className="relative">
       <Navbar />
@@ -21,7 +23,7 @@ function App() {
           </div>
         </section>
 
-        <RightsideBar />
+        {showRightsideBar && <RightsideBar />}
       </div>
     </main>
   );

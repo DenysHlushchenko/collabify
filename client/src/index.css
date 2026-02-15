@@ -77,10 +77,6 @@ body {
     @apply text-[20px] leading-[24.8px] font-semibold;
   }
 
-  .small-medium {
-    @apply text-[12px] leading-[15.6px] font-medium;
-  }
-
   .base-medium {
     @apply text-[18px] leading-[25.2px] font-medium;
   }
