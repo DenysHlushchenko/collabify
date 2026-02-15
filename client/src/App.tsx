@@ -1,12 +1,11 @@
-import { Button } from "./modules/shared/components/ui/Button";
+import Navbar from "./modules/navigation/navbar/Navbar";
 
 function App() {
-    return (
-        <>
-            <h1 className="text-2xl">Collabify</h1>
-            <Button>Hello</Button>
-        </>
-    );
+  return (
+    <div>
+      <Navbar />
+    </div>
+  );
 }
 
 export default App;
