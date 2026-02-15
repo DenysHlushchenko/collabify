@@ -6,6 +6,7 @@ import Messages from "./modules/navigation/pages/Messages";
 import Tags from "./modules/navigation/pages/Tags";
 import Posts from "./modules/navigation/pages/Posts";
 import NotFound from "./modules/navigation/pages/NotFound";
+import RightsideBar from "./modules/navigation/components/RightsideBar";
 
 function App() {
   return (
@@ -19,6 +20,8 @@ function App() {
             <Outlet />
           </div>
         </section>
+
+        <RightsideBar />
       </div>
     </main>
   );

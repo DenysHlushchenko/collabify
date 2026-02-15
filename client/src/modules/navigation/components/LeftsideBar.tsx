@@ -4,7 +4,7 @@ import NavLinks from "./NavLinks";
 
 const LeftsideBar = () => {
   return (
-    <section className="custom-scrollbar sticky top-0 left-0 flex h-screen flex-col justify-between overflow-y-auto border-r p-6 pt-36 max-sm:hidden lg:w-66.5">
+    <section className="custom-scrollbar sticky top-0 left-0 flex h-screen flex-col justify-between overflow-y-auto border-r border-r-gray-300 p-6 pt-36 max-sm:hidden lg:w-66.5">
       <div className="flex flex-1 flex-col gap-6">
         <NavLinks isMobileNav={false} />
       </div>

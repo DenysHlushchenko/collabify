@@ -57,6 +57,26 @@ body {
     @apply placeholder:text-gray-400 dark:placeholder:text-gray-500;
   }
 
+  .h1-bold {
+    @apply text-[30px] leading-10.5 font-bold tracking-tighter;
+  }
+
+  .h2-bold {
+    @apply text-[24px] leading-[31.2px] font-bold;
+  }
+
+  .h2-semibold {
+    @apply text-[24px] leading-[31.2px] font-semibold;
+  }
+
+  .h3-bold {
+    @apply text-[20px] leading-6.5 font-bold;
+  }
+
+  .h3-semibold {
+    @apply text-[20px] leading-[24.8px] font-semibold;
+  }
+
   .small-medium {
     @apply text-[12px] leading-[15.6px] font-medium;
   }
@@ -71,6 +91,38 @@ body {
 
   .base-bold {
     @apply text-[18px] leading-[140%] font-bold;
+  }
+
+  .body-regular {
+    @apply text-[14px] leading-[19.6px] font-normal;
+  }
+
+  .body-medium {
+    @apply text-[14px] leading-[18.2px] font-medium;
+  }
+
+  .body-semibold {
+    @apply text-[14px] leading-[18.2px] font-semibold;
+  }
+
+  .small-regular {
+    @apply text-[12px] leading-[15.6px] font-normal;
+  }
+
+  .small-medium {
+    @apply text-[12px] leading-[15.6px] font-medium;
+  }
+
+  .small-semibold {
+    @apply text-[12px] leading-[15.6px] font-semibold;
+  }
+
+  .subtle-medium {
+    @apply text-[10px] leading-3.25 font-medium;
+  }
+
+  .subtle-regular {
+    @apply text-[10px] leading-3.25 font-normal;
   }
 
   /* Hide scrollbar for Chrome, Safari and Opera */
