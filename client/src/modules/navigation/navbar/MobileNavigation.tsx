@@ -1,10 +1,4 @@
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetTitle,
-  SheetTrigger,
-} from "@/modules/shared/components/ui/Sheet";
+import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/modules/shared/components/ui/Sheet";
 import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import { Menu } from "lucide-react";
@@ -17,17 +11,11 @@ const MobileNavigation = () => {
       <SheetTrigger asChild>
         <Menu size={32} className="cursor-pointer sm:hidden" />
       </SheetTrigger>
-      <SheetContent side="left" className="p-6 bg-white border-none">
+      <SheetContent side="left" className="border-none bg-white p-6">
         <SheetTitle className="hidden">Navigation</SheetTitle>
         <Link to="/" className="flex items-center gap-1">
-          <img
-            src={logo}
-            height={23}
-            width={23}
-            alt="Logo"
-            className="invert"
-          />
-          <p className="text-[24px] font-bold leading-[31.2px]">Collabify</p>
+          <img src={logo} height={23} width={23} alt="Logo" className="invert" />
+          <p className="text-[24px] leading-[31.2px] font-bold">Collabify</p>
         </Link>
 
         <div className="no-scrollbar flex h-[calc(100vh-32px)] flex-col justify-between overflow-y-auto">
@@ -39,7 +27,7 @@ const MobileNavigation = () => {
 
           <div>
             <SheetClose asChild>
-              <Button className="small-medium min-h-10.25 w-full rounded-lg px-4 py-3 shadow-none cursor-pointer bg-black text-white">
+              <Button className="small-medium min-h-10.25 w-full cursor-pointer rounded-lg bg-black px-4 py-3 text-white shadow-none">
                 <span>Logout</span>
               </Button>
             </SheetClose>

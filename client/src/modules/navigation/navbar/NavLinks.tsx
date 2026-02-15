@@ -20,33 +20,18 @@ const NavLinks = ({ isMobileNav }: NavLinksProps) => {
   return (
     <>
       {sidebarLinks.map((item: Item) => {
-        const isActive =
-          (pathname.includes(item.link) && item.link.length > 1) ||
-          pathname === item.link;
+        const isActive = (pathname.includes(item.link) && item.link.length > 1) || pathname === item.link;
         const LinkComponent = (
           <Link
             to={item.link}
             key={item.name}
             className={cn(
               "flex items-center justify-start gap-4 p-4",
-              isActive && "bg-[#CCCCCC] rounded-lg text-white font-semibold",
+              isActive && "rounded-lg bg-[#CCCCCC] font-semibold text-white"
             )}
           >
-            <img
-              src={item.imgUrl}
-              alt={item.name}
-              width={20}
-              height={20}
-              className={cn({ invert: !isActive })}
-            />
-            <p
-              className={cn(
-                isActive ? "base-bold" : "base-medium",
-                !isMobileNav && "max-lg:hidden",
-              )}
-            >
-              {item.name}
-            </p>
+            <img src={item.imgUrl} alt={item.name} width={20} height={20} className={cn({ invert: !isActive })} />
+            <p className={cn(isActive ? "base-bold" : "base-medium", !isMobileNav && "max-lg:hidden")}>{item.name}</p>
           </Link>
         );
 
