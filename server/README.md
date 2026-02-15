@@ -51,7 +51,7 @@ $ npm run test:cov
 
 1. Build and run the project.
 2. Open terminal, and type `docker exec -it <postgres container name> psql -U postgres`.
-3. Use command `\c nestjs-prototype-postgres` to connect to the database.
+3. Use command `\c collabify-database` to connect to the database.
 4. Next, select a specific entity table, type:
 
 ````bash
