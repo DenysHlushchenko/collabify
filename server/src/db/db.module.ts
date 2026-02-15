@@ -2,6 +2,8 @@ import { Global, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
 
+const synchronize = process.env.NODE_ENV !== 'production';
+
 @Global()
 @Module({
   imports: [
@@ -13,7 +15,7 @@ import { User } from 'src/user/entities/user.entity';
       username: process.env.DATABASE_USERNAME,
       password: process.env.DATABASE_PASSWORD,
       entities: [User],
-      synchronize: true,
+      synchronize,
     }),
   ],
 })
