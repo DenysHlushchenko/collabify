@@ -1,4 +1,4 @@
-FROM node:25
+FROM node:25-alpine
 
 WORKDIR /usr/src/app 
 
@@ -8,5 +8,5 @@ RUN npm install
 
 EXPOSE 5000
 
-CMD ["npm", "run", "start:dev"]
+CMD ["node", "dist/main.js"]
 

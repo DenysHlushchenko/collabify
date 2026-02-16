@@ -13,12 +13,32 @@ Docker Desktop
 $ npm install
 ```
 
-## Build and run the project
+## Run NestJS locally, build and run PostgreSQL in docker environment
+
+Build and start the database container:
+
+```bash
+$ docker compose --env-file .env.docker up --build -d database
+```
+
+Run the application in `/server` directory:
+
+```bash
+# Development mode
+$ npm run start:dev
+```
+
+Finally, run the seed script to populate database with test entities:
+
+```bash
+$ npm run seed
+```
+
+## Build and run the project using docker-compose.yml file
 
 Build and start the containers:
 
 ```bash
-# development
 $ docker compose up --build -d
 ```
 
