@@ -7,6 +7,8 @@ import Tags from "./modules/navigation/pages/Tags";
 import Posts from "./modules/navigation/pages/Posts";
 import NotFound from "./modules/navigation/pages/NotFound";
 import RightsideBar from "./modules/navigation/components/RightsideBar";
+import Register from "./modules/auth/pages/Register";
+import Login from "./modules/auth/pages/Login";
 
 function App() {
   const { pathname } = useLocation();
@@ -32,6 +34,9 @@ function App() {
 function AppRoutes() {
   return (
     <Routes>
+      <Route path="/register" element={<Register />} />
+      <Route path="/login" element={<Login />} />
+
       <Route element={<App />}>
         <Route index element={<Home />} />
         <Route path="messages" element={<Messages />} />

@@ -25,3 +25,5 @@ export const sidebarLinks = [
     name: "Posts",
   },
 ];
+
+export const genders = ["male", "female", "other"];
