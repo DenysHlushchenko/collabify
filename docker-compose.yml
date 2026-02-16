@@ -23,5 +23,15 @@ services:
         volumes:
             - pgdata:/var/lib/postgresql/data
 
+    seeder:
+        build:
+            context: ./server
+            dockerfile: Dockerfile
+        depends_on:
+            - database
+        env_file:
+            - .env
+        command: npm run seed
+
 volumes:
     pgdata:

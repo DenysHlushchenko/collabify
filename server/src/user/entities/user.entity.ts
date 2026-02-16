@@ -1,4 +1,4 @@
-import { GenderType } from 'src/shared/enums/gender-type';
+import { GenderType } from '../../shared/enums/gender-type';
 import {
   Column,
   CreateDateColumn,
