@@ -1,5 +1,6 @@
 import {
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   Length,
   MinLength,
@@ -14,7 +15,8 @@ export class RegisterUserDto {
   username: string;
 
   @IsNotEmpty()
-  gender: GenderType.MALE | GenderType.FEMALE | GenderType.OTHER;
+  @IsEnum(GenderType)
+  gender: GenderType;
 
   @IsNotEmpty()
   country: string;

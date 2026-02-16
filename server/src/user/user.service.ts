@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
@@ -90,13 +90,11 @@ export class UserService {
       throw new UserDoesNotExistException();
     }
 
-    const isPasswordMatch = await bcrypt.compare(
-      password,
-      existingUser.password,
-    );
+    const isPasswordMatch =
+      existingUser && (await bcrypt.compare(password, existingUser.password));
 
     if (!isPasswordMatch) {
-      throw new BadRequestException('Invalid email or password');
+      throw new UnauthorizedException('Invalid email or password');
     }
 
     return await this.generateAccessToken(existingUser);
@@ -119,6 +117,7 @@ export class UserService {
   ): Promise<AccessTokenResponseDto> {
     const accessToken = await this.jwtService.signAsync({
       userId: user.id,
+      username: user.username,
     });
 
     return { accessToken };
