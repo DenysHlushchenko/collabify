@@ -1,8 +1,10 @@
+import { Post } from '../../post/entities/post.entity';
 import { GenderType } from '../../shared/enums/gender-type';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -35,4 +37,7 @@ export class User {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  @OneToMany(() => Post, (post) => post.user)
+  posts: Post[];
 }

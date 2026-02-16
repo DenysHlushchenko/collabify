@@ -1,3 +1,4 @@
+import { Post } from '../../post/entities/post.entity';
 import { User } from '../../user/entities/user.entity';
 import { DataSourceOptions } from 'typeorm';
 
@@ -10,6 +11,6 @@ export const databaseConfig: DataSourceOptions = {
   database: process.env.DATABASE,
   username: process.env.DATABASE_USERNAME,
   password: process.env.DATABASE_PASSWORD,
-  entities: [User],
+  entities: [User, Post],
   synchronize,
 };
