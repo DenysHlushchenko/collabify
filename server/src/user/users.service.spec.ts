@@ -9,7 +9,7 @@ import { RegisterUserDto } from './dtos/RegisterUser.dto';
 import bcrypt from 'bcrypt';
 import { DuplicatedEmailException } from 'src/shared/exceptions/DuplictedEmail.exception';
 import { UserDoesNotExistException } from 'src/shared/exceptions/UserDoesNotExist.exception';
-import { BadRequestException } from '@nestjs/common';
+import { UnauthorizedException } from '@nestjs/common';
 
 jest.mock('bcrypt');
 
@@ -151,7 +151,7 @@ describe('UserService', () => {
       mockUserRepository.findOne.mockResolvedValue(user);
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
-      await expect(service.login(dto)).rejects.toThrow(BadRequestException);
+      await expect(service.login(dto)).rejects.toThrow(UnauthorizedException);
     });
   });
 });

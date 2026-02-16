@@ -43,6 +43,18 @@ export class UserService {
   }
 
   /**
+   * @param id is required.
+   * @returns an existing user account that matches provided ID, otherwise, returns null.
+   */
+  findById(id: number): Promise<User | null> {
+    return this.userRepository.findOne({
+      where: {
+        id,
+      },
+    });
+  }
+
+  /**
    * Registers a new user account.
    * New account's unique ID is generated automatically.
    * @param registerUserDto (username, gender, country, email and password).
