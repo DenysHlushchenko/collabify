@@ -1,6 +1,6 @@
 # Collabify NestJS Backend Setup
 
-The following document follows a basic setup and build instructions of Collabify prototype application.
+The following document follows a basic setup and build instructions of Collabify application.
 
 ## Prerequisites
 
@@ -39,7 +39,7 @@ $ npm run seed
 Build and start the containers:
 
 ```bash
-$ docker compose up --build -d
+$ docker compose up --env-file .env.docker --build -d
 ```
 
 Stop the containers:
