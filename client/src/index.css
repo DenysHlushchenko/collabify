@@ -45,6 +45,10 @@ body {
     background-color: #1b5fad;
   }
 
+  .text-blue {
+    color: #1b5fad;
+  }
+
   .paragraph-regular {
     @apply text-[16px] leading-[22.4px] font-normal;
   }

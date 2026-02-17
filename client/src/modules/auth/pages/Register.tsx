@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
@@ -10,7 +11,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "@/modules/sha
 import { RegisterSchema } from "@/modules/shared/lib/validators";
 import { Button } from "@/modules/shared/components/ui/Button";
 import { genders } from "@/constants/links";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/modules/shared/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/modules/shared/components/ui/Select";
 import { useState } from "react";
 import Error from "@/modules/shared/components/Error";
 
@@ -36,7 +37,9 @@ const Register = () => {
       navigate("/login");
     },
     onError: (error) => {
-      setError(error.message);
+      const axiosError = error as AxiosError<{ message: string }>;
+      const backendError = axiosError.response?.data?.message || "Something went wrong. Please try again.";
+      setError(backendError);
       console.error("Registration failed:", error);
     },
   });
@@ -142,6 +145,15 @@ const Register = () => {
             <Button className="w-full cursor-pointer bg-black text-white" type="submit">
               Register
             </Button>
+            <p className="paragraph-regular text-center">
+              Already have an account?{" "}
+              <span
+                className="text-blue cursor-pointer font-medium hover:underline hover:transition"
+                onClick={() => navigate("/login")}
+              >
+                Log in
+              </span>
+            </p>
             {error && <Error message={error} />}
           </form>
         </Form>
