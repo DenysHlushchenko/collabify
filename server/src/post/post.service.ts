@@ -13,6 +13,11 @@ export class PostService {
     private readonly userService: UserService,
   ) {}
 
+  /**
+   * Creates new user's post. If a user by given ID does not exist, an error is thrown, indicating that user was not found.
+   * @param createPostDto (title, description, groupSize, userId).
+   * @throws UserDoesNotExistException
+   */
   async create(createPostDto: CreatePostDto): Promise<void> {
     const { title, description, groupSize, userId } = createPostDto;
 
