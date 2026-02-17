@@ -9,6 +9,8 @@ import { User } from '../entities/user.entity';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
+const JWT_TOKEN_EXPIRATION = '1h';
+
 @Injectable()
 export class AuthService {
   constructor(private readonly userService: UserService) {}
@@ -62,6 +64,9 @@ export class AuthService {
         username: user.username,
       },
       String(process.env.JWT_SECRET_KEY),
+      {
+        expiresIn: JWT_TOKEN_EXPIRATION,
+      },
     );
 
     return { accessToken };
