@@ -2,7 +2,9 @@ import { Post } from '../../post/entities/post.entity';
 import { User } from '../../user/entities/user.entity';
 import { DataSourceOptions } from 'typeorm';
 
-const synchronize = process.env.NODE_ENV !== 'production';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 export const databaseConfig: DataSourceOptions = {
   type: 'postgres',
@@ -12,5 +14,5 @@ export const databaseConfig: DataSourceOptions = {
   username: process.env.DATABASE_USERNAME,
   password: process.env.DATABASE_PASSWORD,
   entities: [User, Post],
-  synchronize,
+  synchronize: process.env.NODE_ENV !== 'production',
 };
