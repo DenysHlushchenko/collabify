@@ -13,7 +13,5 @@ import { PostModule } from './post/post.module';
     AuthModule,
     PostModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}
