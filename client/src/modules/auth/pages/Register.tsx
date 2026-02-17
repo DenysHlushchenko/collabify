@@ -69,7 +69,7 @@ const Register = () => {
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your username..." {...field} />
+                    <Input placeholder="Enter your username..." {...field} type="text" />
                   </FormControl>
                   {fieldState.error && <Error message={fieldState.error.message} />}
                 </FormItem>
@@ -83,7 +83,7 @@ const Register = () => {
                 <FormItem>
                   <FormLabel>Country</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your country..." {...field} />
+                    <Input placeholder="Enter your country..." {...field} type="text" />
                   </FormControl>
                   {fieldState.error && <Error message={fieldState.error.message} />}
                 </FormItem>
@@ -122,7 +122,7 @@ const Register = () => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your email..." {...field} />
+                    <Input placeholder="Enter your email..." {...field} type="email" />
                   </FormControl>
                   {fieldState.error && <Error message={fieldState.error.message} />}
                 </FormItem>
@@ -136,14 +136,18 @@ const Register = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your password..." {...field} />
+                    <Input placeholder="Enter your password..." {...field} type="password" />
                   </FormControl>
                   {fieldState.error && <Error message={fieldState.error.message} />}
                 </FormItem>
               )}
             />
-            <Button className="w-full cursor-pointer bg-black text-white" type="submit">
-              Register
+            <Button
+              className="w-full cursor-pointer bg-black text-white disabled:cursor-not-allowed"
+              type="submit"
+              disabled={mutation.isPending}
+            >
+              {mutation.isPending ? "Registering..." : "Register"}
             </Button>
             <p className="paragraph-regular text-center">
               Already have an account?{" "}
