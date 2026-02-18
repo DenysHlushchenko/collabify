@@ -15,7 +15,7 @@ import { ChatMember } from 'src/chat/entities/chat_members.entity';
 import { Message } from 'src/messages/entities/message.entity';
 import { MessageReaction } from 'src/messages/entities/message_reaction.entity';
 import { Feedback } from 'src/feedback/entities/feedback.entity';
-import { Notification } from 'src/notofication/entities/notification.entity';
+import { Notification } from 'src/notification/entities/notification.entity';
 import { Country } from 'src/country/entities/country.entity';
 
 @Entity('users')

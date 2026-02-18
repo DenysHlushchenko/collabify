@@ -5,10 +5,12 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 import { Chat } from './chat.entity';
 
 @Entity('chat_members')
+@Unique(['chat', 'user'])
 export class ChatMember {
   @PrimaryGeneratedColumn()
   id: number;

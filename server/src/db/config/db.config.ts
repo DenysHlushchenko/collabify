@@ -5,7 +5,7 @@ import { Country } from '../../country/entities/country.entity';
 import { Feedback } from '../../feedback/entities/feedback.entity';
 import { Message } from '../../messages/entities/message.entity';
 import { MessageReaction } from '../../messages/entities/message_reaction.entity';
-import { Notification } from '../../notofication/entities/notification.entity';
+import { Notification } from '../../notification/entities/notification.entity';
 import { Post } from '../../post/entities/post.entity';
 import { PostTag } from '../../tag/entities/post_tag.entity';
 import { Tag } from '../../tag/entities/tag.entity';

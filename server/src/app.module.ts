@@ -9,7 +9,7 @@ import { CommentModule } from './comment/comment.module';
 import { CountryModule } from './country/country.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { MessagesModule } from './messages/messages.module';
-import { NotificationModule } from './notofication/notification.module';
+import { NotificationModule } from './notification/notification.module';
 import { TagModule } from './tag/tag.module';
 
 @Module({
