@@ -1,15 +1,15 @@
-import { Chat } from '../../chat/entities/chat.entity';
-import { ChatMember } from '../../chat/entities/chat_members.entity';
-import { Comment } from '../../comment/entities/comment.entity';
-import { Country } from '../../country/entities/country.entity';
-import { Feedback } from '../../feedback/entities/feedback.entity';
-import { Message } from '../../messages/entities/message.entity';
-import { MessageReaction } from '../../messages/entities/message_reaction.entity';
-import { Notification } from '../../notification/entities/notification.entity';
-import { Post } from '../../post/entities/post.entity';
-import { PostTag } from '../../tag/entities/post_tag.entity';
-import { Tag } from '../../tag/entities/tag.entity';
-import { User } from '../../user/entities/user.entity';
+import { Chat } from '../../modules/chat/entities/chat.entity';
+import { ChatMember } from '../../modules/chat/entities/chat_members.entity';
+import { Comment } from '../../modules/comment/entities/comment.entity';
+import { Country } from '../../modules/country/entities/country.entity';
+import { Feedback } from '../../modules/feedback/entities/feedback.entity';
+import { Message } from '../../modules/messages/entities/message.entity';
+import { MessageReaction } from '../../modules/messages/entities/message_reaction.entity';
+import { Notification } from '../../modules/notification/entities/notification.entity';
+import { Post } from '../../modules/post/entities/post.entity';
+import { PostTag } from '../../modules/tag/entities/post_tag.entity';
+import { Tag } from '../../modules/tag/entities/tag.entity';
+import { User } from '../../modules/user/entities/user.entity';
 import { DataSourceOptions } from 'typeorm';
 
 import * as dotenv from 'dotenv';

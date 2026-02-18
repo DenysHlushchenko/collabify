@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from './db/db.module';
-import { UserModule } from './user/user.module';
-import { AuthModule } from './user/auth/auth.module';
-import { PostModule } from './post/post.module';
-import { ChatModule } from './chat/chat.module';
-import { CommentModule } from './comment/comment.module';
-import { CountryModule } from './country/country.module';
-import { FeedbackModule } from './feedback/feedback.module';
-import { MessagesModule } from './messages/messages.module';
-import { NotificationModule } from './notification/notification.module';
-import { TagModule } from './tag/tag.module';
+import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/user/auth/auth.module';
+import { PostModule } from './modules/post/post.module';
+import { ChatModule } from './modules/chat/chat.module';
+import { CommentModule } from './modules/comment/comment.module';
+import { CountryModule } from './modules/country/country.module';
+import { FeedbackModule } from './modules/feedback/feedback.module';
+import { MessagesModule } from './modules/messages/messages.module';
+import { NotificationModule } from './modules/notification/notification.module';
+import { TagModule } from './modules/tag/tag.module';
 
 @Module({
   imports: [
