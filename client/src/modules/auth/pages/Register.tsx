@@ -84,9 +84,6 @@ const Register = () => {
               render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel>Country</FormLabel>
-                  {/* <FormControl>
-                    <Input placeholder="Enter your country..." {...field} type="text" />
-                  </FormControl> */}
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
                       <SelectTrigger className="w-full">
