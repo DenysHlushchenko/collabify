@@ -15,7 +15,6 @@ enum Auth {
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
-
     private readonly countryService: CountryService,
   ) {}
 
