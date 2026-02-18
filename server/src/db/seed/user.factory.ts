@@ -1,9 +1,9 @@
 import { Faker } from '@faker-js/faker';
 import { GenderType } from '../../shared/enums/gender-type';
-import { User } from '../../user/entities/user.entity';
+import { User } from '../../modules/user/entities/user.entity';
 import { setSeederFactory } from 'typeorm-extension';
 import bcrypt from 'bcrypt';
-import { Country } from 'src/country/entities/country.entity';
+import { Country } from 'src/modules/country/entities/country.entity';
 
 const USER_PASSWORD = 'password';
 
