@@ -1,20 +1,26 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
-import { JwtService } from '@nestjs/jwt';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { GenderType } from 'src/shared/enums/gender-type';
 import { RegisterUserDto } from './dtos/RegisterUser.dto';
-import bcrypt from 'bcrypt';
 import { DuplicatedEmailException } from 'src/shared/exceptions/DuplictedEmail.exception';
 import { UserDoesNotExistException } from 'src/shared/exceptions/UserDoesNotExist.exception';
 import { UnauthorizedException } from '@nestjs/common';
+import { AuthService } from './auth/auth.service';
+import { CountryService } from 'src/country/country.service';
+import { Country } from 'src/country/entities/country.entity';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 jest.mock('bcrypt');
+jest.mock('jsonwebtoken');
 
 describe('UserService', () => {
-  let service: UserService;
+  let userService: UserService;
+  let authService: AuthService;
+  let countryService: CountryService;
 
   let mockUserRepository: {
     findOne: jest.Mock;
@@ -22,8 +28,10 @@ describe('UserService', () => {
     create: jest.Mock;
   };
 
-  let mockJwtService: {
-    signAsync: jest.Mock;
+  let mockCountryRepository: {
+    findOne: jest.Mock;
+    save: jest.Mock;
+    create: jest.Mock;
   };
 
   beforeEach(async () => {
@@ -33,33 +41,42 @@ describe('UserService', () => {
       create: jest.fn(),
     };
 
-    mockJwtService = {
-      signAsync: jest.fn(),
+    mockCountryRepository = {
+      findOne: jest.fn(),
+      save: jest.fn(),
+      create: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        AuthService,
         UserService,
+        CountryService,
         {
           provide: getRepositoryToken(User),
           useValue: mockUserRepository,
         },
         {
-          provide: JwtService,
-          useValue: mockJwtService,
+          provide: getRepositoryToken(Country),
+          useValue: mockCountryRepository,
         },
       ],
     }).compile();
 
-    service = module.get<UserService>(UserService);
+    userService = module.get<UserService>(UserService);
+    authService = module.get<AuthService>(AuthService);
+    countryService = module.get<CountryService>(CountryService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  it('AuthService and UserService should be defined', () => {
+    expect(authService).toBeDefined();
+    expect(userService).toBeDefined();
+    expect(countryService).toBeDefined();
   });
 
-  it('userRepository should be defined', () => {
+  it('userRepository and countryRepository should be defined', () => {
     expect(mockUserRepository).toBeDefined();
+    expect(mockCountryRepository).toBeDefined();
   });
 
   describe('POST /auth/register', () => {
@@ -73,28 +90,28 @@ describe('UserService', () => {
 
     it('should create a new user with hashed password', async () => {
       mockUserRepository.findOne.mockResolvedValue(null);
+      mockCountryRepository.findOne.mockResolvedValue(null);
       (bcrypt.hash as jest.Mock).mockResolvedValue('hashedPassword');
 
       const createdUser = { ...dto, password: 'hashedPassword' };
+      mockCountryRepository.create.mockResolvedValue({
+        name: dto.country,
+      });
+      mockCountryRepository.save.mockResolvedValue({
+        name: dto.country,
+      });
       mockUserRepository.create.mockReturnValue(createdUser);
       mockUserRepository.save.mockResolvedValue(createdUser);
 
-      await service.register(dto);
+      await authService.register(dto);
 
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({
-        select: {
-          id: true,
-          username: true,
-          gender: true,
-          reputation: true,
-          email: true,
-          created_at: true,
-          updated_at: true,
-        },
         where: { email: dto.email },
       });
 
       expect(bcrypt.hash).toHaveBeenCalledWith(dto.password, 10);
+      expect(mockCountryRepository.create).toHaveBeenCalled();
+      expect(mockCountryRepository.save).toHaveBeenCalled();
       expect(mockUserRepository.create).toHaveBeenCalled();
       expect(mockUserRepository.save).toHaveBeenCalledWith(createdUser);
     });
@@ -102,7 +119,7 @@ describe('UserService', () => {
     it('should throw if email already exists', async () => {
       mockUserRepository.findOne.mockResolvedValue({ id: 1 });
 
-      await expect(service.register(dto)).rejects.toThrow(
+      await expect(authService.register(dto)).rejects.toThrow(
         DuplicatedEmailException,
       );
 
@@ -118,6 +135,7 @@ describe('UserService', () => {
 
     const user = {
       id: 1,
+      username: 'test',
       email: dto.email,
       password: 'hashedPassword',
     } as User;
@@ -125,24 +143,31 @@ describe('UserService', () => {
     it('should return access token on valid credentials', async () => {
       mockUserRepository.findOne.mockResolvedValue(user);
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
-      mockJwtService.signAsync.mockResolvedValue('jwt-token');
+      (jwt.sign as jest.Mock).mockReturnValue('jwt-token');
 
-      const result = await service.login(dto);
+      const result = await authService.login(dto);
 
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({
         where: { email: dto.email },
       });
       expect(bcrypt.compare).toHaveBeenCalledWith(dto.password, user.password);
-      expect(mockJwtService.signAsync).toHaveBeenCalledWith({
-        userId: user.id,
-      });
+      expect(jwt.sign).toHaveBeenCalledWith(
+        {
+          username: user.username,
+          id: user.id,
+        },
+        String(process.env.JWT_SECRET_KEY),
+        {
+          expiresIn: '1h',
+        },
+      );
       expect(result).toEqual({ accessToken: 'jwt-token' });
     });
 
     it('should throw if user does not exist', async () => {
       mockUserRepository.findOne.mockResolvedValue(null);
 
-      await expect(service.login(dto)).rejects.toThrow(
+      await expect(authService.login(dto)).rejects.toThrow(
         UserDoesNotExistException,
       );
     });
@@ -151,7 +176,9 @@ describe('UserService', () => {
       mockUserRepository.findOne.mockResolvedValue(user);
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
-      await expect(service.login(dto)).rejects.toThrow(UnauthorizedException);
+      await expect(authService.login(dto)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
   });
 });
