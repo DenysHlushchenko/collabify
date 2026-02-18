@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostService } from './post.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -13,6 +12,7 @@ describe('PostService', () => {
   let mockPostRepository: {
     save: jest.Mock;
     create: jest.Mock;
+    find: jest.Mock;
   };
 
   let mockUserSevice: {
@@ -23,6 +23,7 @@ describe('PostService', () => {
     mockPostRepository = {
       save: jest.fn(),
       create: jest.fn(),
+      find: jest.fn(),
     };
 
     mockUserSevice = {
@@ -94,6 +95,21 @@ describe('PostService', () => {
       );
 
       expect(mockPostRepository.save).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('GET /posts', () => {
+    const posts = [{ id: 1 }, { id: 2 }];
+
+    it('should return all posts with user relations', async () => {
+      mockPostRepository.find.mockResolvedValue(posts);
+
+      const result = await postService.getAll();
+
+      expect(mockPostRepository.find).toHaveBeenCalledWith({
+        relations: ['user'],
+      });
+      expect(result).toEqual(posts);
     });
   });
 });

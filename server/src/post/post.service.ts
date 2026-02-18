@@ -37,4 +37,14 @@ export class PostService {
       }),
     );
   }
+
+  /**
+   * Retrieves all posts from the database.
+   * @returns An array of Post entities representing all posts in the database.
+   */
+  async getAll(): Promise<Post[]> {
+    return this.postRepository.find({
+      relations: ['user'],
+    });
+  }
 }
