@@ -23,5 +23,12 @@ export type LoginType = {
 };
 
 export type AuthResponse = {
-  token: string;
+  accessToken: string;
+}
+
+export type JwtPayload = {
+  id: number;
+  username: string;
+  iat: number;
+  exp: number;
 }
