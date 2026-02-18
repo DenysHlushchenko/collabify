@@ -14,6 +14,7 @@ import { genders } from "@/constants/links";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/modules/shared/components/ui/Select";
 import { useState } from "react";
 import Error from "@/modules/shared/components/Error";
+import { countries } from "country-data-list";
 
 const Register = () => {
   const [error, setError] = useState<string | null>(null);
@@ -82,9 +83,26 @@ const Register = () => {
               render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel>Country</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter your country..." {...field} type="text" />
-                  </FormControl>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select your country" />
+                      </SelectTrigger>
+                    </FormControl>
+
+                    <SelectContent className="bg-white">
+                      {countries.all.map((country) => (
+                        <SelectItem
+                          key={country.name}
+                          value={country.name}
+                          className="flex cursor-pointer items-center gap-3 hover:bg-gray-100"
+                        >
+                          <p>{country.emoji}</p>
+                          <span>{country.name}</span>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   {fieldState.error && <Error message={fieldState.error.message} />}
                 </FormItem>
               )}
