@@ -89,12 +89,12 @@ const Login = () => {
               type="submit"
               disabled={mutation.isPending}
             >
-              {mutation.isPending ? "Loging in..." : "Log in"}
+              {mutation.isPending ? "Logging in..." : "Log in"}
             </Button>
             <p className="paragraph-regular text-center">
               Do not have an account?{" "}
               <span
-                className="text-blue cursor-pointer font-medium hover:underline hover:transition"
+                className="text-blue cursor-pointer font-medium hover:underline"
                 onClick={() => navigate("/register")}
               >
                 Register

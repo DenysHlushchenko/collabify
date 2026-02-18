@@ -2,7 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { registerUser } from "../api/user";
 
@@ -151,12 +151,9 @@ const Register = () => {
             </Button>
             <p className="paragraph-regular text-center">
               Already have an account?{" "}
-              <span
-                className="text-blue cursor-pointer font-medium hover:underline hover:transition"
-                onClick={() => navigate("/login")}
-              >
+              <Link to="/login" className="text-blue cursor-pointer font-medium hover:underline">
                 Log in
-              </span>
+              </Link>
             </p>
             {error && <Error message={error} />}
           </form>
