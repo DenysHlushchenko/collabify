@@ -38,7 +38,7 @@ export const postFooterItems = [
   },
   {
     imgUrl: dislikeIcon,
-    alt: "Like",
+    alt: "Dislike",
   },
   {
     imgUrl: commentIcon,
