@@ -21,7 +21,7 @@ function App() {
       <div className="mx-auto flex w-full max-w-7xl">
         <LeftsideBar />
 
-        <section className="flex-1 flex-col overflow-y-auto px-6 pt-36 pb-6 max-md:pb-14 sm:px-14">
+        <section className="flex flex-1 flex-col overflow-y-auto px-6 pt-36 pb-6 max-md:pb-14 sm:px-14">
           <div className="mx-auto w-full max-w-5xl">
             <Outlet />
           </div>
