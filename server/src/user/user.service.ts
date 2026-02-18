@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { RegisterUserDto } from './dtos/RegisterUser.dto';
 import { DuplicatedEmailException } from 'src/shared/exceptions/DuplictedEmail.exception';
 import bcrypt from 'bcrypt';
-import { Country } from 'src/country/entities/country.entity';
+import { CountryService } from 'src/country/country.service';
 
 enum Auth {
   SALT_ROUNDS = 10,
@@ -16,8 +16,7 @@ export class UserService {
   constructor(
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
 
-    @InjectRepository(Country)
-    private readonly countriesRepository: Repository<Country>,
+    private readonly countryService: CountryService,
   ) {}
 
   /**
@@ -52,16 +51,7 @@ export class UserService {
       throw new DuplicatedEmailException(email);
     }
 
-    let countryEntity = await this.countriesRepository.findOne({
-      where: { name: country },
-    });
-
-    if (!countryEntity) {
-      countryEntity = this.countriesRepository.create({
-        name: country,
-      });
-      await this.countriesRepository.save(countryEntity);
-    }
+    const countryEntity = await this.countryService.findOrCreateByName(country);
 
     return this.usersRepository.save(
       this.usersRepository.create({
