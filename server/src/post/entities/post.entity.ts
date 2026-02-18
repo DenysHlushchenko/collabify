@@ -1,13 +1,17 @@
+import { PostTag } from 'src/tag/entities/post_tag.entity';
 import { User } from '../../user/entities/user.entity';
+import { Comment } from 'src/comment/entities/comment.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Chat } from 'src/chat/entities/chat.entity';
 
 @Entity('posts')
 export class Post {
@@ -32,4 +36,13 @@ export class Post {
   @ManyToOne(() => User, (user) => user.posts)
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @OneToMany(() => PostTag, (postTag) => postTag.post)
+  postTags: PostTag[];
+
+  @OneToMany(() => Comment, (comment) => comment.post)
+  comments: Comment[];
+
+  @OneToMany(() => Chat, (chat) => chat.post)
+  chats: Chat[];
 }
