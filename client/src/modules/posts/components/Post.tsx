@@ -1,7 +1,7 @@
 import { postFooterItems } from "@/constants/links";
 import { Avatar } from "@/modules/shared/components/ui/Avatar";
 import { Button } from "@/modules/shared/components/ui/Button";
-import { Separator } from "@/modules/shared/components/ui/separator";
+import { Separator } from "@/modules/shared/components/ui/Separator";
 import type { PostType } from "@/modules/shared/types/types";
 import { convertNameToInitial, convertToDateString } from "@/modules/shared/utils/utils";
 import {
@@ -11,7 +11,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/modules/shared/components/ui/card";
+} from "@/modules/shared/components/ui/Card";
 
 const MAX_DESCRIPTION_LENGTH = 90;
 
