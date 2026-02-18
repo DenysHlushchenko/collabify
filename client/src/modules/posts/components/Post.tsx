@@ -32,7 +32,7 @@ const PostFooter = (props: PostFooterProps) => {
 
 const Post = ({ post }: { post: PostType }) => {
   const desc = post.description;
-  const adjustedDesc = desc.length >= MAX_DESCRIPTION_LENGTH ? `${desc.substring(0, 90)}...` : desc;
+  const adjustedDesc = desc.length >= MAX_DESCRIPTION_LENGTH ? `${desc.substring(0, MAX_DESCRIPTION_LENGTH)}...` : desc;
 
   return (
     <>
