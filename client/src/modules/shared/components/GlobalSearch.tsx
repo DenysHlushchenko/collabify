@@ -6,8 +6,8 @@ const GlobalSearch = () => {
   const [search, setSearch] = useState("");
   return (
     <div className="relative w-full max-w-150 max-lg:hidden">
-      <div className="relative flex min-h-14 grow items-center gap-1 rounded-xl bg-[#487EBD] px-4">
-        <Search width={24} height={24} className="cursor-pointer" />
+      <div className="relative flex min-h-9 grow items-center gap-1 rounded-xl bg-[#487EBD] px-4">
+        <Search width={20} height={20} className="cursor-pointer" />
         <Input
           value={search}
           onChange={() => {}}

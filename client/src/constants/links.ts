@@ -2,6 +2,9 @@ import homeIcon from "@/assets/home.svg";
 import messagesIcon from "@/assets/messages.svg";
 import tagIcon from "@/assets/tag.svg";
 import postsIcon from "@/assets/posts.svg";
+import likeIcon from "@/assets/like.svg";
+import dislikeIcon from "@/assets/dislike.svg";
+import commentIcon from "@/assets/comment.svg";
 
 export const sidebarLinks = [
   {
@@ -27,3 +30,18 @@ export const sidebarLinks = [
 ];
 
 export const genders = ["male", "female", "other"];
+
+export const postFooterItems = [
+  {
+    imgUrl: likeIcon,
+    alt: "Like",
+  },
+  {
+    imgUrl: dislikeIcon,
+    alt: "Like",
+  },
+  {
+    imgUrl: commentIcon,
+    alt: "Comments",
+  },
+];

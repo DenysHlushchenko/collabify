@@ -27,8 +27,9 @@ export type PostType = {
   title: string;
   description: string;
   groupSize: string;
-  createdAt: string;
-  updatedAt: string;
+  created_at: Date;
+  updated_at: Date;
+  user: UserType;
 };
 
 export type AuthResponse = {
