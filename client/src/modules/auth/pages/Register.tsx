@@ -46,7 +46,6 @@ const Register = () => {
   });
 
   async function onSubmit(values: z.infer<typeof RegisterSchema>) {
-    console.log(values);
     mutation.mutate({
       username: values.username,
       country: values.country,
