@@ -15,3 +15,13 @@ export const LoginSchema = z.object({
   email: z.email("Invalid email address"),
   password: z.string().min(8, "Password must be at least 8 characters long"),
 });
+
+export const PostSchema = z.object({
+  title: z.string().max(50, "Title must be at most 50 characters long").nonempty("Title is required"),
+  description: z.string().max(500, "Description is too long!").nonempty("Description is required"),
+  groupSize: z
+    .number()
+    .min(2, "Group must include at least 2 collaborators")
+    .max(10, "Group can have at most 10 collaborators"),
+  tags: z.string(),
+});
