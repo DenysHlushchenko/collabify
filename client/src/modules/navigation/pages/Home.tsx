@@ -1,10 +1,9 @@
+import UserPosts from "@/modules/posts/components/UserPosts";
+import Error from "@/modules/shared/components/Error";
+import { Skeleton } from "@/modules/shared/components/ui/Skeleton";
+import { useAuthStore } from "@/modules/auth/store/userStore";
 import { getPosts } from "@/modules/posts/api/post";
 import { useQuery } from "@tanstack/react-query";
-import type { PostType } from "@/modules/shared/types/types";
-import { useAuthStore } from "@/modules/auth/store/userStore";
-import Post from "@/modules/posts/components/Post";
-import Error from "@/modules/shared/components/Error";
-import { Skeleton } from "@/modules/shared/components/ui/skeleton";
 
 const Home = () => {
   /**
@@ -12,12 +11,7 @@ const Home = () => {
    */
   const token = useAuthStore((state) => state.token);
 
-  const {
-    data: posts,
-    isPending,
-    isError,
-    error,
-  } = useQuery({
+  const { data, isPending, isError, error } = useQuery({
     queryKey: ["posts", token],
     queryFn: getPosts,
     retry: 2,
@@ -32,15 +26,8 @@ const Home = () => {
       </div>
     );
 
-  if (isError) return <Error message={error.message} />;
-
-  return (
-    <div>
-      {posts?.map((post: PostType) => (
-        <Post key={post.id} post={post} />
-      ))}
-    </div>
-  );
+  if (isError) return <Error message={`${error.message}: Sorry, there are currently no posts available.`} />;
+  return <UserPosts posts={data} />;
 };
 
 export default Home;

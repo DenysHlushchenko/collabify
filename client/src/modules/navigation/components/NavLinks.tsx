@@ -30,7 +30,7 @@ const NavLinks = ({ isMobileNav }: NavLinksProps) => {
               isActive && "rounded-lg bg-[#e8edf3] font-semibold"
             )}
           >
-            <img src={item.imgUrl} alt={item.name} width={20} height={20} className={cn({ invert: !isActive })} />
+            <img src={item.imgUrl} alt={item.name} width={20} height={20} className="invert" />
             <p className={cn(isActive ? "base-bold" : "base-medium", !isMobileNav && "max-lg:hidden")}>{item.name}</p>
           </Link>
         );

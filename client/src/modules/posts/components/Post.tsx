@@ -1,5 +1,5 @@
 import { postFooterItems } from "@/constants/links";
-import { Avatar } from "@/modules/shared/components/ui/Avatar";
+import { Avatar, AvatarFallback } from "@/modules/shared/components/ui/Avatar";
 import { Button } from "@/modules/shared/components/ui/Button";
 import { Separator } from "@/modules/shared/components/ui/Separator";
 import type { PostType } from "@/modules/shared/types/types";
@@ -41,7 +41,7 @@ const Post = ({ post }: { post: PostType }) => {
           <CardTitle className="small-semibold post-author-color">
             <div className="flex-start gap-x-2">
               <Avatar className="flex-center bg-[#D9D9D9] text-gray-500">
-                {convertNameToInitial(post.user.username)}
+                <AvatarFallback>{convertNameToInitial(post.user.username)}</AvatarFallback>
               </Avatar>
               <p>c/{post.user.username}</p>
               <span className="text-gray-400">{convertToDateString(post.created_at)}</span>
