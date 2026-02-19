@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import jwt from 'jsonwebtoken';
 import { Request } from 'express';
+import { extractTokenFromHeader } from 'src/shared/utils/libs';
 
 /**
  * An injectable AuthGuard guard class that acts as a middleware for application routes.
@@ -26,7 +27,7 @@ import { Request } from 'express';
 export class AuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request: Request = context.switchToHttp().getRequest();
-    const token = this.extractTokenFromHeader(request);
+    const token = extractTokenFromHeader(request.headers);
     if (!token) {
       throw new UnauthorizedException();
     }
@@ -37,10 +38,5 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
     return true;
-  }
-
-  private extractTokenFromHeader(request: Request): string | undefined {
-    const [type, token] = request.headers.authorization?.split(' ') ?? [];
-    return type === 'Bearer' ? token : undefined;
   }
 }

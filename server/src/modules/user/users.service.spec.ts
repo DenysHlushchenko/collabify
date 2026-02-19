@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { GenderType } from 'src/shared/enums/gender-type';
+import { GenderType } from 'src/shared/enums/enums';
 import { RegisterUserDto } from './dtos/RegisterUser.dto';
 import { DuplicatedEmailException } from 'src/shared/exceptions/DuplictedEmail.exception';
 import { UserDoesNotExistException } from 'src/shared/exceptions/UserDoesNotExist.exception';

@@ -17,6 +17,9 @@ export class Chat {
   id: number;
 
   @Column()
+  title: string;
+
+  @Column()
   max_members: number;
 
   @CreateDateColumn()
