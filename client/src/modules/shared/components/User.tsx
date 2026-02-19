@@ -1,11 +1,17 @@
 import { useAuthStore } from "@/modules/auth/store/userStore";
+import { convertNameToInitial } from "../utils/utils";
+import { Avatar, AvatarFallback } from "./ui/Avatar";
 
 const User = () => {
   const initial = useAuthStore((state) => {
     const user = state.getUser();
-    return user?.username?.charAt(0)?.toUpperCase() ?? "";
+    return convertNameToInitial(user?.username);
   });
-  return <span className="flex-center h-10 w-10 rounded-full bg-[#6395CD] p-1 text-sm">{initial}</span>;
+  return (
+    <Avatar className="h-9 w-9">
+      <AvatarFallback className="flex-center bg-[#6395CD]">{initial}</AvatarFallback>
+    </Avatar>
+  );
 };
 
 export default User;

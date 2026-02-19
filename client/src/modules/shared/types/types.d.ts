@@ -22,13 +22,23 @@ export type LoginType = {
   password: string;
 };
 
+export type PostType = {
+  id: number;
+  title: string;
+  description: string;
+  groupSize: number;
+  created_at: Date;
+  updated_at: Date;
+  user: UserType;
+};
+
 export type AuthResponse = {
   accessToken: string;
-}
+};
 
 export type JwtPayload = {
   id: number;
   username: string;
   iat: number;
   exp: number;
-}
+};

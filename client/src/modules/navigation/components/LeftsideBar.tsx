@@ -19,7 +19,7 @@ const LeftsideBar = () => {
       <div>
         <div>
           <Button
-            className="small-medium min-h-10.25 w-full cursor-pointer rounded-lg bg-black px-4 py-3 text-white shadow-none"
+            className="small-medium background-blue min-h-10.25 w-full cursor-pointer rounded-lg px-4 py-3 text-white shadow-none"
             onClick={handleLogout}
           >
             <LogOut size={20} />

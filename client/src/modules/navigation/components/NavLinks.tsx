@@ -26,11 +26,11 @@ const NavLinks = ({ isMobileNav }: NavLinksProps) => {
             to={item.link}
             key={item.name}
             className={cn(
-              "flex items-center justify-start gap-4 p-4",
-              isActive && "rounded-lg bg-[#CCCCCC] font-semibold text-white"
+              "flex items-center justify-start gap-4 p-4 hover:rounded-lg hover:bg-[#e8edf3]",
+              isActive && "rounded-lg bg-[#e8edf3] font-semibold"
             )}
           >
-            <img src={item.imgUrl} alt={item.name} width={20} height={20} className={cn({ invert: !isActive })} />
+            <img src={item.imgUrl} alt={item.name} width={20} height={20} className="invert" />
             <p className={cn(isActive ? "base-bold" : "base-medium", !isMobileNav && "max-lg:hidden")}>{item.name}</p>
           </Link>
         );
