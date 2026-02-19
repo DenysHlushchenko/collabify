@@ -23,10 +23,10 @@ export type LoginType = {
 };
 
 export type PostType = {
-  id: string;
+  id: number;
   title: string;
   description: string;
-  groupSize: string;
+  groupSize: number;
   created_at: Date;
   updated_at: Date;
   user: UserType;
