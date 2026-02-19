@@ -5,9 +5,11 @@ import Post from "@/modules/posts/components/Post";
 const UserPosts = ({ posts }: { posts: PostType[] }) => {
   return (
     <div>
-      {posts?.map((post: PostType) => (
-        <Post key={post.id} post={post} />
-      ))}
+      {posts.length !== 0 ? (
+        posts.map((post: PostType) => <Post key={post.id} post={post} />)
+      ) : (
+        <h1 className="text-center text-sm">No posts yet!</h1>
+      )}
     </div>
   );
 };
