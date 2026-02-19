@@ -32,6 +32,14 @@ export type PostType = {
   user: UserType;
 };
 
+export type PostFormType = {
+  title: string;
+  description: string;
+  groupSize: number;
+  tags: string[];
+  userId: number;
+};
+
 export type AuthResponse = {
   accessToken: string;
 };

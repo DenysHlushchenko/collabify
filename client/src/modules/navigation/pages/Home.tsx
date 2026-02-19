@@ -23,6 +23,8 @@ const Home = () => {
         <Skeleton className="mb-8 h-50 w-full rounded-xl bg-gray-100" />
         <Skeleton className="mb-8 h-50 w-full rounded-xl bg-gray-100" />
         <Skeleton className="mb-8 h-50 w-full rounded-xl bg-gray-100" />
+        <Skeleton className="mb-8 h-50 w-full rounded-xl bg-gray-100" />
+        <Skeleton className="mb-8 h-50 w-full rounded-xl bg-gray-100" />
       </div>
     );
 

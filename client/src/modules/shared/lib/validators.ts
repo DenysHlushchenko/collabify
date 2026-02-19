@@ -24,4 +24,8 @@ export const PostSchema = z.object({
     .min(2, "Group must include at least 2 collaborators")
     .max(10, "Group can have at most 10 collaborators"),
   tags: z.string(),
+  chatTitle: z
+    .string()
+    .max(20, "Chat group title cannot be longer than 20 characters")
+    .nonempty("Chat group title is required"),
 });

@@ -21,23 +21,23 @@ interface PostFooterProps {
   alt: string;
 }
 
-const PostFooter = (props: PostFooterProps) => {
-  return (
-    <div className="small-medium flex cursor-pointer items-center gap-x-1">
-      <img src={props.imgSrc} alt={props.alt} />
-      <p>{props.count}</p>
-    </div>
-  );
-};
-
 const Post = ({ post }: { post: PostType }) => {
   const desc = post.description;
   const adjustedDesc = desc.length >= MAX_DESCRIPTION_LENGTH ? `${desc.substring(0, MAX_DESCRIPTION_LENGTH)}...` : desc;
 
+  const PostFooter = (props: PostFooterProps) => {
+    return (
+      <div className="small-medium flex cursor-pointer items-center gap-x-1">
+        <img src={props.imgSrc} alt={props.alt} />
+        <p>{props.count}</p>
+      </div>
+    );
+  };
+
   return (
     <>
       <Card className="border-gray">
-        <CardHeader>
+        <CardHeader className="">
           <CardTitle className="small-semibold post-author-color">
             <div className="flex-start gap-x-2">
               <Avatar className="flex-center bg-[#D9D9D9] text-gray-500">
