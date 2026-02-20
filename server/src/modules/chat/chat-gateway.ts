@@ -92,9 +92,15 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('joinRequest')
   async handleJoinRequest(
     @MessageBody() joinRequest: JoinRequestType,
-    @ConnectedSocket() client: Socket,
+    @ConnectedSocket() client: AuthenticatedSocket,
   ) {
     const { requestUserId, postCreatorId } = joinRequest;
+
+    // Verify the authenticated user matches the request
+    if (client.data.user?.id !== requestUserId) {
+      return client.emit('error', 'Unauthorized: User ID mismatch.');
+    }
+
     const requestUser = await this.findUserById(requestUserId);
     const postCreator = await this.findUserById(postCreatorId);
 
