@@ -22,6 +22,7 @@ export class ChatService {
     return await this.chatRepository.save(
       this.chatRepository.create({
         title: createChatDto.title,
+        post: { id: createChatDto.postId },
         max_members: createChatDto.max_members,
         created_at: new Date(),
       }),

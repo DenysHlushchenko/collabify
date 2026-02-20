@@ -8,7 +8,12 @@ import { ChatModule } from '../chat/chat.module';
 import { TagModule } from '../tag/tag.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Post]), UserModule, ChatModule],
+  imports: [
+    TypeOrmModule.forFeature([Post]),
+    UserModule,
+    ChatModule,
+    TagModule,
+  ],
   controllers: [PostController],
   providers: [PostService],
 })

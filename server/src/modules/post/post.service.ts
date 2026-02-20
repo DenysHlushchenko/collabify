@@ -49,17 +49,6 @@ export class PostService {
       throw new Error('Choose either an old chat or create a new one.');
     }
 
-    let chat: Chat | null = null;
-    if (chatId) {
-      chat = await this.chatService.findById(chatId);
-      if (!chat) throw new Error('Chat not found');
-    } else {
-      chat = await this.chatService.create({
-        title: chatTitle,
-        max_members: groupSize,
-      });
-    }
-
     const post = this.postRepository.create({
       title,
       description,
@@ -78,6 +67,18 @@ export class PostService {
         postTagRepo.create({ postId: savedPost.id, tagId: tag.id }),
       );
       await postTagRepo.save(postTags);
+    }
+
+    let chat: Chat | null = null;
+    if (chatId) {
+      chat = await this.chatService.findById(chatId);
+      if (!chat) throw new Error('Chat not found');
+    } else {
+      chat = await this.chatService.create({
+        postId: savedPost.id,
+        title: chatTitle,
+        max_members: groupSize,
+      });
     }
   }
 
