@@ -20,7 +20,7 @@ export class TagService {
     const existingSet = new Set(existing.map((t) => t.name));
     const toCreate = names.filter((name) => !existingSet.has(name));
 
-    if (toCreate.length === 0) {
+    if (!toCreate) {
       return existing;
     }
 

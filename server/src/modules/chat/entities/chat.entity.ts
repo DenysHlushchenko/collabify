@@ -17,7 +17,7 @@ export class Chat {
   id: number;
 
   @Column({ nullable: true })
-  title: string;
+  title?: string;
 
   @Column()
   max_members: number;
