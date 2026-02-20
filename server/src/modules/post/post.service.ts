@@ -5,12 +5,15 @@ import { Post } from './entities/post.entity';
 import { CreatePostDto } from './dtos/CreatePost.dto';
 import { UserService } from 'src/modules/user/user.service';
 import { UserDoesNotExistException } from 'src/shared/exceptions/UserDoesNotExist.exception';
+import { ChatService } from '../chat/chat.service';
+import { Chat } from '../chat/entities/chat.entity';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
     private readonly userService: UserService,
+    private readonly chatService: ChatService,
   ) {}
 
   /**
@@ -19,11 +22,32 @@ export class PostService {
    * @throws UserDoesNotExistException
    */
   async create(createPostDto: CreatePostDto): Promise<void> {
-    const { title, description, groupSize, userId } = createPostDto;
+    const { title, chatTitle, description, groupSize, tags, userId, chatId } =
+      createPostDto;
 
     const currentUser = await this.userService.findById(userId);
+
     if (!currentUser) {
       throw new UserDoesNotExistException();
+    }
+
+    if (chatId && chatTitle) {
+      throw new Error('Choose already existing chat or create a new one.');
+    }
+
+    if (!chatId && !chatTitle) {
+      throw new Error('Choose either an old chat or create a new one.');
+    }
+
+    let chat: Chat | null = null;
+    if (chatId) {
+      chat = await this.chatService.findById(chatId);
+      if (!chat) throw new Error('Chat not found');
+    } else {
+      chat = await this.chatService.create({
+        title: chatTitle,
+        max_members: groupSize,
+      });
     }
 
     await this.postRepository.save(
@@ -34,6 +58,8 @@ export class PostService {
         created_at: new Date(),
         updated_at: new Date(),
         user: { id: userId },
+        postTags: tags,
+        chats: [chat],
       }),
     );
   }
