@@ -1,12 +1,14 @@
 import {
+  ArrayMaxSize,
+  ArrayMinSize,
   IsArray,
   IsNotEmpty,
   IsNumber,
+  IsString,
   Max,
   MaxLength,
   Min,
 } from 'class-validator';
-import { PostTag } from 'src/modules/tag/entities/post_tag.entity';
 
 export class CreatePostDto {
   @IsNotEmpty()
@@ -35,10 +37,6 @@ export class CreatePostDto {
   @IsNotEmpty()
   @IsNumber()
   userId: number;
-
-  @IsNotEmpty()
-  @IsArray()
-  tags: PostTag[];
 
   chatId?: number;
 }

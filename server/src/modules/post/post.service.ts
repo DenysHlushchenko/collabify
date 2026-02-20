@@ -25,7 +25,15 @@ export class PostService {
    * @throws UserDoesNotExistException
    */
   async create(createPostDto: CreatePostDto): Promise<void> {
-    const { title, chatTitle, description, groupSize, tags: tagNames, userId, chatId } = createPostDto;
+    const {
+      title,
+      chatTitle,
+      description,
+      groupSize,
+      tags: tagNames,
+      userId,
+      chatId,
+    } = createPostDto;
 
     const currentUser = await this.userService.findById(userId);
 
@@ -52,7 +60,7 @@ export class PostService {
       });
     }
 
-    const post = await this.postRepository.create({
+    const post = this.postRepository.create({
       title,
       description,
       group_size: groupSize,
