@@ -1,0 +1,51 @@
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
+import { postsFilters } from "@/constants/links";
+import { formUrlQuery, removeUrlQuery } from "../lib";
+
+const Filters = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const filter = searchParams.get("filter");
+
+  const handleChange = (value: string) => {
+    const newValue = value || undefined;
+    let newUrl: string;
+
+    if (newValue) {
+      newUrl = formUrlQuery({
+        params: searchParams.toString(),
+        key: "filter",
+        value: newValue,
+      });
+    } else {
+      newUrl = removeUrlQuery({
+        params: searchParams.toString(),
+        keysToRemove: ["filter"],
+      });
+    }
+    navigate(newUrl, { replace: true });
+  };
+
+  return (
+    <div>
+      <Select onValueChange={handleChange} value={filter || ""}>
+        <SelectTrigger aria-label="Filter options">
+          <SelectValue placeholder="Select a filter" />
+        </SelectTrigger>
+
+        <SelectContent className="bg-white">
+          <SelectGroup>
+            {postsFilters.map((filter) => (
+              <SelectItem key={filter.value} value={filter.value}>
+                {filter.name}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </div>
+  );
+};
+
+export default Filters;
