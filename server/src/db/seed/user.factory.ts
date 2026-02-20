@@ -1,5 +1,5 @@
 import { Faker } from '@faker-js/faker';
-import { GenderType } from '../../shared/enums/gender-type';
+import { GenderType } from '../../shared/enums/enums';
 import { User } from '../../modules/user/entities/user.entity';
 import { setSeederFactory } from 'typeorm-extension';
 import bcrypt from 'bcrypt';

@@ -1,6 +1,6 @@
 import { Comment } from 'src/modules/comment/entities/comment.entity';
 import { Post } from '../../post/entities/post.entity';
-import { GenderType } from '../../../shared/enums/gender-type';
+import { GenderType } from '../../../shared/enums/enums';
 import {
   Column,
   CreateDateColumn,
