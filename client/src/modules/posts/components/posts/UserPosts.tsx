@@ -45,13 +45,9 @@ const UserPosts = ({ posts }: { posts: PostType[] }) => {
 
   return (
     <div>
+      <PostDialog submitPost={submitPost} error={error} />
       {posts.length !== 0 ? (
-        <>
-          <PostDialog submitPost={submitPost} error={error} />
-          {posts.map((post: PostType) => (
-            <Post key={post.id} post={post} />
-          ))}
-        </>
+        posts.map((post: PostType) => <Post key={post.id} post={post} />)
       ) : (
         <h1 className="text-center text-sm">No posts yet!</h1>
       )}

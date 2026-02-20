@@ -53,7 +53,7 @@ export type PostType = {
   updated_at: Date;
   user: UserType;
   postTags: PostTagType[];
-  comments: CommentType;
+  comments: CommentType[];
 };
 
 export type MessagesType = {
