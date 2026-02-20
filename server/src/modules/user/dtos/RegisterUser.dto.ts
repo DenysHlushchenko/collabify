@@ -7,7 +7,7 @@ import {
   Validate,
 } from 'class-validator';
 import { IsStrongPassword } from '../auth/validators/auth-validators';
-import { GenderType } from 'src/shared/enums/gender-type';
+import { GenderType } from 'src/shared/enums/enums';
 
 export class RegisterUserDto {
   @IsNotEmpty()

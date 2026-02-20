@@ -4,9 +4,10 @@ import { PostController } from './post.controller';
 import { PostService } from './post.service';
 import { UserModule } from 'src/modules/user/user.module';
 import { Post } from './entities/post.entity';
+import { ChatModule } from '../chat/chat.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Post]), UserModule],
+  imports: [TypeOrmModule.forFeature([Post]), UserModule, ChatModule],
   controllers: [PostController],
   providers: [PostService],
 })
