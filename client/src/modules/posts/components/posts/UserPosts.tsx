@@ -1,8 +1,8 @@
 import type { PostFormType, PostType } from "@/modules/shared/types/types";
-import Post from "@/modules/posts/components/Post";
+import Post from "@/modules/posts/components/posts/Post";
 import PostDialog from "./PostDialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createPost } from "../api/post";
+import { createPost } from "../../api/post";
 import type { AxiosError } from "axios";
 import { useState } from "react";
 import { useAuthStore } from "@/modules/auth/store/userStore";
@@ -18,6 +18,7 @@ const UserPosts = ({ posts }: { posts: PostType[] }) => {
 
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["posts"] });
+      await queryClient.invalidateQueries({ queryKey: ["chats"] });
     },
 
     onError: (error) => {
@@ -37,6 +38,8 @@ const UserPosts = ({ posts }: { posts: PostType[] }) => {
       groupSize: Number(values.groupSize),
       tags: values.tags,
       userId: user.id,
+      chatId: values.chatId,
+      chatTitle: values.chatTitle,
     });
   };
 

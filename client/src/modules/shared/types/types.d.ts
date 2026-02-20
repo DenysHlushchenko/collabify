@@ -22,7 +22,7 @@ export type LoginType = {
   password: string;
 };
 
-type TagType = {
+export type TagType = {
   id: number;
   name: string;
   created_at: Date;
@@ -56,12 +56,42 @@ export type PostType = {
   comments: CommentType;
 };
 
+export type MessagesType = {
+  id: number;
+  message: string;
+  created_at: Date;
+  updated_at: Date;
+  chat: ChatType;
+  sender: UserType;
+  // later we will add MessageReactionType[]
+};
+
+export type ChatMemberType = {
+  id: number;
+  joined_at: Date;
+  chat: ChatType;
+  user: UserType;
+};
+
+export type ChatType = {
+  id: number;
+  title: string;
+  max_members: number;
+  isOwner: boolean;
+  created_at: Date;
+  post: PostType;
+  members: ChatMemberType[];
+  messages: MessagesType[];
+};
+
 export type PostFormType = {
   title: string;
   description: string;
   groupSize: number | string;
   tags: string[];
+  chatTitle?: string;
   userId: number;
+  chatId?: string;
 };
 
 export type AuthResponse = {

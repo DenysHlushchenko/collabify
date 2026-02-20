@@ -21,8 +21,6 @@ export const PostSchema = z.object({
   description: z.string().max(500, "Description is too long!").nonempty("Description is required"),
   groupSize: z.string(),
   tags: z.string(),
-  chatTitle: z
-    .string()
-    .max(50, "Chat group title cannot be longer than 50 characters")
-    .nonempty("Chat group title is required"),
+  chatTitle: z.string().max(50, "Chat group title cannot be longer than 50 characters").optional(),
+  chatId: z.string().optional(),
 });

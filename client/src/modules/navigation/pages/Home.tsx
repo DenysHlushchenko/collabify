@@ -1,4 +1,4 @@
-import UserPosts from "@/modules/posts/components/UserPosts";
+import UserPosts from "@/modules/posts/components/posts/UserPosts";
 import Error from "@/modules/shared/components/Error";
 import { Skeleton } from "@/modules/shared/components/ui/Skeleton";
 import { useAuthStore } from "@/modules/auth/store/userStore";
