@@ -5,6 +5,10 @@ export class CreateChatDto {
   @MaxLength(50)
   title?: string;
 
+  @IsNotEmpty()
+  @IsNumber()
+  postId: number;
+
   @IsNumber()
   chatId?: number;
 
