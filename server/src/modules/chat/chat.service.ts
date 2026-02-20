@@ -4,6 +4,7 @@ import { Chat } from './entities/chat.entity';
 import { Repository } from 'typeorm';
 import { CreateChatDto } from './dtos/CreateChat.dto';
 import { ChatMember } from './entities/chat_members.entity';
+import { ChatWithOwner } from 'src/shared/types';
 
 @Injectable()
 export class ChatService {
@@ -51,7 +52,7 @@ export class ChatService {
     }
   }
 
-  async getAllChatsByUserId(userId: number): Promise<Chat[]> {
+  async getAllChatsByUserId(userId: number): Promise<ChatWithOwner[]> {
     const chats = await this.chatRepository.find({
       where: {
         members: {
@@ -75,7 +76,6 @@ export class ChatService {
             username: true,
             gender: true,
             reputation: true,
-            email: true,
           },
         },
         members: {
