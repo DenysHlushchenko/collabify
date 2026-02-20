@@ -5,6 +5,6 @@ import { ChatMember } from './entities/chat_members.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Chat, ChatMember])],
-  exports: [TypeOrmModule],
+  providers: [TypeOrmModule],
 })
 export class ChatModule {}

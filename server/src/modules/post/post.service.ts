@@ -5,37 +5,55 @@ import { Post } from './entities/post.entity';
 import { CreatePostDto } from './dtos/CreatePost.dto';
 import { UserService } from 'src/modules/user/user.service';
 import { UserDoesNotExistException } from 'src/shared/exceptions/UserDoesNotExist.exception';
+import { TagService } from '../tag/tag.service';
+import { PostTag } from '../tag/entities/post_tag.entity';
 
 @Injectable()
 export class PostService {
   constructor(
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
     private readonly userService: UserService,
+    private readonly tagService: TagService,
   ) {}
 
   /**
    * Creates new user's post. If a user by given ID does not exist, an error is thrown, indicating that user was not found.
-   * @param createPostDto (title, description, groupSize, userId).
+   * @param createPostDto (title, description, groupSize, tags, userId).
    * @throws UserDoesNotExistException
    */
   async create(createPostDto: CreatePostDto): Promise<void> {
-    const { title, description, groupSize, userId } = createPostDto;
+    const {
+      title,
+      description,
+      groupSize,
+      tags: tagNames,
+      userId,
+    } = createPostDto;
 
     const currentUser = await this.userService.findById(userId);
     if (!currentUser) {
       throw new UserDoesNotExistException();
     }
 
-    await this.postRepository.save(
-      this.postRepository.create({
-        title,
-        description,
-        group_size: groupSize,
-        created_at: new Date(),
-        updated_at: new Date(),
-        user: { id: userId },
-      }),
-    );
+    const post = this.postRepository.create({
+      title,
+      description,
+      group_size: groupSize,
+      user: currentUser,
+      created_at: new Date(),
+      updated_at: new Date(),
+    });
+
+    const savedPost = await this.postRepository.save(post);
+
+    if (tagNames) {
+      const tags = await this.tagService.findOrCreateMany(tagNames);
+      const postTagRepo = this.postRepository.manager.getRepository(PostTag);
+      const postTags = tags.map((tag) =>
+        postTagRepo.create({ postId: savedPost.id, tagId: tag.id }),
+      );
+      await postTagRepo.save(postTags);
+    }
   }
 
   /**
@@ -44,7 +62,13 @@ export class PostService {
    */
   async getAll(): Promise<Post[]> {
     return this.postRepository.find({
-      relations: ['user', 'postTags', 'comments'],
+      relations: {
+        user: true,
+        postTags: {
+          tag: true,
+        },
+        comments: true,
+      },
       select: {
         user: {
           id: true,

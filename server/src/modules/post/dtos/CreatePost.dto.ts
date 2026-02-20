@@ -1,4 +1,14 @@
-import { IsNotEmpty, IsNumber, Max, MaxLength, Min } from 'class-validator';
+import {
+  ArrayMaxSize,
+  ArrayMinSize,
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  Max,
+  MaxLength,
+  Min,
+} from 'class-validator';
 
 export class CreatePostDto {
   @IsNotEmpty()
@@ -13,6 +23,13 @@ export class CreatePostDto {
   @Min(2)
   @Max(10)
   groupSize: number;
+
+  @IsArray()
+  @ArrayMinSize(1)
+  @ArrayMaxSize(3)
+  @IsString({ each: true })
+  @IsNotEmpty({ each: true })
+  tags: string[];
 
   @IsNotEmpty()
   @IsNumber()
