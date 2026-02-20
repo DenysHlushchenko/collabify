@@ -20,6 +20,7 @@ import { PostSchema } from "@/modules/shared/lib/validators";
 import type { FormSchemaType } from "../types/types";
 import { useState } from "react";
 import type { PostFormType } from "@/modules/shared/types/types";
+import PostTag from "./PostTag";
 
 type PropType = "title" | "description" | "groupSize" | "tags" | "chatTitle";
 
@@ -62,7 +63,7 @@ const PostDialog = ({ submitPost, error }: PostDialogProps) => {
     defaultValues: {
       title: "",
       description: "",
-      groupSize: 2,
+      groupSize: "2",
       tags: "",
       chatTitle: "",
     },
@@ -83,6 +84,12 @@ const PostDialog = ({ submitPost, error }: PostDialogProps) => {
     setTags(tags.filter((tag) => tag !== label));
   };
 
+  const resetForm = () => {
+    form.reset();
+    form.clearErrors();
+    setTags([]);
+  };
+
   const onSubmit = (values: FormSchemaType) => {
     const result = {
       ...values,
@@ -94,24 +101,11 @@ const PostDialog = ({ submitPost, error }: PostDialogProps) => {
     form.reset();
   };
 
-  const Tag = ({ label }: { label: string }) => {
-    return (
-      <div className="w-20">
-        <p className="small-medium flex-center gap-x-2.5 rounded-xl bg-[#B1D7CE] py-1 text-gray-600">
-          {label}
-          <button onClick={() => removeTag(label)} className="small-semibold mb-[0.5px] cursor-pointer text-[#618a81]">
-            x
-          </button>
-        </p>
-      </div>
-    );
-  };
-
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <Form {...form}>
         <DialogTrigger asChild>
-          <Button className="small-medium mx-auto mb-4 flex h-8 w-30 cursor-pointer rounded-xl bg-[#e8edf3] px-4 py-3 text-center text-black hover:bg-[#dee2e8]">
+          <Button className="small-medium mx-auto mb-4 flex h-8 w-30 cursor-pointer rounded-md bg-[#e8edf3] px-4 py-3 text-center text-black hover:bg-[#f2f6fa]">
             Create
           </Button>
         </DialogTrigger>
@@ -134,7 +128,9 @@ const PostDialog = ({ submitPost, error }: PostDialogProps) => {
               <DialogField form={form} name="description" formLabel="Description">
                 {(field) => (
                   <Field>
-                    <FieldDescription className="small-medium text-gray-400">Describe your post</FieldDescription>
+                    <FieldDescription className="small-medium text-gray-400">
+                      Describe your post: your ideas, difficulties, etc.
+                    </FieldDescription>
                     <Textarea id="textarea-message" placeholder="Add your post description..." {...field} />
                   </Field>
                 )}
@@ -148,11 +144,14 @@ const PostDialog = ({ submitPost, error }: PostDialogProps) => {
                 {(field) => (
                   <Input
                     {...field}
+                    disabled={tags.length >= MAX_TAGS}
                     type="text"
                     placeholder="Add tags..."
                     onKeyDown={(e) => {
-                      if (tags.length < MAX_TAGS) addTag(e, field);
-                      field.value = "";
+                      if (tags.length < MAX_TAGS) {
+                        addTag(e, field);
+                        field.value = "";
+                      }
                     }}
                   />
                 )}
@@ -160,7 +159,7 @@ const PostDialog = ({ submitPost, error }: PostDialogProps) => {
 
               <div className="flex flex-row gap-1">
                 {tags.map((tag) => (
-                  <Tag key={tag} label={tag} />
+                  <PostTag key={tag} isDeletable={true} label={tag} removeTag={removeTag} />
                 ))}
               </div>
 
@@ -177,23 +176,15 @@ const PostDialog = ({ submitPost, error }: PostDialogProps) => {
                 Create
               </Button>
               <DialogClose asChild>
-                <Button
-                  onClick={() => {
-                    form.reset();
-                    form.clearErrors();
-                    setTags([]);
-                  }}
-                  variant="outline"
-                  className="cursor-pointer hover:bg-gray-100 sm:flex-1"
-                >
+                <Button onClick={resetForm} variant="outline" className="cursor-pointer hover:bg-gray-100 sm:flex-1">
                   Cancel
                 </Button>
               </DialogClose>
             </DialogFooter>
           </form>
         </DialogContent>
-        {error && <Error message={error} />}
       </Form>
+      {error && <Error message={error} />}
     </Dialog>
   );
 };

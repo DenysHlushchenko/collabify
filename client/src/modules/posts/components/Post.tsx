@@ -1,8 +1,8 @@
-import { postFooterItems } from "@/constants/links";
+import { postFooterItems } from "@/modules/shared/components/constants/links";
 import { Avatar, AvatarFallback } from "@/modules/shared/components/ui/Avatar";
 import { Button } from "@/modules/shared/components/ui/Button";
 import { Separator } from "@/modules/shared/components/ui/Separator";
-import type { PostType } from "@/modules/shared/types/types";
+import type { PostTagType, PostType } from "@/modules/shared/types/types";
 import { convertNameToInitial, convertToDateString } from "@/modules/shared/utils/utils";
 import {
   Card,
@@ -12,6 +12,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/modules/shared/components/ui/Card";
+import PostTag from "./PostTag";
 
 const MAX_DESCRIPTION_LENGTH = 90;
 
@@ -36,7 +37,7 @@ const Post = ({ post }: { post: PostType }) => {
 
   return (
     <>
-      <Card className="border-gray">
+      <Card className="border-gray relative">
         <CardHeader className="">
           <CardTitle className="small-semibold post-author-color">
             <div className="flex-start gap-x-2">
@@ -48,18 +49,23 @@ const Post = ({ post }: { post: PostType }) => {
             </div>
           </CardTitle>
 
-          <CardDescription className="base-medium">{post.title}</CardDescription>
-          <CardDescription className="base-small">{adjustedDesc}</CardDescription>
+          <CardDescription className="body-medium">{post.title}</CardDescription>
+          <CardDescription className="small-regular">{adjustedDesc}</CardDescription>
           <CardAction>
-            <Button className="body-semibold h-7 w-16 cursor-pointer rounded-lg bg-[#99dfc4] text-[#2d634e]">
+            <Button className="body-semibold h-6 w-16 cursor-pointer rounded-lg bg-[#99dfc4] text-[#2d634e] hover:bg-[#acf0d6]">
               Join
             </Button>
           </CardAction>
         </CardHeader>
-        <CardFooter className="flex-start relative gap-x-5">
+        <CardFooter className="flex-start gap-x-5">
           {postFooterItems.map((item) => (
             <PostFooter key={item.imgUrl} count={10} alt={item.alt} imgSrc={item.imgUrl} />
           ))}
+          <div className="absolute right-6 bottom-2 flex gap-x-2">
+            {post.postTags.map((postTag: PostTagType) => (
+              <PostTag key={postTag.id} isDeletable={false} label={postTag.name} removeTag={() => {}} />
+            ))}
+          </div>
         </CardFooter>
       </Card>
       <Separator className="border-gray my-5" />

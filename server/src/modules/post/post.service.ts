@@ -31,14 +31,6 @@ export class PostService {
       throw new UserDoesNotExistException();
     }
 
-    if (chatId && chatTitle) {
-      throw new Error('Choose already existing chat or create a new one.');
-    }
-
-    if (!chatId && !chatTitle) {
-      throw new Error('Choose either an old chat or create a new one.');
-    }
-
     let chat: Chat | null = null;
     if (chatId) {
       chat = await this.chatService.findById(chatId);

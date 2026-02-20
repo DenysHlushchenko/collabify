@@ -2,6 +2,7 @@ import {
   IsArray,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   Max,
   MaxLength,
   Min,
@@ -13,7 +14,8 @@ export class CreatePostDto {
   @MaxLength(50)
   title: string;
 
-  @MaxLength(30)
+  @MaxLength(50)
+  @IsOptional()
   chatTitle?: string;
 
   @IsNotEmpty()

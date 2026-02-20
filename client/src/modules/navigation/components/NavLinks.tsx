@@ -1,4 +1,4 @@
-import { sidebarLinks } from "@/constants/links";
+import { sidebarLinks } from "@/modules/shared/components/constants/links";
 import { SheetClose } from "@/modules/shared/components/ui/Sheet";
 import { cn } from "@/modules/shared/lib/utils";
 import React from "react";

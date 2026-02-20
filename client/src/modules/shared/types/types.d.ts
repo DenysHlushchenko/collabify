@@ -22,6 +22,21 @@ export type LoginType = {
   password: string;
 };
 
+export type PostTagType = {
+  id: number;
+  name: string;
+  created_at: Date;
+};
+
+export type CommentType = {
+  id: number;
+  message: string;
+  created_at: Date;
+  updated_at: Date;
+  post: PostType;
+  sender: UserType;
+};
+
 export type PostType = {
   id: number;
   title: string;
@@ -30,12 +45,14 @@ export type PostType = {
   created_at: Date;
   updated_at: Date;
   user: UserType;
+  postTags: PostTagType[];
+  comments: CommentType;
 };
 
 export type PostFormType = {
   title: string;
   description: string;
-  groupSize: number;
+  groupSize: number | string;
   tags: string[];
   userId: number;
 };

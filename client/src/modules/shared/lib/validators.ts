@@ -19,10 +19,10 @@ export const LoginSchema = z.object({
 export const PostSchema = z.object({
   title: z.string().max(50, "Title must be at most 50 characters long").nonempty("Title is required"),
   description: z.string().max(500, "Description is too long!").nonempty("Description is required"),
-  groupSize: z.number(),
+  groupSize: z.string(),
   tags: z.string(),
   chatTitle: z
     .string()
-    .max(20, "Chat group title cannot be longer than 20 characters")
+    .max(50, "Chat group title cannot be longer than 50 characters")
     .nonempty("Chat group title is required"),
 });

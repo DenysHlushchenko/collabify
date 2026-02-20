@@ -32,9 +32,9 @@ const UserPosts = ({ posts }: { posts: PostType[] }) => {
     if (!user) return;
 
     mutation.mutate({
-      title: values.title,
-      description: values.description,
-      groupSize: values.groupSize,
+      title: values.title.trim(),
+      description: values.description.trim(),
+      groupSize: Number(values.groupSize),
       tags: values.tags,
       userId: user.id,
     });
@@ -42,9 +42,13 @@ const UserPosts = ({ posts }: { posts: PostType[] }) => {
 
   return (
     <div>
-      <PostDialog submitPost={submitPost} error={error} />
       {posts.length !== 0 ? (
-        posts.map((post: PostType) => <Post key={post.id} post={post} />)
+        <>
+          <PostDialog submitPost={submitPost} error={error} />
+          {posts.map((post: PostType) => (
+            <Post key={post.id} post={post} />
+          ))}
+        </>
       ) : (
         <h1 className="text-center text-sm">No posts yet!</h1>
       )}
