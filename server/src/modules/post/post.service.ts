@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Post } from './entities/post.entity';
@@ -42,11 +42,15 @@ export class PostService {
     }
 
     if (chatId && chatTitle) {
-      throw new Error('Choose already existing chat or create a new one.');
+      throw new BadRequestException(
+        'Choose already existing chat or create a new one.',
+      );
     }
 
     if (!chatId && !chatTitle) {
-      throw new Error('Choose either an old chat or create a new one.');
+      throw new BadRequestException(
+        'Choose either an old chat or create a new one.',
+      );
     }
 
     const post = this.postRepository.create({
@@ -80,6 +84,9 @@ export class PostService {
         max_members: groupSize,
       });
     }
+
+    // make post creator a member of the chat
+    await this.chatService.makeUserMemberOfChat(userId, chat.id);
   }
 
   /**
