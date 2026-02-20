@@ -72,7 +72,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   handleDisconnect(client: AuthenticatedSocket) {
-    this.sessions.delete(client.data.user.id);
+    const userId = client.data?.user?.id;
+    if (userId !== undefined) {
+      this.sessions.delete(userId);
+    }
     console.log(`Client ${client.id} disconnected...`);
   }
 
