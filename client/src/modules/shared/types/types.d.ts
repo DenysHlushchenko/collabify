@@ -22,10 +22,17 @@ export type LoginType = {
   password: string;
 };
 
-export type PostTagType = {
+type TagType = {
   id: number;
   name: string;
   created_at: Date;
+};
+
+export type PostTagType = {
+  postId: number;
+  tagId: number;
+  created_at: Date;
+  tag: TagType;
 };
 
 export type CommentType = {
