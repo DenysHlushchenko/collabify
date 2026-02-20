@@ -10,3 +10,8 @@ export enum NotificationType {
   LIKE = 'like',
   COMMENT = 'comment',
 }
+
+export enum JoinResponse {
+  APPROVE = 'approve',
+  REJECT = 'reject',
+}

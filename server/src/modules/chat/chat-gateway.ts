@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
 import {
   ConnectedSocket,
   MessageBody,
@@ -13,11 +14,18 @@ import { Notification } from '../notification/entities/notification.entity';
 import { NotificationService } from '../notification/notification.service';
 import { User } from '../user/entities/user.entity';
 import jwt from 'jsonwebtoken';
+// import { JoinResponse } from 'src/shared/enums/enums';
 
 type JoinRequestType = {
   requestUserId: number;
   postCreatorId: number;
 };
+
+// type JoinResponseType = {
+//   response: string;
+//   requestUserId: number;
+//   postCreatorId: number;
+// };
 
 interface AuthenticatedSocket extends Socket {
   data: {
@@ -68,14 +76,24 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     console.log(`Client ${client.id} disconnected...`);
   }
 
+  async findUserById(id: number) {
+    return await this.userService.findById(id);
+  }
+
+  /**
+   * Handles sender join request to post creator.
+   * @param joinRequest
+   * @param client
+   * @returns a request to the post creator.
+   */
   @SubscribeMessage('joinRequest')
   async handleJoinRequest(
     @MessageBody() joinRequest: JoinRequestType,
     @ConnectedSocket() client: Socket,
   ) {
     const { requestUserId, postCreatorId } = joinRequest;
-    const requestUser = await this.userService.findById(requestUserId);
-    const postCreator = await this.userService.findById(postCreatorId);
+    const requestUser = await this.findUserById(requestUserId);
+    const postCreator = await this.findUserById(postCreatorId);
 
     if (!postCreator || !requestUser) {
       return client.emit('error', 'Invalid user IDs provided.');
@@ -93,7 +111,47 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     if (postCreatorSocket) {
       this.server
         .to(`user_${postCreatorId}`)
-        .emit('notification', notification);
+        .emit('notification_join_request', { notification, requestUserId });
     }
   }
+
+  /**
+   * Handles incoming join request from user that wants to join the chat group.
+   * @param joinResponse
+   * @param client
+   * @returns approval or rejecton. If join response is invalid, the process will end.
+   */
+  //   @SubscribeMessage('joinResponse')
+  //   async handleJoinResponse(
+  //     @MessageBody() joinResponse: JoinResponseType,
+  //     @ConnectedSocket() client: Socket,
+  //   ) {
+  //     const { requestUserId, postCreatorId, response } = joinResponse;
+  //     const requestUser = await this.findUserById(requestUserId);
+  //     const postCreator = await this.findUserById(postCreatorId);
+
+  //     if (!requestUser || !postCreator)
+  //       return client.emit('error', 'Invalid user IDs provided.');
+
+  //     const notification = new Notification();
+  //     notification.type = 'response';
+  //     notification.created_at = new Date();
+
+  //     if (response === JoinResponse.APPROVE) {
+  //       // handle approve
+  //       notification.content = `${postCreator.username} accepted your request!`;
+  //       // create chat
+  //       // connect two users
+  //     } else if (response === JoinResponse.REJECT) {
+  //       // handle reject
+  //       // disconnect users from server
+  //       notification.content = `${postCreator.username} declined your request.`;
+  //     } else {
+  //       return client.emit('error', 'Invalid response.');
+  //     }
+
+  //     this.server
+  //       .to(`user_${requestUserId}`)
+  //       .emit('notification_join_response', { notification });
+  //   }
 }
