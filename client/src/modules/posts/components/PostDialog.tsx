@@ -30,6 +30,8 @@ interface PostFormFieldProps {
   children: (field: ControllerRenderProps<FormSchemaType, PropType>) => React.ReactNode;
 }
 
+const MAX_TAGS = 3;
+
 const DialogField = (props: PostFormFieldProps) => {
   return (
     <FormField
@@ -43,14 +45,6 @@ const DialogField = (props: PostFormFieldProps) => {
         </FormItem>
       )}
     />
-  );
-};
-
-const Tag = ({ label }: { label: string }) => {
-  return (
-    <div className="w-20">
-      <p className="small-medium flex-center rounded-xl bg-green-200 py-1 text-gray-600">{label}</p>
-    </div>
   );
 };
 
@@ -78,11 +72,15 @@ const PostDialog = ({ submitPost, error }: PostDialogProps) => {
     if (e.key === "Enter") {
       const input = e.currentTarget as HTMLInputElement;
       const value = input.value.trim();
-      setTags((prev) => [...prev, value]);
       if (!value) return;
+      setTags((prev) => [...prev, value]);
       e.preventDefault();
       field.value = "";
     }
+  };
+
+  const removeTag = (label: string) => {
+    setTags(tags.filter((tag) => tag !== label));
   };
 
   const onSubmit = (values: FormSchemaType) => {
@@ -96,17 +94,30 @@ const PostDialog = ({ submitPost, error }: PostDialogProps) => {
     form.reset();
   };
 
+  const Tag = ({ label }: { label: string }) => {
+    return (
+      <div className="w-20">
+        <p className="small-medium flex-center gap-x-2.5 rounded-xl bg-[#B1D7CE] py-1 text-gray-600">
+          {label}
+          <button onClick={() => removeTag(label)} className="small-semibold mb-[0.5px] cursor-pointer text-[#618a81]">
+            x
+          </button>
+        </p>
+      </div>
+    );
+  };
+
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <Form {...form}>
         <DialogTrigger asChild>
-          <Button className="small-medium background-blue mx-auto mb-4 flex h-8 w-30 cursor-pointer rounded-xl px-4 py-3 text-center text-white hover:bg-[#226abb]">
+          <Button className="small-medium mx-auto mb-4 flex h-8 w-30 cursor-pointer rounded-xl bg-[#e8edf3] px-4 py-3 text-center text-black hover:bg-[#dee2e8]">
             Create
           </Button>
         </DialogTrigger>
 
-        <DialogContent className="border-none bg-white sm:max-w-sm">
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+        <DialogContent className="border-none bg-white">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
             <DialogHeader>
               <DialogTitle>Add New Post</DialogTitle>
             </DialogHeader>
@@ -124,12 +135,7 @@ const PostDialog = ({ submitPost, error }: PostDialogProps) => {
                 {(field) => (
                   <Field>
                     <FieldDescription className="small-medium text-gray-400">Describe your post</FieldDescription>
-                    <Textarea
-                      id="textarea-message"
-                      placeholder="Add your post description..."
-                      {...field}
-                      className="max-h-37.5"
-                    />
+                    <Textarea id="textarea-message" placeholder="Add your post description..." {...field} />
                   </Field>
                 )}
               </DialogField>
@@ -140,11 +146,19 @@ const PostDialog = ({ submitPost, error }: PostDialogProps) => {
 
               <DialogField form={form} name="tags" formLabel="Tags">
                 {(field) => (
-                  <Input {...field} type="text" placeholder="Add tags..." onKeyDown={(e) => addTag(e, field)} />
+                  <Input
+                    {...field}
+                    type="text"
+                    placeholder="Add tags..."
+                    onKeyDown={(e) => {
+                      if (tags.length < MAX_TAGS) addTag(e, field);
+                      field.value = "";
+                    }}
+                  />
                 )}
               </DialogField>
 
-              <div className="flex w-80 flex-wrap gap-2">
+              <div className="flex flex-row gap-1">
                 {tags.map((tag) => (
                   <Tag key={tag} label={tag} />
                 ))}
@@ -158,7 +172,7 @@ const PostDialog = ({ submitPost, error }: PostDialogProps) => {
             <DialogFooter className="mt-8 flex flex-col gap-2.5 sm:flex-row sm:gap-3">
               <Button
                 type="submit"
-                className="background-blue w-full cursor-pointer border text-white hover:bg-[#226abb] sm:flex-1"
+                className="background-blue cursor-pointer border text-white hover:bg-[#226abb] sm:flex-1"
               >
                 Create
               </Button>
@@ -170,7 +184,7 @@ const PostDialog = ({ submitPost, error }: PostDialogProps) => {
                     setTags([]);
                   }}
                   variant="outline"
-                  className="h w-full cursor-pointer hover:bg-gray-100 sm:flex-1"
+                  className="cursor-pointer hover:bg-gray-100 sm:flex-1"
                 >
                   Cancel
                 </Button>

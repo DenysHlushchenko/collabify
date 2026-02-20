@@ -6,8 +6,9 @@ import { useNavigate } from "react-router-dom";
 
 const LeftsideBar = () => {
   const navigate = useNavigate();
+  const logout = useAuthStore((state) => state.logout);
   const handleLogout = () => {
-    useAuthStore.getState().logout();
+    logout();
     navigate("/login");
   };
   return (
@@ -17,15 +18,13 @@ const LeftsideBar = () => {
       </div>
 
       <div>
-        <div>
-          <Button
-            className="small-medium background-blue min-h-10.25 w-full cursor-pointer rounded-lg px-4 py-3 text-white shadow-none"
-            onClick={handleLogout}
-          >
-            <LogOut size={20} />
-            <span className="max-lg:hidden">Logout</span>
-          </Button>
-        </div>
+        <Button
+          className="small-medium background-blue min-h-10.25 w-full cursor-pointer rounded-lg px-4 py-3 text-white shadow-none"
+          onClick={handleLogout}
+        >
+          <LogOut size={20} />
+          <span className="max-lg:hidden">Logout</span>
+        </Button>
       </div>
     </section>
   );
