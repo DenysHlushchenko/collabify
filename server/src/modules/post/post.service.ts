@@ -81,26 +81,30 @@ export class PostService {
    * Retrieves all posts from the database.
    * @returns An array of Post entities representing all posts in the database.
    */
-  async getAll(): Promise<Post[]> {
-    return this.postRepository.find({
-      relations: {
-        user: true,
-        postTags: {
-          tag: true,
-        },
-        comments: true,
-      },
-      select: {
-        user: {
-          id: true,
-          username: true,
-          gender: true,
-          reputation: true,
-          email: true,
-          created_at: true,
-          updated_at: true,
-        },
-      },
-    });
+  async getAll(
+    options: {
+      search?: string;
+      sort?: 'ASC' | 'DESC';
+    } = {},
+  ): Promise<Post[]> {
+    const { search, sort = 'DESC' } = options;
+
+    const db = this.postRepository.createQueryBuilder('post');
+
+    db.leftJoinAndSelect('post.user', 'user');
+    db.leftJoinAndSelect('post.postTags', 'postTags');
+    db.leftJoinAndSelect('postTags.tag', 'tag');
+    db.leftJoinAndSelect('post.comments', 'comments');
+
+    if (search) {
+      const searchTerm = `%${search}%`;
+      db.where(`(post.title ILIKE :search OR tag.name ILIKE :search)`, {
+        search: searchTerm,
+      });
+    }
+
+    db.orderBy('post.created_at', sort);
+
+    return await db.getMany();
   }
 }
