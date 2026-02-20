@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Post } from './entities/post.entity';
@@ -39,18 +39,6 @@ export class PostService {
 
     if (!currentUser) {
       throw new UserDoesNotExistException();
-    }
-
-    if (chatId && chatTitle) {
-      throw new BadRequestException(
-        'Choose already existing chat or create a new one.',
-      );
-    }
-
-    if (!chatId && !chatTitle) {
-      throw new BadRequestException(
-        'Choose either an old chat or create a new one.',
-      );
     }
 
     const post = this.postRepository.create({
