@@ -50,4 +50,50 @@ export class ChatService {
       await this.chatMemberRepository.save(member);
     }
   }
+
+  async getAllChatsByUserId(userId: number): Promise<Chat[]> {
+    const chats = await this.chatRepository.find({
+      where: {
+        members: {
+          user: { id: userId },
+        },
+      },
+      relations: {
+        post: {
+          user: true,
+        },
+        members: {
+          user: true,
+        },
+      },
+      select: {
+        post: {
+          id: true,
+          title: true,
+          user: {
+            id: true,
+            username: true,
+            gender: true,
+            reputation: true,
+            email: true,
+          },
+        },
+        members: {
+          id: true,
+          joined_at: true,
+          user: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+      order: {
+        created_at: 'DESC',
+      },
+    });
+    return chats.map((chat) => ({
+      ...chat,
+      isOwner: chat.post.user.id === userId,
+    }));
+  }
 }
