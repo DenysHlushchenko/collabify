@@ -16,9 +16,8 @@ export class Chat {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  title: string;
-
+  `@Column`({ nullable: true, length: 20 })
+  title?: string;
   @Column()
   max_members: number;
 
