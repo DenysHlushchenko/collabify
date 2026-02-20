@@ -98,7 +98,7 @@ const PostDialog = ({ submitPost, error }: PostDialogProps) => {
 
     submitPost(result);
     setDialogOpen(false);
-    form.reset();
+    resetForm();
   };
 
   return (

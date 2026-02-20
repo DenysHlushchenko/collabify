@@ -63,7 +63,7 @@ const Post = ({ post }: { post: PostType }) => {
           ))}
           <div className="absolute right-6 bottom-2 flex gap-x-2">
             {post.postTags.map((postTag: PostTagType) => (
-              <PostTag key={postTag.id} isDeletable={false} label={postTag.name} removeTag={() => {}} />
+              <PostTag key={postTag.tagId} isDeletable={false} label={postTag.tag.name} removeTag={() => {}} />
             ))}
           </div>
         </CardFooter>
