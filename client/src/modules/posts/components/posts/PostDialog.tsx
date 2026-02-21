@@ -90,7 +90,7 @@ const PostDialog = ({ submitPost, error }: PostDialogProps) => {
               <TagInput control={form.control} addTag={addTag} removeTag={removeTag} maxTags={MAX_TAGS} />
 
               <DialogField control={form.control} name="chatTitle" formLabel="Create a new chat">
-                {(field) => <Input {...field} type="text" />}
+                {(field) => <Input {...field} type="text" placeholder="Add your chat title..." />}
               </DialogField>
 
               {chats && chats.length > 0 && (
