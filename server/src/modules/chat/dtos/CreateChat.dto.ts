@@ -1,7 +1,8 @@
-import { IsNotEmpty, IsNumber, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, MaxLength } from 'class-validator';
 
 export class CreateChatDto {
-  @MaxLength(20)
+  @IsOptional()
+  @MaxLength(50)
   title?: string;
 
   @IsNotEmpty()

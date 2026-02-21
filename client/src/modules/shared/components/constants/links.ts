@@ -1,6 +1,5 @@
 import homeIcon from "@/assets/home.svg";
 import messagesIcon from "@/assets/messages.svg";
-import tagIcon from "@/assets/tag.svg";
 import postsIcon from "@/assets/posts.svg";
 import likeIcon from "@/assets/like.svg";
 import dislikeIcon from "@/assets/dislike.svg";
@@ -17,11 +16,7 @@ export const sidebarLinks = [
     link: "/messages",
     name: "Messages",
   },
-  {
-    imgUrl: tagIcon,
-    link: "/tags",
-    name: "Tags",
-  },
+
   {
     imgUrl: postsIcon,
     link: "/posts",
@@ -44,4 +39,9 @@ export const postFooterItems = [
     imgUrl: commentIcon,
     alt: "Comments",
   },
+];
+
+export const postsFilters = [
+  { name: "Newest", value: "DESC" },
+  { name: "Oldest", value: "ASC" },
 ];

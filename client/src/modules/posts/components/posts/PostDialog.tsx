@@ -1,0 +1,122 @@
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/modules/shared/components/ui/Dialog";
+import { getAllChatsByUserId } from "@/modules/chats/api/chat";
+import { usePostForm } from "../../hooks/usePostForm";
+import { useQuery } from "@tanstack/react-query";
+import { useAuthStore } from "@/modules/auth/store/userStore";
+import { useState } from "react";
+import { Form } from "@/modules/shared/components/ui/Form";
+import DialogField from "../DialogField";
+import { Input } from "@/modules/shared/components/ui/Input";
+import { Textarea } from "@/modules/shared/components/ui/Textarea";
+import TagInput from "../tags/TagInput";
+import PostChatSelectField from "./PostChatSelectField";
+import Error from "@/modules/shared/components/Error";
+import { Button } from "@/modules/shared/components/ui/Button";
+import type { PostFormOutput } from "@/modules/shared/lib/validators";
+
+interface PostDialogProps {
+  submitPost: (values: PostFormOutput & { tags: string[] }) => void;
+  error: string | null;
+}
+
+const PostDialog = ({ submitPost, error }: PostDialogProps) => {
+  const user = useAuthStore().getUser();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const { form, addTag, removeTag, reset, MAX_TAGS } = usePostForm();
+
+  const {
+    data: chats,
+    isPending,
+    isError,
+  } = useQuery({
+    queryKey: ["chats"],
+    queryFn: () => (user ? getAllChatsByUserId(user.id) : null),
+    staleTime: 1000 * 10,
+    retry: 2,
+  });
+
+  const onSubmit = (values: PostFormOutput) => {
+    submitPost(values);
+    setDialogOpen(false);
+    reset();
+  };
+
+  return (
+    <Dialog
+      open={dialogOpen}
+      onOpenChange={(open) => {
+        setDialogOpen(open);
+        if (!open) reset();
+      }}
+    >
+      <Form {...form}>
+        <DialogTrigger asChild>
+          <Button className="small-medium flex w-30 cursor-pointer rounded-md bg-[#e8edf3] px-4 py-3 text-center text-black hover:bg-[#f2f6fa]">
+            Create
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="border-none bg-white [&>button:last-child]:hidden">
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <DialogHeader>
+              <DialogTitle>Add New Post</DialogTitle>
+            </DialogHeader>
+
+            <DialogDescription className="body-light my-3">
+              Fill out the form below to create a new post.
+            </DialogDescription>
+
+            <div className="flex flex-col gap-y-5">
+              <DialogField control={form.control} name="title" formLabel="Title">
+                {(field) => <Input {...field} placeholder="Enter your title..." type="text" />}
+              </DialogField>
+
+              <DialogField control={form.control} name="description" formLabel="Description">
+                {(field) => <Textarea id="textarea-message" placeholder="Add your post description..." {...field} />}
+              </DialogField>
+
+              <DialogField control={form.control} name="groupSize" formLabel="Group Size">
+                {(field) => <Input placeholder="Enter group size" {...field} type="number" min={2} max={10} />}
+              </DialogField>
+
+              <TagInput control={form.control} addTag={addTag} removeTag={removeTag} maxTags={MAX_TAGS} />
+
+              <DialogField control={form.control} name="chatTitle" formLabel="Create a new chat">
+                {(field) => <Input {...field} type="text" placeholder="Add your chat title..." />}
+              </DialogField>
+
+              {chats && chats.length > 0 && (
+                <PostChatSelectField control={form.control} chats={chats} isPending={isPending} isError={isError} />
+              )}
+            </div>
+
+            <DialogFooter className="mt-8 flex flex-col gap-2.5 sm:flex-row sm:gap-3">
+              <Button
+                type="submit"
+                className="background-blue cursor-pointer border text-white hover:bg-[#226abb] sm:flex-1"
+              >
+                Create
+              </Button>
+              <DialogClose asChild>
+                <Button onClick={reset} variant="outline" className="cursor-pointer hover:bg-gray-100 sm:flex-1">
+                  Cancel
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Form>
+      {error && <Error message={error} />}
+    </Dialog>
+  );
+};
+
+export default PostDialog;

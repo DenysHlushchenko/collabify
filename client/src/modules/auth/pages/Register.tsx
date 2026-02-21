@@ -10,7 +10,7 @@ import { Input } from "@/modules/shared/components/ui/Input";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/modules/shared/components/ui/Form";
 import { RegisterSchema } from "@/modules/shared/lib/validators";
 import { Button } from "@/modules/shared/components/ui/Button";
-import { genders } from "@/constants/links";
+import { genders } from "@/modules/shared/components/constants/links";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/modules/shared/components/ui/Select";
 import { useState } from "react";
 import Error from "@/modules/shared/components/Error";
