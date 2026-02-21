@@ -36,10 +36,10 @@ export class User {
   @Column()
   reputation: number;
 
-  @Column({ unique: true, select: false })
+  @Column({ unique: true })
   email: string;
 
-  @Column({ select: false })
+  @Column()
   password: string;
 
   @CreateDateColumn()

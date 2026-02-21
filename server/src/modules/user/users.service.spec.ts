@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -216,6 +217,58 @@ describe('UserService', () => {
       const result = await userService.findById(999);
 
       expect(result).toBeNull();
+    });
+  });
+
+  describe('PATCH /users/:id (updateUser)', () => {
+    const editDto = {
+      username: 'updatedUser',
+      gender: GenderType.MALE,
+      country: 'Germany',
+    };
+
+    it('should update existing user', async () => {
+      const existingUser = {
+        id: 1,
+        username: 'oldUser',
+        gender: GenderType.FEMALE,
+        reputation: 0,
+        country: { id: 1, name: 'England' },
+        updated_at: new Date(),
+      } as User;
+
+      const newCountry = { id: 2, name: 'Germany' } as Country;
+
+      mockUserRepository.findOne.mockResolvedValue(existingUser);
+      const findOrCreateByNameMock = jest.fn().mockResolvedValue(newCountry);
+      countryService.findOrCreateByName = findOrCreateByNameMock;
+
+      mockUserRepository.save.mockResolvedValue({
+        ...existingUser,
+        username: editDto.username,
+        gender: editDto.gender,
+        country: newCountry,
+      });
+
+      const result = await userService.updateUser(editDto, 1);
+
+      expect(mockUserRepository.findOne).toHaveBeenCalled();
+      expect(findOrCreateByNameMock).toHaveBeenCalledWith(editDto.country);
+      expect(mockUserRepository.save).toHaveBeenCalled();
+
+      expect(result.username).toBe(editDto.username);
+      expect(result.gender).toBe(editDto.gender);
+      expect(result.country).toEqual(newCountry);
+    });
+
+    it('should throw error if user does not exist', async () => {
+      mockUserRepository.findOne.mockResolvedValue(null);
+
+      await expect(userService.updateUser(editDto, 999)).rejects.toThrow(
+        'User not found',
+      );
+
+      expect(mockUserRepository.save).not.toHaveBeenCalled();
     });
   });
 });
