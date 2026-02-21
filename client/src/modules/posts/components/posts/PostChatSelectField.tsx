@@ -23,7 +23,10 @@ const PostChatSelectField = ({ control, chats, isPending, isError }: ChatSelectF
   return (
     <DialogField control={control} name="chatId" formLabel="Select an existing chat">
       {(field) => (
-        <Select value={field.value ?? ""} onValueChange={(value) => field.onChange(value === "none" ? "" : value)}>
+        <Select
+          value={Array.isArray(field.value) ? (field.value[0] ?? "") : (field.value ?? "")}
+          onValueChange={(value) => field.onChange(value === "none" ? "" : value)}
+        >
           <SelectTrigger className="w-full cursor-pointer">
             <SelectValue
               placeholder={

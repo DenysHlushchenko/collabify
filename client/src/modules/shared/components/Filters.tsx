@@ -1,7 +1,7 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "./ui/Select";
-import { postsFilters } from "@/constants/links";
 import { formUrlQuery, removeUrlQuery } from "../lib";
+import { postsFilters } from "./constants/links";
 
 const Filters = () => {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ const Filters = () => {
   return (
     <div>
       <Select onValueChange={handleChange} value={filter || ""}>
-        <SelectTrigger aria-label="Filter options">
+        <SelectTrigger aria-label="Filter options" className="w-40">
           <SelectValue placeholder="Select a filter" />
         </SelectTrigger>
 
