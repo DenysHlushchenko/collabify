@@ -39,6 +39,11 @@ export class UserService {
       where: {
         id,
       },
+      relations: {
+        country: true,
+        posts: true,
+        chatMembers: true,
+      },
     });
   }
 

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -179,6 +178,44 @@ describe('UserService', () => {
       await expect(authService.login(dto)).rejects.toThrow(
         UnauthorizedException,
       );
+    });
+  });
+
+  describe('GET /users/:id', () => {
+    it('should return user by id with country relation', async () => {
+      const user = {
+        id: 1,
+        username: 'test',
+        gender: GenderType.FEMALE,
+        reputation: 0,
+        country: {
+          id: 10,
+          name: 'England',
+        },
+      } as User;
+
+      mockUserRepository.findOne.mockResolvedValue(user);
+
+      const result = await userService.findById(1);
+
+      expect(mockUserRepository.findOne).toHaveBeenCalledWith({
+        where: { id: 1 },
+        relations: {
+          country: true,
+          posts: true,
+          chatMembers: true,
+        },
+      });
+
+      expect(result).toEqual(user);
+    });
+
+    it('should return null if user does not exist', async () => {
+      mockUserRepository.findOne.mockResolvedValue(null);
+
+      const result = await userService.findById(999);
+
+      expect(result).toBeNull();
     });
   });
 });
