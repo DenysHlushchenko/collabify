@@ -6,6 +6,7 @@ import { createPost } from "../../api/post";
 import type { AxiosError } from "axios";
 import { useState } from "react";
 import { useAuthStore } from "@/modules/auth/store/userStore";
+import Filters from "@/modules/shared/components/Filters";
 
 const UserPosts = ({ posts }: { posts: PostType[] }) => {
   const [error, setError] = useState<string | null>(null);
@@ -45,11 +46,14 @@ const UserPosts = ({ posts }: { posts: PostType[] }) => {
 
   return (
     <div>
-      <PostDialog submitPost={submitPost} error={error} />
+      <div className="flex-between mb-4">
+        <Filters />
+        <PostDialog submitPost={submitPost} error={error} />
+      </div>
       {posts.length !== 0 ? (
         posts.map((post: PostType) => <Post key={post.id} post={post} />)
       ) : (
-        <h1 className="text-center text-sm">No posts yet!</h1>
+        <h1 className="pt-10 text-center text-sm">No posts yet!</h1>
       )}
     </div>
   );

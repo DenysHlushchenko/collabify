@@ -1,11 +1,18 @@
 import { Sheet, SheetClose, SheetContent, SheetTitle, SheetTrigger } from "@/modules/shared/components/ui/Sheet";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import { Menu } from "lucide-react";
 import { Button } from "@/modules/shared/components/ui/Button";
 import NavLinks from "./NavLinks";
+import { useAuthStore } from "@/modules/auth/store/userStore";
 
 const MobileNavigation = () => {
+  const navigate = useNavigate();
+  const { logout } = useAuthStore();
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -27,7 +34,10 @@ const MobileNavigation = () => {
 
           <div>
             <SheetClose asChild>
-              <Button className="small-medium min-h-10.25 w-full cursor-pointer rounded-lg bg-black px-4 py-3 text-white shadow-none">
+              <Button
+                className="small-medium min-h-10.25 w-full cursor-pointer rounded-lg bg-black px-4 py-3 text-white shadow-none"
+                onClick={handleLogout}
+              >
                 <span>Logout</span>
               </Button>
             </SheetClose>

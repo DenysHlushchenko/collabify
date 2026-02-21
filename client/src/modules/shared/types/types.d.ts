@@ -115,3 +115,5 @@ export type JwtPayload = {
   iat: number;
   exp: number;
 };
+
+export type FilterType = "ASC" | "DESC" | undefined;

@@ -60,7 +60,7 @@ const PostDialog = ({ submitPost, error }: PostDialogProps) => {
     >
       <Form {...form}>
         <DialogTrigger asChild>
-          <Button className="small-medium mx-auto mb-4 flex h-8 w-30 cursor-pointer rounded-md bg-[#e8edf3] px-4 py-3 text-center text-black hover:bg-[#f2f6fa]">
+          <Button className="small-medium flex w-30 cursor-pointer rounded-md bg-[#e8edf3] px-4 py-3 text-center text-black hover:bg-[#f2f6fa]">
             Create
           </Button>
         </DialogTrigger>

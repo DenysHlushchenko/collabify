@@ -40,3 +40,8 @@ export const postFooterItems = [
     alt: "Comments",
   },
 ];
+
+export const postsFilters = [
+  { name: "Newest", value: "DESC" },
+  { name: "Oldest", value: "ASC" },
+];
