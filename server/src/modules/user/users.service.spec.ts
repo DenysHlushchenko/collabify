@@ -220,7 +220,7 @@ describe('UserService', () => {
     });
   });
 
-  describe('PATCH /users/:id (updateUser)', () => {
+  describe('PUT /users/:id (updateUser)', () => {
     const editDto = {
       username: 'updatedUser',
       gender: GenderType.MALE,
