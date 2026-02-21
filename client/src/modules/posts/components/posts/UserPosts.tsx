@@ -1,4 +1,4 @@
-import type { PostFormType, PostType } from "@/modules/shared/types/types";
+import type { PostFormValues, PostType } from "@/modules/shared/types/types";
 import Post from "@/modules/posts/components/posts/Post";
 import PostDialog from "./PostDialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -29,13 +29,13 @@ const UserPosts = ({ posts }: { posts: PostType[] }) => {
     },
   });
 
-  const submitPost = (values: Omit<PostFormType, "userId">) => {
+  const submitPost = (values: PostFormValues) => {
     if (!user) return;
 
     mutation.mutate({
       title: values.title.trim(),
       description: values.description.trim(),
-      groupSize: Number(values.groupSize),
+      groupSize: values.groupSize,
       tags: values.tags,
       userId: user.id,
       chatId: values.chatId,

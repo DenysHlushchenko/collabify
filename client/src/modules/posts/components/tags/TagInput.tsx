@@ -1,21 +1,27 @@
-import type { UseFormReturn } from "react-hook-form";
-import type { FormSchemaType } from "../../types/types";
+import { Controller, useWatch, type Control } from "react-hook-form";
 import DialogField from "../DialogField";
 import PostTag from "../posts/PostTag";
 import { Input } from "@/modules/shared/components/ui/Input";
+import type { PostFormInput, PostFormOutput } from "@/modules/shared/lib/validators";
+import Error from "@/modules/shared/components/Error";
 
 interface TagInputProps {
-  form: UseFormReturn<FormSchemaType>;
-  tags: string[];
+  control: Control<PostFormInput, unknown, PostFormOutput>;
   addTag: (value: string) => void;
   removeTag: (value: string) => void;
   maxTags: number;
 }
 
-const TagInput = ({ form, tags, addTag, removeTag, maxTags }: TagInputProps) => {
+const TagInput = ({ control, addTag, removeTag, maxTags }: TagInputProps) => {
+  const tags =
+    useWatch({
+      control,
+      name: "tags",
+    }) ?? [];
+
   return (
     <>
-      <DialogField form={form} name="tags" formLabel="Tags">
+      <DialogField control={control} name="tagInput" formLabel="Tags">
         {(field) => (
           <Input
             {...field}
@@ -25,7 +31,7 @@ const TagInput = ({ form, tags, addTag, removeTag, maxTags }: TagInputProps) => 
             onKeyDown={(e) => {
               if (e.key === "Enter" && field.value) {
                 e.preventDefault();
-                addTag(field.value);
+                addTag(field.value as string);
                 field.onChange("");
               }
             }}
@@ -38,6 +44,12 @@ const TagInput = ({ form, tags, addTag, removeTag, maxTags }: TagInputProps) => 
           <PostTag key={tag} isDeletable label={tag} removeTag={removeTag} />
         ))}
       </div>
+
+      <Controller
+        control={control}
+        name="tags"
+        render={({ fieldState }) => <>{fieldState.error && <Error message={fieldState.error.message} />}</>}
+      />
     </>
   );
 };

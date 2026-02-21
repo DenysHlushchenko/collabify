@@ -1,24 +1,27 @@
-import type { ControllerRenderProps, UseFormReturn } from "react-hook-form";
-import type { FormSchemaType, PropType } from "../types/types";
-import { FormControl, FormField, FormItem, FormLabel } from "@/modules/shared/components/ui/Form";
+import type { ReactNode } from "react";
+import { Controller, type Control, type ControllerRenderProps, type FieldPath } from "react-hook-form";
+import { FormControl, FormItem, FormLabel } from "@/modules/shared/components/ui/Form";
 import Error from "@/modules/shared/components/Error";
+import type { PostFormInput, PostFormOutput } from "@/modules/shared/lib/validators";
 
-interface PostFormFieldProps {
-  form: UseFormReturn<FormSchemaType>;
-  name: PropType;
+type Name = FieldPath<PostFormInput>;
+
+interface DialogFieldProps {
+  control: Control<PostFormInput, unknown, PostFormOutput>;
+  name: Name;
   formLabel: string;
-  children: (field: ControllerRenderProps<FormSchemaType, PropType>) => React.ReactNode;
+  children: (field: ControllerRenderProps<PostFormInput, Name>) => ReactNode;
 }
 
-const DialogField = (props: PostFormFieldProps) => {
+const DialogField = ({ control, name, formLabel, children }: DialogFieldProps) => {
   return (
-    <FormField
-      control={props.form.control}
-      name={props.name}
+    <Controller<PostFormInput, Name, PostFormOutput>
+      control={control}
+      name={name}
       render={({ field, fieldState }) => (
         <FormItem>
-          <FormLabel>{props.formLabel}</FormLabel>
-          <FormControl>{props.children(field)}</FormControl>
+          <FormLabel>{formLabel}</FormLabel>
+          <FormControl>{children(field)}</FormControl>
           {fieldState.error && <Error message={fieldState.error.message} />}
         </FormItem>
       )}

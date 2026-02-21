@@ -84,14 +84,25 @@ export type ChatType = {
   messages: MessagesType[];
 };
 
-export type PostFormType = {
+/* used only for form input validation */
+export type PostFormValues = {
   title: string;
   description: string;
-  groupSize: number | string;
+  groupSize: number;
+  tags: string[];
+  chatTitle?: string | undefined;
+  chatId?: number | undefined;
+};
+
+/* used to send request to the server */
+export type CreatePostPayload = {
+  title: string;
+  description: string;
+  groupSize: number;
   tags: string[];
   chatTitle?: string;
   userId: number;
-  chatId?: string;
+  chatId?: number;
 };
 
 export type AuthResponse = {

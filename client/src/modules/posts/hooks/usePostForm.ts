@@ -1,39 +1,49 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PostSchema } from "@/modules/shared/lib/validators";
-import type { FormSchemaType } from "../types/types";
+import { PostSchema, type PostFormInput, type PostFormOutput } from "@/modules/shared/lib/validators";
 
 const MAX_TAGS = 3;
 
 export const usePostForm = () => {
-  const [tags, setTags] = useState<string[]>([]);
-
-  const form = useForm<FormSchemaType>({
+  const form = useForm<PostFormInput, unknown, PostFormOutput>({
     resolver: zodResolver(PostSchema),
     defaultValues: {
       title: "",
       description: "",
       groupSize: "2",
-      tags: "",
+      tags: [],
+      tagInput: "",
       chatTitle: "",
       chatId: "",
     },
   });
 
+  const tags = form.watch("tags");
+
   const addTag = (value: string) => {
-    if (!value.trim() || tags.length >= MAX_TAGS) return;
-    setTags((prev) => [...prev, value.trim()]);
+    const trimmed = value.trim();
+    if (!trimmed) return;
+
+    const currentTags = form.getValues("tags");
+
+    if (currentTags.length >= MAX_TAGS) return;
+
+    form.setValue("tags", [...currentTags, trimmed], {
+      shouldValidate: true,
+    });
   };
 
   const removeTag = (label: string) => {
-    setTags((prev) => prev.filter((tag) => tag !== label));
+    form.setValue(
+      "tags",
+      tags.filter((tag) => tag !== label),
+      { shouldValidate: true }
+    );
   };
 
   const reset = () => {
     form.reset();
     form.clearErrors();
-    setTags([]);
   };
 
   return {

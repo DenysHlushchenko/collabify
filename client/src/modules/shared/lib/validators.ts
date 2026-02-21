@@ -16,6 +16,7 @@ export const LoginSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters long"),
 export const PostSchema = z.object({
   title: z.string().max(50, "Title must be at most 50 characters long").nonempty("Title is required"),
+<<<<<<< HEAD
   description: z.string().max(500, "Description is too long!").nonempty("Description is required"),
   groupSize: z.coerce
     .number()
@@ -30,4 +31,22 @@ export const PostSchema = z.object({
     .string()
     .max(50, "Chat group title cannot be longer than 50 characters")
     .nonempty("Chat group title is required"),
+=======
+  description: z.string().trim().max(500, "Description is too long!").nonempty("Description is required"),
+  groupSize: z
+    .string()
+    .transform((v) => Number(v))
+    .pipe(z.number().int().min(2).max(10)),
+  tagInput: z.string().optional(),
+  tags: z.array(z.string().min(1)).min(1, "At least one tag is required").max(3, "Maximum 3 tags allowed"),
+  chatTitle: z.string().trim().max(50, "Chat group title cannot be longer than 50 characters").optional(),
+  chatId: z
+    .string()
+    .optional()
+    .transform((v) => (v == null || v === "" ? undefined : Number(v)))
+    .pipe(z.number().int().positive().optional()),
+>>>>>>> 0862f78 (Fixed error with validation, improved tag error rendering)
 });
+
+export type PostFormInput = z.input<typeof PostSchema>; // groupSize/chatId are strings
+export type PostFormOutput = z.output<typeof PostSchema>; // groupSize/chatId are number

@@ -1,6 +1,5 @@
-import type { FormSchemaType } from "@/modules/posts/types/types";
 import type { ChatType } from "@/modules/shared/types/types";
-import type { UseFormReturn } from "react-hook-form";
+import type { Control } from "react-hook-form";
 import {
   Select,
   SelectContent,
@@ -11,17 +10,18 @@ import {
   SelectValue,
 } from "@/modules/shared/components/ui/Select";
 import DialogField from "../DialogField";
+import type { PostFormInput, PostFormOutput } from "@/modules/shared/lib/validators";
 
 interface ChatSelectFieldProps {
-  form: UseFormReturn<FormSchemaType>;
+  control: Control<PostFormInput, unknown, PostFormOutput>;
   chats?: ChatType[] | null;
   isPending: boolean;
   isError: boolean;
 }
 
-const PostChatSelectField = ({ form, chats, isPending, isError }: ChatSelectFieldProps) => {
+const PostChatSelectField = ({ control, chats, isPending, isError }: ChatSelectFieldProps) => {
   return (
-    <DialogField form={form} name="chatId" formLabel="Select an existing chat">
+    <DialogField control={control} name="chatId" formLabel="Select an existing chat">
       {(field) => (
         <Select value={field.value ?? ""} onValueChange={(value) => field.onChange(value === "none" ? "" : value)}>
           <SelectTrigger className="w-full cursor-pointer">
