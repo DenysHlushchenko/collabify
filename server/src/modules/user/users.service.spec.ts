@@ -182,4 +182,94 @@ describe('UserService', () => {
       );
     });
   });
+
+  describe('GET /users/:id', () => {
+    it('should return user by id with country relation', async () => {
+      const user = {
+        id: 1,
+        username: 'test',
+        gender: GenderType.FEMALE,
+        reputation: 0,
+        country: {
+          id: 10,
+          name: 'England',
+        },
+      } as User;
+
+      mockUserRepository.findOne.mockResolvedValue(user);
+
+      const result = await userService.findById(1);
+
+      expect(mockUserRepository.findOne).toHaveBeenCalledWith({
+        where: { id: 1 },
+        relations: {
+          country: true,
+          posts: true,
+          chatMembers: true,
+        },
+      });
+
+      expect(result).toEqual(user);
+    });
+
+    it('should return null if user does not exist', async () => {
+      mockUserRepository.findOne.mockResolvedValue(null);
+
+      const result = await userService.findById(999);
+
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('PUT /users/:id (updateUser)', () => {
+    const editDto = {
+      username: 'updatedUser',
+      gender: GenderType.MALE,
+      country: 'Germany',
+    };
+
+    it('should update existing user', async () => {
+      const existingUser = {
+        id: 1,
+        username: 'oldUser',
+        gender: GenderType.FEMALE,
+        reputation: 0,
+        country: { id: 1, name: 'England' },
+        updated_at: new Date(),
+      } as User;
+
+      const newCountry = { id: 2, name: 'Germany' } as Country;
+
+      mockUserRepository.findOne.mockResolvedValue(existingUser);
+      const findOrCreateByNameMock = jest.fn().mockResolvedValue(newCountry);
+      countryService.findOrCreateByName = findOrCreateByNameMock;
+
+      mockUserRepository.save.mockResolvedValue({
+        ...existingUser,
+        username: editDto.username,
+        gender: editDto.gender,
+        country: newCountry,
+      });
+
+      const result = await userService.updateUser(editDto, 1);
+
+      expect(mockUserRepository.findOne).toHaveBeenCalled();
+      expect(findOrCreateByNameMock).toHaveBeenCalledWith(editDto.country);
+      expect(mockUserRepository.save).toHaveBeenCalled();
+
+      expect(result.username).toBe(editDto.username);
+      expect(result.gender).toBe(editDto.gender);
+      expect(result.country).toEqual(newCountry);
+    });
+
+    it('should throw error if user does not exist', async () => {
+      mockUserRepository.findOne.mockResolvedValue(null);
+
+      await expect(userService.updateUser(editDto, 999)).rejects.toThrow(
+        'User not found',
+      );
+
+      expect(mockUserRepository.save).not.toHaveBeenCalled();
+    });
+  });
 });

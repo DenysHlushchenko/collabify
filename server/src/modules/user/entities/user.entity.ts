@@ -42,10 +42,10 @@ export class User {
   @Column()
   feedbackReputation: number;
 
-  @Column({ unique: true })
+  @Column({ unique: true, select: false })
   email: string;
 
-  @Column()
+  @Column({ select: false })
   password: string;
 
   @CreateDateColumn()
