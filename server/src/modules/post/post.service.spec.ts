@@ -269,4 +269,99 @@ describe('PostService', () => {
       expect(result).toEqual([]);
     });
   });
+
+  describe('GET /posts/users/:userId', () => {
+    const mockUser = {
+      id: 999,
+      username: 'testerTwo',
+      gender: 'female',
+      reputation: 24,
+      email: 'testTwo@example.com',
+      created_at: new Date('2026-01-10'),
+      updated_at: new Date('2026-02-15'),
+    };
+
+    const mockPosts = [
+      {
+        id: 103,
+        title: 'Best hiking trails in Europe',
+        created_at: new Date('2026-01-11'),
+        user: mockUser,
+        postTags: [{ tag: { name: 'travel' } }, { tag: { name: 'outdoor' } }],
+        comments: [],
+      },
+      {
+        id: 104,
+        title: 'How to cook perfect pasta',
+        created_at: new Date('2026-02-01'),
+        user: mockUser,
+        postTags: [{ tag: { name: 'cooking' } }, { tag: { name: 'italian' } }],
+        comments: [{ id: 1 }],
+      },
+      {
+        id: 105,
+        title: 'Travel tips for Japan 2026',
+        created_at: new Date('2026-01-28'),
+        user: mockUser,
+        postTags: [{ tag: { name: 'travel' } }],
+        comments: [],
+      },
+    ];
+
+    beforeEach(() => {
+      mockUserSevice.findById.mockResolvedValue(mockUser);
+      mockPostRepository.find.mockResolvedValue(mockPosts);
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should be defined', () => {
+      expect(postService.getAllPostsByUserId).toBeDefined();
+    });
+
+    it('should return posts for existing user with correct relations and ordering', async () => {
+      const result = await postService.getAllPostsByUserId(999);
+
+      expect(mockUserSevice.findById).toHaveBeenCalledWith(999);
+      expect(mockPostRepository.find).toHaveBeenCalledWith({
+        relations: ['postTags.tag', 'comments'],
+        where: {
+          user: mockUser,
+        },
+        order: {
+          created_at: 'DESC',
+          updated_at: 'DESC',
+        },
+      });
+
+      expect(result).toHaveLength(3);
+      expect(result).toEqual(mockPosts);
+      expect(result[0].id).toBe(103);
+      expect(result[1].id).toBe(104);
+      expect(result[2].id).toBe(105);
+    });
+
+    it('should throw UserDoesNotExistException when user does not exist', async () => {
+      mockUserSevice.findById.mockResolvedValue(null);
+      mockPostRepository.find.mockClear();
+
+      await expect(postService.getAllPostsByUserId(999)).rejects.toThrow(
+        UserDoesNotExistException,
+      );
+
+      expect(mockUserSevice.findById).toHaveBeenCalledWith(999);
+      expect(mockPostRepository.find).not.toHaveBeenCalled();
+    });
+
+    it('should return empty array when user exists but has no posts', async () => {
+      mockPostRepository.find.mockResolvedValue([]);
+
+      const result = await postService.getAllPostsByUserId(999);
+
+      expect(mockPostRepository.find).toHaveBeenCalled();
+      expect(result).toEqual([]);
+    });
+  });
 });

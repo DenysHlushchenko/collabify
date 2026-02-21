@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dtos/CreatePost.dto';
 import { AuthGuard } from 'src/modules/user/auth/auth.guard';
@@ -19,5 +28,10 @@ export class PostController {
     @Query('filter') filter?: 'ASC' | 'DESC',
   ) {
     return await this.postService.getAll({ search, sort: filter });
+  }
+
+  @Get('/users/:userId')
+  async getAllPostByUserId(@Param('userId', ParseIntPipe) userId: number) {
+    return await this.postService.getAllPostsByUserId(userId);
   }
 }
