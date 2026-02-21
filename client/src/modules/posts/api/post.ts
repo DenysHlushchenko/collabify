@@ -1,5 +1,5 @@
 import { request } from "@/modules/shared/api/request";
-import type { FilterType, PostType } from "@/modules/shared/types/types";
+import type { FilterType, CreatePostPayload, PostType } from "@/modules/shared/types/types";
 
 export const getPosts = async (filter?: FilterType, search?: string): Promise<PostType[]> => {
   const params = new URLSearchParams();
@@ -8,4 +8,8 @@ export const getPosts = async (filter?: FilterType, search?: string): Promise<Po
   const url = `/posts?${params.toString()}`;
   const res = await request.get(url);
   return res.data;
+};
+
+export const createPost = async (data: CreatePostPayload): Promise<void> => {
+  await request.post("/posts", data);
 };

@@ -3,7 +3,6 @@ import LeftsideBar from "./modules/navigation/components/LeftsideBar";
 import Navbar from "./modules/navigation/components/Navbar";
 import Home from "./modules/navigation/pages/Home";
 import Messages from "./modules/navigation/pages/Messages";
-import Tags from "./modules/navigation/pages/Tags";
 import Posts from "./modules/navigation/pages/Posts";
 import NotFound from "./modules/navigation/pages/NotFound";
 import RightsideBar from "./modules/navigation/components/RightsideBar";
@@ -21,7 +20,7 @@ function App() {
       <div className="mx-auto flex w-full max-w-7xl">
         <LeftsideBar />
 
-        <section className="flex flex-1 flex-col overflow-y-auto px-6 pt-36 pb-6 max-md:pb-14 sm:px-14">
+        <section className="flex flex-1 flex-col overflow-y-auto px-6 pt-20 pb-6 max-md:pb-14 sm:px-14">
           <div className="mx-auto w-full max-w-5xl">
             <Outlet />
           </div>
@@ -45,7 +44,6 @@ function AppRoutes() {
         <Route element={<App />}>
           <Route index element={<Home />} />
           <Route path="messages" element={<Messages />} />
-          <Route path="tags" element={<Tags />} />
           <Route path="posts" element={<Posts />} />
         </Route>
       </Route>

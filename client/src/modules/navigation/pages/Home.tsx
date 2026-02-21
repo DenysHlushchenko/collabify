@@ -1,4 +1,4 @@
-import UserPosts from "@/modules/posts/components/UserPosts";
+import UserPosts from "@/modules/posts/components/posts/UserPosts";
 import Error from "@/modules/shared/components/Error";
 import { Skeleton } from "@/modules/shared/components/ui/Skeleton";
 import { useAuthStore } from "@/modules/auth/store/userStore";
@@ -27,9 +27,12 @@ const Home = () => {
   if (isPending && !isPlaceholderData)
     return (
       <div>
-        <Skeleton className="mb-8 h-50 w-full rounded-xl bg-gray-100" />
-        <Skeleton className="mb-8 h-50 w-full rounded-xl bg-gray-100" />
-        <Skeleton className="mb-8 h-50 w-full rounded-xl bg-gray-100" />
+        <Skeleton className="mx-auto mb-5 flex h-8 w-30 rounded-md bg-gray-100" />
+        <Skeleton className="mb-12 h-35 w-full rounded-md bg-gray-100" />
+        <Skeleton className="mb-12 h-35 w-full rounded-md bg-gray-100" />
+        <Skeleton className="mb-12 h-35 w-full rounded-md bg-gray-100" />
+        <Skeleton className="mb-12 h-35 w-full rounded-md bg-gray-100" />
+        <Skeleton className="mb-12 h-35 w-full rounded-md bg-gray-100" />
       </div>
     );
 
