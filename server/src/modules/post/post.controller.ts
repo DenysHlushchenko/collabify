@@ -31,7 +31,7 @@ export class PostController {
   }
 
   @Get('/users/:userId')
-  async getAllPostByUserId(@Param('userId', ParseIntPipe) userId: number) {
+  async getAllPostsByUserId(@Param('userId', ParseIntPipe) userId: number) {
     return await this.postService.getAllPostsByUserId(userId);
   }
 }
