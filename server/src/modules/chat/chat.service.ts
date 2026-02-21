@@ -71,12 +71,7 @@ export class ChatService {
         post: {
           id: true,
           title: true,
-          user: {
-            id: true,
-            username: true,
-            gender: true,
-            reputation: true,
-          },
+          user: true,
         },
         members: {
           id: true,

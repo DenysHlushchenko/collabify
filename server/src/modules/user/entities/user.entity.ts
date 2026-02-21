@@ -1,6 +1,6 @@
 import { Comment } from 'src/modules/comment/entities/comment.entity';
 import { Post } from '../../post/entities/post.entity';
-import { GenderType } from '../../../shared/enums/enums';
+import { GenderType, RoleType } from '../../../shared/enums/enums';
 import {
   Column,
   CreateDateColumn,
@@ -33,8 +33,14 @@ export class User {
   @Column({ enum: GenderType })
   gender: GenderType;
 
+  @Column({ enum: RoleType })
+  role: RoleType;
+
   @Column()
-  reputation: number;
+  activityReputation: number;
+
+  @Column()
+  feedbackReputation: number;
 
   @Column({ unique: true })
   email: string;

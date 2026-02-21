@@ -43,7 +43,7 @@ export class UserService {
   }
 
   async create(body: RegisterUserDto): Promise<User> {
-    const { username, gender, country, email, password } = body;
+    const { username, gender, role, country, email, password } = body;
 
     const duplicatedUser = await this.findByEmail(email);
     if (duplicatedUser) {
@@ -56,9 +56,11 @@ export class UserService {
       this.usersRepository.create({
         username,
         gender,
+        role,
         country: countryEntity,
         email,
-        reputation: 0,
+        activityReputation: 0,
+        feedbackReputation: 0,
         password: await this.hashPassword(password),
         created_at: new Date(),
         updated_at: new Date(),
