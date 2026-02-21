@@ -10,6 +10,7 @@ import Register from "./modules/auth/pages/Register";
 import Login from "./modules/auth/pages/Login";
 import ProtectedRoute from "./modules/auth/components/ProtectedRoute";
 import PublicRoute from "./modules/auth/components/PublicRoute";
+import UserProfile from "./modules/profile/pages/UserProfile";
 
 function App() {
   const { pathname } = useLocation();
@@ -45,6 +46,7 @@ function AppRoutes() {
           <Route index element={<Home />} />
           <Route path="messages" element={<Messages />} />
           <Route path="posts" element={<Posts />} />
+          <Route path="/profile" element={<UserProfile />} />
         </Route>
       </Route>
 

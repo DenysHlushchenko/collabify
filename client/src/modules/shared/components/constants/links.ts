@@ -4,6 +4,7 @@ import postsIcon from "@/assets/posts.svg";
 import likeIcon from "@/assets/like.svg";
 import dislikeIcon from "@/assets/dislike.svg";
 import commentIcon from "@/assets/comment.svg";
+import profileIcon from "@/assets/user.svg";
 
 export const sidebarLinks = [
   {
@@ -21,6 +22,11 @@ export const sidebarLinks = [
     imgUrl: postsIcon,
     link: "/posts",
     name: "Posts",
+  },
+  {
+    imgUrl: profileIcon,
+    link: "/profile",
+    name: "Profile",
   },
 ];
 

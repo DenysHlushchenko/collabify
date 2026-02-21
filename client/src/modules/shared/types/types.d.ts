@@ -3,7 +3,10 @@ export type UserType = {
   username: string;
   country: string;
   gender: string;
-  reputation: number;
+  role: string;
+  bio?: string;
+  activityReputation: number;
+  feedbackReputation: number;
   email: string;
   createdAt: Date;
   updatedAt: Date;
@@ -117,3 +120,9 @@ export type JwtPayload = {
 };
 
 export type FilterType = "ASC" | "DESC" | undefined;
+
+export type BadgeCounts = {
+  GOLD: number;
+  SILVER: number;
+  BRONZE: number;
+}
