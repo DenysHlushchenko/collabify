@@ -7,6 +7,7 @@ export const RegisterSchema = z.object({
     .max(30, "Username must be at most 30 characters long"),
   country: z.string().nonempty("Country is required"),
   gender: z.enum(["male", "female", "other", ""]),
+  role: z.enum(["learner", "organizer", ""]),
   email: z.email("Invalid email address"),
   password: z.string().min(8, "Password must be at least 8 characters long"),
 });

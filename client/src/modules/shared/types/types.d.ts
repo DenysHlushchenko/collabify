@@ -41,6 +41,7 @@ export type RegisterType = {
   username: string;
   country: string;
   gender: string;
+  role: string;
   email: string;
   password: string;
 };
