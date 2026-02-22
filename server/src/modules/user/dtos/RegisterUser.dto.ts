@@ -7,7 +7,7 @@ import {
   Validate,
 } from 'class-validator';
 import { IsStrongPassword } from '../auth/validators/auth-validators';
-import { GenderType } from 'src/shared/enums/enums';
+import { GenderType, RoleType } from 'src/shared/enums/enums';
 
 export class RegisterUserDto {
   @IsNotEmpty()
@@ -17,6 +17,10 @@ export class RegisterUserDto {
   @IsNotEmpty()
   @IsEnum(GenderType)
   gender: GenderType;
+
+  @IsNotEmpty()
+  @IsEnum(RoleType)
+  role: RoleType;
 
   @IsNotEmpty()
   country: string;

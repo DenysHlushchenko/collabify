@@ -15,3 +15,8 @@ export enum JoinResponse {
   APPROVE = 'approve',
   REJECT = 'reject',
 }
+
+export enum RoleType {
+  LEARNER = 'learner',
+  ORGANIZER = 'organizer',
+}

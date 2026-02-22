@@ -74,6 +74,14 @@ body {
     @apply text-[16px] leading-[22.4px] font-normal;
   }
 
+  .paragraph-medium {
+    @apply text-[16px] leading-[22.4px] font-medium;
+  }
+
+  .paragraph-semibold {
+    @apply text-[16px] leading-[20.8px] font-semibold;
+  }
+
   .no-focus {
     @apply focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0;
   }

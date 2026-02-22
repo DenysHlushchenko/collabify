@@ -1,5 +1,5 @@
 import { Faker } from '@faker-js/faker';
-import { GenderType } from '../../shared/enums/enums';
+import { GenderType, RoleType } from '../../shared/enums/enums';
 import { User } from '../../modules/user/entities/user.entity';
 import { setSeederFactory } from 'typeorm-extension';
 import bcrypt from 'bcrypt';
@@ -14,6 +14,7 @@ export const UserFactory = setSeederFactory(User, async (faker: Faker) => {
   user.country = new Country();
   user.country.name = faker.location.country();
   user.gender = GenderType.FEMALE;
+  user.role = RoleType.LEARNER;
   user.reputation = 0;
   user.email = faker.internet.email();
   user.password = hashedPassword;

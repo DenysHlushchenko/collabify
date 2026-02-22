@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "@/modules/shared/components/ui/Card";
 import PostTag from "./PostTag";
+import { Link } from "react-router-dom";
 
 const MAX_DESCRIPTION_LENGTH = 90;
 
@@ -41,9 +42,11 @@ const Post = ({ post }: { post: PostType }) => {
         <CardHeader className="">
           <CardTitle className="small-semibold post-author-color">
             <div className="flex-start gap-x-2">
-              <Avatar className="flex-center bg-[#D9D9D9] text-gray-500">
-                <AvatarFallback>{convertNameToInitial(post.user.username)}</AvatarFallback>
-              </Avatar>
+              <Link to={`/profile/${post.user.id}`}>
+                <Avatar className="flex-center bg-[#D9D9D9] text-gray-500">
+                  <AvatarFallback>{convertNameToInitial(post.user.username)}</AvatarFallback>
+                </Avatar>
+              </Link>
               <p>c/{post.user.username}</p>
               <span className="text-gray-400">{convertToDateString(post.created_at)}</span>
             </div>
