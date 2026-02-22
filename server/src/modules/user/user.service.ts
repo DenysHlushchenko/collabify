@@ -7,6 +7,8 @@ import { DuplicatedEmailException } from 'src/shared/exceptions/DuplictedEmail.e
 import bcrypt from 'bcrypt';
 import { CountryService } from 'src/modules/country/country.service';
 import { EditUserDto } from './dtos/EditUserDto';
+import { PostVoteStats, UserWithStats } from 'src/shared/types';
+import { assignBadges } from 'src/shared/utils/libs';
 
 enum Auth {
   SALT_ROUNDS = 10,
@@ -55,6 +57,84 @@ export class UserService {
   }
 
   /**
+   * Finds a user account by ID and retrieves associated statistics, including post count, comment count, feedback count, upvote count, downvote count, and badge counts. Throws NotFoundException if the user account is not found.
+   * @param id is required. It should be the ID of the user account to be retrieved.
+   * @returns a user account along with associated statistics and badge counts.
+   */
+  async findByIdWithStats(id: number): Promise<UserWithStats> {
+    const user = await this.usersRepository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        country: true,
+        posts: true,
+        chatMembers: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const postCount = await this.usersRepository.manager
+      .getRepository('posts')
+      .count({
+        where: {
+          user: { id },
+        },
+      });
+
+    const commentCount = await this.usersRepository.manager
+      .getRepository('comments')
+      .count({
+        where: {
+          sender: { id },
+        },
+      });
+
+    const postStats = await this.usersRepository.manager
+      .getRepository('posts')
+      .createQueryBuilder('post')
+      .where('post.user_id = :userId', { userId: id })
+      .select('SUM(post.upvotesCount)', 'upvotesCount')
+      .addSelect('SUM(post.downvotesCount)', 'downvotesCount')
+      .getRawOne<PostVoteStats>();
+
+    const totalUpvotes = Number(postStats?.upvotesCount) || 0;
+    const totalDownvotes = Number(postStats?.downvotesCount) || 0;
+
+    const feedbackCount = await this.usersRepository.manager
+      .getRepository('feedbacks')
+      .count({
+        where: {
+          user: { id },
+        },
+      });
+
+    const criteria = [
+      { type: 'POST_COUNT' as const, value: postCount },
+      { type: 'COMMENT_COUNT' as const, value: commentCount },
+      { type: 'POST_UPVOTES' as const, value: totalUpvotes },
+      { type: 'POST_DOWNVOTES' as const, value: totalDownvotes },
+      { type: 'FEEDBACK_COUNT' as const, value: feedbackCount },
+    ];
+
+    const badgeCounts = assignBadges({ criteria });
+    return {
+      user,
+      stats: {
+        postsCount: postCount,
+        commentsCount: commentCount,
+        feedbackCount,
+        upvotesCount: totalUpvotes,
+        downvotesCount: totalDownvotes,
+      },
+      badgeCounts,
+    };
+  }
+
+  /**
    * Creates a new user account with provided information. Throws DuplicatedEmailException if the email address is already in use.
    * @param body is required. It should contain username
    * @returns a newly created user account.
@@ -76,8 +156,7 @@ export class UserService {
         role,
         country: countryEntity,
         email,
-        activityReputation: 0,
-        feedbackReputation: 0,
+        reputation: 0,
         password: await this.hashPassword(password),
         created_at: new Date(),
         updated_at: new Date(),

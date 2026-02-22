@@ -15,8 +15,7 @@ export const UserFactory = setSeederFactory(User, async (faker: Faker) => {
   user.country.name = faker.location.country();
   user.gender = GenderType.FEMALE;
   user.role = RoleType.LEARNER;
-  user.activityReputation = 0;
-  user.feedbackReputation = 0;
+  user.reputation = 0;
   user.email = faker.internet.email();
   user.password = hashedPassword;
 

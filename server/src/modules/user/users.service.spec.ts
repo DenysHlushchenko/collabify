@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -108,6 +107,12 @@ describe('UserService', () => {
 
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({
         where: { email: dto.email },
+        select: {
+          email: true,
+          id: true,
+          password: true,
+          username: true,
+        },
       });
 
       expect(bcrypt.hash).toHaveBeenCalledWith(dto.password, 10);
@@ -150,6 +155,12 @@ describe('UserService', () => {
 
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({
         where: { email: dto.email },
+        select: {
+          email: true,
+          id: true,
+          password: true,
+          username: true,
+        },
       });
       expect(bcrypt.compare).toHaveBeenCalledWith(dto.password, user.password);
       expect(jwt.sign).toHaveBeenCalledWith(

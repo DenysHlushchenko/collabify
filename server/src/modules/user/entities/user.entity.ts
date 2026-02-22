@@ -37,10 +37,7 @@ export class User {
   role: RoleType;
 
   @Column()
-  activityReputation: number;
-
-  @Column()
-  feedbackReputation: number;
+  reputation: number;
 
   @Column({ unique: true, select: false })
   email: string;
