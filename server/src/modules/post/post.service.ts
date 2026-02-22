@@ -107,4 +107,28 @@ export class PostService {
 
     return await db.getMany();
   }
+
+  /**
+   * Retrevies all user-specific posts from the database.
+   * @param userId
+   * @returns An array of Post entities by user ID.
+   */
+  async getAllPostsByUserId(userId: number): Promise<Post[]> {
+    const existingUser = await this.userService.findById(userId);
+
+    if (!existingUser) {
+      throw new UserDoesNotExistException();
+    }
+
+    return await this.postRepository.find({
+      relations: ['postTags.tag', 'comments'],
+      where: {
+        user: existingUser,
+      },
+      order: {
+        created_at: 'DESC',
+        updated_at: 'DESC',
+      },
+    });
+  }
 }

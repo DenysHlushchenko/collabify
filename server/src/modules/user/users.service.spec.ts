@@ -108,10 +108,10 @@ describe('UserService', () => {
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({
         where: { email: dto.email },
         select: {
-          email: true,
           id: true,
-          password: true,
           username: true,
+          email: true,
+          password: true,
         },
       });
 
@@ -156,10 +156,10 @@ describe('UserService', () => {
       expect(mockUserRepository.findOne).toHaveBeenCalledWith({
         where: { email: dto.email },
         select: {
-          email: true,
           id: true,
-          password: true,
           username: true,
+          email: true,
+          password: true,
         },
       });
       expect(bcrypt.compare).toHaveBeenCalledWith(dto.password, user.password);
