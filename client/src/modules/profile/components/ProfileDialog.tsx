@@ -26,10 +26,14 @@ import type { AxiosError } from "axios";
 import { updateUser } from "../api/user";
 import Error from "@/modules/shared/components/Error";
 
-const ProfileDialog = () => {
+interface ProfileDialogProps {
+  userId: number;
+}
+
+const ProfileDialog = ({ userId }: ProfileDialogProps) => {
   const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
-  const { data: currentUser } = useCurrentUser();
+  const { data: currentUser } = useCurrentUser(userId);
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const form = useForm<z.infer<typeof ProfileSchema>>({

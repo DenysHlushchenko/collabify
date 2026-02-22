@@ -11,10 +11,11 @@ import Error from "@/modules/shared/components/Error";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import UserProfileSkeleton from "../components/UserProfileSkeleton";
 import ProfileDialog from "../components/ProfileDialog";
+import { useParams } from "react-router-dom";
 
 const UserProfile = () => {
-  const { isPending, isPlaceholderData, isError, data: currentUser, error } = useCurrentUser();
-
+  const { userId } = useParams();
+  const { isPending, isPlaceholderData, isError, data: currentUser, error } = useCurrentUser(Number(userId));
   if (isPending && !isPlaceholderData) return <UserProfileSkeleton />;
 
   if (isError) return <Error message={error.message} />;
@@ -48,7 +49,7 @@ const UserProfile = () => {
         </div>
 
         <div className="flex w-full justify-end max-sm:mb-4 sm:mt-2 sm:w-auto">
-          <ProfileDialog />
+          <ProfileDialog userId={Number(userId)} />
         </div>
       </div>
 

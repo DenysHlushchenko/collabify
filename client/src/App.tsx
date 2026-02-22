@@ -46,7 +46,7 @@ function AppRoutes() {
           <Route index element={<Home />} />
           <Route path="messages" element={<Messages />} />
           <Route path="posts" element={<Posts />} />
-          <Route path="/profile" element={<UserProfile />} />
+          <Route path="/profile/:userId" element={<UserProfile />} />
         </Route>
       </Route>
 

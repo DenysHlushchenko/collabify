@@ -25,7 +25,7 @@ export const sidebarLinks = [
   },
   {
     imgUrl: profileIcon,
-    link: "/profile",
+    link: "/profile/:userId",
     name: "Profile",
   },
 ];
