@@ -277,7 +277,7 @@ describe('UserService', () => {
       mockUserRepository.findOne.mockResolvedValue(null);
 
       await expect(userService.updateUser(editDto, 999)).rejects.toThrow(
-        'User not found',
+        'The account does not exist',
       );
 
       expect(mockUserRepository.save).not.toHaveBeenCalled();

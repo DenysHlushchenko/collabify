@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Post } from './entities/post.entity';
@@ -9,6 +9,7 @@ import { ChatService } from '../chat/chat.service';
 import { Chat } from '../chat/entities/chat.entity';
 import { TagService } from '../tag/tag.service';
 import { PostTag } from '../tag/entities/post_tag.entity';
+import { UpdatePostDto } from './dtos/UpdatePost.dto';
 
 @Injectable()
 export class PostService {
@@ -54,7 +55,7 @@ export class PostService {
 
     if (tagNames) {
       const tags = await this.tagService.findOrCreateMany(tagNames);
-      const postTagRepo = this.postRepository.manager.getRepository(PostTag);
+      const postTagRepo = this.getPostTagRepository();
       const postTags = tags.map((tag) =>
         postTagRepo.create({ postId: savedPost.id, tagId: tag.id }),
       );
@@ -130,5 +131,66 @@ export class PostService {
         updated_at: 'DESC',
       },
     });
+  }
+
+  /**
+   * Returns a specific post identified by provided ID.
+   * @param id
+   * @returns an exising post by ID; otherwise returns null.
+   */
+  async getPostById(id: number): Promise<Post | null> {
+    return await this.postRepository.findOne({
+      relations: ['postTags', 'postTags.tag', 'comments'],
+      where: {
+        id,
+      },
+    });
+  }
+
+  /**
+   * Updates user's post by post ID.
+   * @param updatePostDto (title, description, groupSize, postId, userId, tags).
+   */
+  async updatePost(id: number, updatePostDto: UpdatePostDto): Promise<void> {
+    const {
+      title,
+      description,
+      groupSize,
+      tags: tagNames,
+      userId,
+    } = updatePostDto;
+
+    const currentUser = await this.userService.findById(userId);
+
+    if (!currentUser) {
+      throw new UserDoesNotExistException();
+    }
+
+    const post = await this.getPostById(id);
+    if (!post) throw new NotFoundException('Post is not found');
+
+    post.title = title;
+    post.description = description;
+    post.group_size = groupSize;
+
+    const postTagRepo = this.postRepository.manager.getRepository(PostTag);
+    await postTagRepo.delete({ post: { id: post.id } });
+
+    if (tagNames?.length > 0) {
+      const tags = await this.tagService.findOrCreateMany(tagNames);
+
+      post.postTags = tags.map((tag) => {
+        const postTag = new PostTag();
+        postTag.tag = tag;
+        postTag.post = post;
+        return postTag;
+      });
+    }
+
+    await this.postRepository.save(post);
+  }
+
+  private getPostTagRepository(): Repository<PostTag> {
+    return this.postRepository.manager.getRepository(PostTag);
   }
 }

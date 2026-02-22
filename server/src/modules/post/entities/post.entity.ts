@@ -37,7 +37,10 @@ export class Post {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @OneToMany(() => PostTag, (postTag) => postTag.post)
+  @OneToMany(() => PostTag, (postTag) => postTag.post, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   postTags: PostTag[];
 
   @OneToMany(() => Comment, (comment) => comment.post)
