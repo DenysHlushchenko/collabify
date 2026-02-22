@@ -33,5 +33,16 @@ export const PostSchema = z.object({
     .pipe(z.number().int().positive().optional()),
 });
 
+export const ProfileSchema = z.object({
+  username: z
+    .string()
+    .min(2, "Username must be at least 2 characters long")
+    .max(30, "Username must be at most 30 characters long"),
+  gender: z.enum(["male", "female", "other"]),
+  role: z.enum(["learner", "organizer"]),
+  country: z.string().nonempty("Country is required"),
+  bio: z.string().max(160, "Bio must be at most 160 characters long").optional(),
+});
+
 export type PostFormInput = z.input<typeof PostSchema>; // groupSize/chatId are strings
 export type PostFormOutput = z.output<typeof PostSchema>; // groupSize/chatId are number

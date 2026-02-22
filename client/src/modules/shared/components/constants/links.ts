@@ -31,6 +31,7 @@ export const sidebarLinks = [
 ];
 
 export const genders = ["male", "female", "other"];
+export const roles = ["learner", "organizer"];
 
 export const postFooterItems = [
   {

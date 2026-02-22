@@ -10,6 +10,7 @@ import Stats from "../components/Stats";
 import Error from "@/modules/shared/components/Error";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import UserProfileSkeleton from "../components/UserProfileSkeleton";
+import ProfileDialog from "../components/ProfileDialog";
 
 const UserProfile = () => {
   const { isPending, isPlaceholderData, isError, data: currentUser, error } = useCurrentUser();
@@ -46,7 +47,9 @@ const UserProfile = () => {
           </div>
         </div>
 
-        <div className="flex w-full justify-end max-sm:mb-4 sm:mt-2 sm:w-auto">Edit</div>
+        <div className="flex w-full justify-end max-sm:mb-4 sm:mt-2 sm:w-auto">
+          <ProfileDialog />
+        </div>
       </div>
 
       <Stats badges={currentUser.badgeCounts} />

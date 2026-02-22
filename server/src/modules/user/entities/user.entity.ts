@@ -39,6 +39,9 @@ export class User {
   @Column()
   reputation: number;
 
+  @Column({ nullable: true })
+  bio?: string;
+
   @Column({ unique: true, select: false })
   email: string;
 

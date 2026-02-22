@@ -171,7 +171,7 @@ export class UserService {
    * @returns an updated user account.
    */
   async updateUser(editUserDto: EditUserDto, id: number): Promise<User> {
-    const { username, gender, country } = editUserDto;
+    const { username, gender, role, country, bio } = editUserDto;
     const user = await this.findById(id);
 
     if (!user) {
@@ -182,7 +182,9 @@ export class UserService {
 
     user.username = username;
     user.gender = gender;
+    user.role = role;
     user.country = countryEntity;
+    user.bio = bio;
     user.updated_at = new Date();
 
     return this.usersRepository.save(user);

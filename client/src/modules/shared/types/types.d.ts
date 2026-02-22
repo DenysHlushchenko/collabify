@@ -1,3 +1,6 @@
+export type GenderType = "male" | "female" | "other";
+export type RoleType = "learner" | "organizer";
+
 export type UserType = {
   id: string;
   username: string;
@@ -5,13 +8,21 @@ export type UserType = {
     id: number;
     name: string;
   };
-  gender: string;
-  role: string;
+  gender: GenderType;
+  role: RoleType;
   reputation: number;
   bio?: string;
   email: string;
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type EditUserType = {
+  username: string;
+  gender: GenderType;
+  role: RoleType;
+  country: string;
+  bio?: string;
 };
 
 export type UserTypeWithStats = {
