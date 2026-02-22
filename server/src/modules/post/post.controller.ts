@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -13,6 +14,8 @@ import { PostService } from './post.service';
 import { CreatePostDto } from './dtos/CreatePost.dto';
 import { AuthGuard } from 'src/modules/user/auth/auth.guard';
 import { UpdatePostDto } from './dtos/UpdatePost.dto';
+import { CurrentUser } from 'src/shared/decorators/current-user.decorator';
+import { User } from '../user/entities/user.entity';
 
 @UseGuards(AuthGuard)
 @Controller('posts')
@@ -43,5 +46,13 @@ export class PostController {
     @Body() updatePostDto: UpdatePostDto,
   ): Promise<void> {
     return await this.postService.updatePost(id, updatePostDto);
+  }
+
+  @Delete(':id')
+  async deletePost(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: User,
+  ): Promise<void> {
+    return await this.postService.deletePost(id, user.id);
   }
 }

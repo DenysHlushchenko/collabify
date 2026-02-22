@@ -18,6 +18,7 @@ describe('PostService', () => {
     save: jest.Mock;
     create: jest.Mock;
     find: jest.Mock;
+    delete: jest.Mock;
     createQueryBuilder: jest.Mock;
     manager: {
       getRepository: jest.Mock;
@@ -43,6 +44,7 @@ describe('PostService', () => {
       save: jest.fn(),
       create: jest.fn(),
       find: jest.fn(),
+      delete: jest.fn(),
       createQueryBuilder: jest.fn(),
       manager: {
         getRepository: jest.fn(),
@@ -366,7 +368,7 @@ describe('PostService', () => {
     });
   });
 
-  describe('PUT /posts/:id → updatePost', () => {
+  describe('PUT /posts/:id', () => {
     const mockUser = {
       id: 777,
       username: 'updater',
@@ -547,6 +549,101 @@ describe('PostService', () => {
 
       expect(existingPost.postTags).toHaveLength(3);
       expect(mockPostRepository.save).toHaveBeenCalled();
+    });
+  });
+
+  describe('DELETE /posts/:id', () => {
+    const mockUser = {
+      id: 777,
+      username: 'updater',
+      gender: 'male',
+      reputation: 88,
+      email: 'update@example.com',
+      created_at: new Date('2026-02-10'),
+      updated_at: new Date('2026-02-20'),
+    };
+
+    const existingPost = {
+      id: 42,
+      title: 'Old Title - Learn NestJS',
+      description: 'Old boring description...',
+      group_size: 5,
+      user: mockUser,
+      postTags: [
+        { id: 1, tag: { id: 10, name: 'nestjs' } },
+        { id: 2, tag: { id: 11, name: 'backend' } },
+      ],
+      comments: [],
+      created_at: new Date('2026-02-05'),
+      updated_at: new Date('2026-02-15'),
+    };
+
+    const mockPostTagRepo = {
+      delete: jest.fn().mockResolvedValue({ affected: 2 }),
+    };
+
+    beforeEach(() => {
+      jest.clearAllMocks();
+
+      mockUserSevice.findById.mockResolvedValue(mockUser);
+      jest
+        .spyOn(postService, 'getPostById')
+        .mockResolvedValue(existingPost as unknown as Post);
+      mockPostRepository.manager.getRepository.mockReturnValue(mockPostTagRepo);
+      mockPostRepository.delete.mockResolvedValue({ affected: 1 });
+    });
+
+    it('should be defined', () => {
+      expect(postService.deletePost).toBeDefined();
+    });
+
+    it('should successfully delete post + associated post_tags when post and user exist', async () => {
+      await postService.deletePost(42, 777);
+
+      expect(mockUserSevice.findById).toHaveBeenCalledWith(777);
+      expect(postService.getPostById).toHaveBeenCalledWith(42);
+      expect(mockPostTagRepo.delete).toHaveBeenCalledWith({ post: { id: 42 } });
+      expect(mockPostRepository.delete).toHaveBeenCalledWith(42);
+    });
+
+    it('should throw UserDoesNotExistException when user does not exist', async () => {
+      mockUserSevice.findById.mockResolvedValue(null);
+
+      await expect(postService.deletePost(42, 999)).rejects.toThrow(
+        UserDoesNotExistException,
+      );
+
+      expect(postService.getPostById).not.toHaveBeenCalled();
+      expect(mockPostTagRepo.delete).not.toHaveBeenCalled();
+      expect(mockPostRepository.delete).not.toHaveBeenCalled();
+    });
+
+    it('should throw NotFoundException when post does not exist', async () => {
+      jest.spyOn(postService, 'getPostById').mockResolvedValue(null);
+
+      await expect(postService.deletePost(999, 777)).rejects.toThrow(
+        NotFoundException,
+      );
+
+      expect(mockUserSevice.findById).toHaveBeenCalledWith(777);
+      expect(mockPostTagRepo.delete).not.toHaveBeenCalled();
+      expect(mockPostRepository.delete).not.toHaveBeenCalled();
+    });
+
+    it('should still call delete even if there are no post tags', async () => {
+      const postWithoutTags = {
+        ...existingPost,
+        postTags: [],
+      };
+
+      jest
+        .spyOn(postService, 'getPostById')
+        .mockResolvedValue(postWithoutTags as unknown as Post);
+
+      await postService.deletePost(42, 777);
+
+      expect(mockPostTagRepo.delete).toHaveBeenCalledWith({ post: { id: 42 } });
+      expect(mockPostRepository.delete).toHaveBeenCalledWith(42);
     });
   });
 });

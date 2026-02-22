@@ -173,7 +173,11 @@ export class PostService {
     post.description = description;
     post.group_size = groupSize;
 
-    const postTagRepo = this.postRepository.manager.getRepository(PostTag);
+    const postTagRepo = this.getPostTagRepository();
+
+    /* 
+        Clean up the post tags, then assign the changes and save the post update
+    */
     await postTagRepo.delete({ post: { id: post.id } });
 
     if (tagNames?.length > 0) {
@@ -188,6 +192,28 @@ export class PostService {
     }
 
     await this.postRepository.save(post);
+  }
+
+  /**
+   * Deletes a user's post by providing post ID and user ID.
+   * @param postId required.
+   * @param userId required.
+   */
+  async deletePost(postId: number, userId: number): Promise<void> {
+    const currentUser = await this.userService.findById(userId);
+    if (!currentUser) {
+      throw new UserDoesNotExistException();
+    }
+
+    const post = await this.getPostById(postId);
+    if (!post) {
+      throw new NotFoundException('Post is not found');
+    }
+
+    const postTagRepo = this.getPostTagRepository();
+    await postTagRepo.delete({ post: { id: post.id } });
+
+    await this.postRepository.delete(postId);
   }
 
   private getPostTagRepository(): Repository<PostTag> {
