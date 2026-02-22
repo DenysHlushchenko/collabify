@@ -9,13 +9,12 @@ import { Separator } from "@/modules/shared/components/ui/Separator";
 import Stats from "../components/Stats";
 import Error from "@/modules/shared/components/Error";
 import { useCurrentUser } from "../hooks/useCurrentUser";
+import UserProfileSkeleton from "../components/UserProfileSkeleton";
 
 const UserProfile = () => {
-  const { isPending, isError, data: currentUser, error } = useCurrentUser();
+  const { isPending, isPlaceholderData, isError, data: currentUser, error } = useCurrentUser();
 
-  if (isPending) {
-    return <div>Loading...</div>;
-  }
+  if (isPending && !isPlaceholderData) return <UserProfileSkeleton />;
 
   if (isError) return <Error message={error.message} />;
 

@@ -1,19 +1,21 @@
 export type UserType = {
-  user: {
-    id: string;
-    username: string;
-    country: {
-      id: number;
-      name: string;
-    };
-    gender: string;
-    role: string;
-    bio?: string;
-    reputation: number;
-    email: string;
-    createdAt: Date;
-    updatedAt: Date;
+  id: string;
+  username: string;
+  country: {
+    id: number;
+    name: string;
   };
+  gender: string;
+  role: string;
+  reputation: number;
+  bio?: string;
+  email: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type UserTypeWithStats = {
+  user: UserType;
   stats: {
     postsCount: number;
     commentsCount: number;

@@ -1,7 +1,7 @@
 import { request } from "@/modules/shared/api/request";
-import type { UserType } from "@/modules/shared/types/types";
+import type { UserType, UserTypeWithStats } from "@/modules/shared/types/types";
 
-export const getCurrentUser = async (id: number): Promise<UserType> => {
+export const getCurrentUser = async (id: number): Promise<UserTypeWithStats> => {
   const res = await request.get(`/users/${id}`);
   return res.data;
 };
