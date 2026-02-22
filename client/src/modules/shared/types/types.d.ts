@@ -1,15 +1,27 @@
 export type UserType = {
-  id: string;
-  username: string;
-  country: string;
-  gender: string;
-  role: string;
-  bio?: string;
-  activityReputation: number;
-  feedbackReputation: number;
-  email: string;
-  createdAt: Date;
-  updatedAt: Date;
+  user: {
+    id: string;
+    username: string;
+    country: {
+      id: number;
+      name: string;
+    };
+    gender: string;
+    role: string;
+    bio?: string;
+    reputation: number;
+    email: string;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  stats: {
+    postsCount: number;
+    commentsCount: number;
+    feedbackCount: number;
+    upvotesCount: number;
+    downvotesCount: number;
+  };
+  badgeCounts: BadgeCounts;
 };
 
 export type RegisterType = {
@@ -125,4 +137,4 @@ export type BadgeCounts = {
   GOLD: number;
   SILVER: number;
   BRONZE: number;
-}
+};

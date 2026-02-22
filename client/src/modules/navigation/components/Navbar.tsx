@@ -5,11 +5,10 @@ import { BellIcon } from "lucide-react";
 import GlobalSearch from "@/modules/shared/components/GlobalSearch";
 import MobileNavigation from "./MobileNavigation";
 import User from "@/modules/shared/components/User";
-import { useAuthStore } from "@/modules/auth/store/userStore";
+import { useCurrentUser } from "@/modules/profile/hooks/useCurrentUser";
 
 const Navbar = () => {
-  const { getUser } = useAuthStore();
-  const user = getUser();
+  const { data: currentUser } = useCurrentUser();
   return (
     <nav className="background-blue fixed top-0 right-0 left-0 z-50 flex justify-center gap-5 p-4 text-white shadow-sm sm:p-2">
       <div className="flex w-full max-w-7xl items-center justify-between gap-5">
@@ -28,7 +27,7 @@ const Navbar = () => {
             </span>
           </Button>
 
-          <User username={user?.username} className="h-8 w-8" />
+          <User username={currentUser?.user.username} className="h-8 w-8" />
 
           <MobileNavigation />
         </div>
