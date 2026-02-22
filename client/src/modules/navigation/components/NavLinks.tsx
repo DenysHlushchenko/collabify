@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/modules/auth/store/userStore";
 import { sidebarLinks } from "@/modules/shared/components/constants/links";
 import { SheetClose } from "@/modules/shared/components/ui/Sheet";
 import { cn } from "@/modules/shared/lib/utils";
@@ -17,13 +18,18 @@ interface Item {
 const NavLinks = ({ isMobileNav }: NavLinksProps) => {
   const location = useLocation();
   const pathname = location.pathname;
+  const { getUser } = useAuthStore();
   return (
     <>
       {sidebarLinks.map((item: Item) => {
+        let link = item.link;
+        if (item.name === "Profile") {
+          link = `/profile/${getUser()?.id}`;
+        }
         const isActive = (pathname.includes(item.link) && item.link.length > 1) || pathname === item.link;
         const LinkComponent = (
           <Link
-            to={item.link}
+            to={link}
             key={item.name}
             className={cn(
               "flex items-center justify-start gap-4 p-4 hover:rounded-lg hover:bg-[#e8edf3]",

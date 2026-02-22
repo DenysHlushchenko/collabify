@@ -10,7 +10,7 @@ import { Input } from "@/modules/shared/components/ui/Input";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/modules/shared/components/ui/Form";
 import { RegisterSchema } from "@/modules/shared/lib/validators";
 import { Button } from "@/modules/shared/components/ui/Button";
-import { genders } from "@/modules/shared/components/constants/links";
+import { genders, roles } from "@/modules/shared/components/constants/links";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/modules/shared/components/ui/Select";
 import { useState } from "react";
 import Error from "@/modules/shared/components/Error";
@@ -26,6 +26,7 @@ const Register = () => {
       username: "",
       country: "",
       gender: "",
+      role: "",
       email: "",
       password: "",
     },
@@ -50,6 +51,7 @@ const Register = () => {
       username: values.username,
       country: values.country,
       gender: values.gender,
+      role: values.role,
       email: values.email,
       password: values.password,
     });
@@ -125,6 +127,31 @@ const Register = () => {
                       {genders.map((gender) => (
                         <SelectItem key={gender} value={gender} className="cursor-pointer hover:bg-gray-100">
                           {gender.charAt(0).toUpperCase() + gender.slice(1)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Role</FormLabel>
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select your role" />
+                      </SelectTrigger>
+                    </FormControl>
+
+                    <SelectContent className="bg-white">
+                      {roles.map((role) => (
+                        <SelectItem key={role} value={role} className="cursor-pointer hover:bg-gray-100">
+                          {role.charAt(0).toUpperCase() + role.slice(1)}
                         </SelectItem>
                       ))}
                     </SelectContent>

@@ -7,6 +7,7 @@ export const RegisterSchema = z.object({
     .max(30, "Username must be at most 30 characters long"),
   country: z.string().nonempty("Country is required"),
   gender: z.enum(["male", "female", "other", ""]),
+  role: z.enum(["learner", "organizer", ""]),
   email: z.email("Invalid email address"),
   password: z.string().min(8, "Password must be at least 8 characters long"),
 });
@@ -31,6 +32,17 @@ export const PostSchema = z.object({
     .optional()
     .transform((v) => (v == null || v === "" ? undefined : Number(v)))
     .pipe(z.number().int().positive().optional()),
+});
+
+export const ProfileSchema = z.object({
+  username: z
+    .string()
+    .min(2, "Username must be at least 2 characters long")
+    .max(30, "Username must be at most 30 characters long"),
+  gender: z.enum(["male", "female", "other"]),
+  role: z.enum(["learner", "organizer"]),
+  country: z.string().nonempty("Country is required"),
+  bio: z.string().max(160, "Bio must be at most 160 characters long").optional(),
 });
 
 export type PostFormInput = z.input<typeof PostSchema>; // groupSize/chatId are strings

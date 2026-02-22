@@ -1,5 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
-import { GenderType } from 'src/shared/enums/enums';
+import { GenderType, RoleType } from 'src/shared/enums/enums';
 
 export class EditUserDto {
   @IsNotEmpty()
@@ -9,5 +9,10 @@ export class EditUserDto {
   gender: GenderType;
 
   @IsNotEmpty()
+  role: RoleType;
+
+  @IsNotEmpty()
   country: string;
+
+  bio?: string;
 }

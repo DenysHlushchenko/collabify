@@ -1,15 +1,20 @@
-import { useAuthStore } from "@/modules/auth/store/userStore";
+import { cn } from "../lib/utils";
 import { convertNameToInitial } from "../utils/utils";
 import { Avatar, AvatarFallback } from "./ui/Avatar";
 
-const User = () => {
-  const initial = useAuthStore((state) => {
-    const user = state.getUser();
-    return convertNameToInitial(user?.username);
-  });
+interface UserProps {
+  username?: string;
+  className: string;
+  fallbackClassName?: string;
+}
+
+const User = ({ username, className, fallbackClassName }: UserProps) => {
+  const initial = convertNameToInitial(username);
   return (
-    <Avatar className="h-9 w-9">
-      <AvatarFallback className="flex-center bg-[#6395CD]">{initial}</AvatarFallback>
+    <Avatar className={className}>
+      <AvatarFallback className={cn(fallbackClassName, "flex-center bg-[#6395CD] text-white")}>
+        {initial}
+      </AvatarFallback>
     </Avatar>
   );
 };

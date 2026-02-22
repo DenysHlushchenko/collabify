@@ -92,6 +92,7 @@ export class PostService {
     const db = this.postRepository.createQueryBuilder('post');
 
     db.leftJoinAndSelect('post.user', 'user');
+    db.leftJoinAndSelect('user.country', 'country');
     db.leftJoinAndSelect('post.postTags', 'postTags');
     db.leftJoinAndSelect('postTags.tag', 'tag');
     db.leftJoinAndSelect('post.comments', 'comments');

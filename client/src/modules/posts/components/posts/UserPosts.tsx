@@ -26,7 +26,7 @@ const UserPosts = ({ posts }: { posts: PostType[] }) => {
       const axiosError = error as AxiosError<{ message: string }>;
       const backendError = axiosError.response?.data?.message || "Something went wrong. Please try again.";
       setError(backendError);
-      console.error("Post creation failed:", error);
+      console.error("Post creation failed: ", error);
     },
   });
 
