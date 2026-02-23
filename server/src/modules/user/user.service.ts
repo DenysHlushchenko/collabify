@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
@@ -7,6 +7,7 @@ import { DuplicatedEmailException } from 'src/shared/exceptions/DuplictedEmail.e
 import bcrypt from 'bcrypt';
 import { CountryService } from 'src/modules/country/country.service';
 import { EditUserDto } from './dtos/EditUserDto';
+import { UserDoesNotExistException } from 'src/shared/exceptions/UserDoesNotExist.exception';
 import { PostVoteStats, UserWithStats } from 'src/shared/types';
 import { assignBadges } from 'src/shared/utils/libs';
 
@@ -74,7 +75,7 @@ export class UserService {
     });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new UserDoesNotExistException();
     }
 
     const postCount = await this.usersRepository.manager
@@ -175,7 +176,7 @@ export class UserService {
     const user = await this.findById(id);
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new UserDoesNotExistException();
     }
 
     const countryEntity = await this.countryService.findOrCreateByName(country);
