@@ -17,28 +17,13 @@ export const LoginSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters long"),
 });
 
-export const CreatePostSchema = z.object({
+export const PostSchema = z.object({
   title: z.string().max(50, "Title must be at most 50 characters long").nonempty("Title is required"),
   description: z.string().trim().max(500, "Description is too long!").nonempty("Description is required"),
-  groupSize: z
-    .string()
-    .transform((v) => Number(v))
-    .pipe(z.number().int().min(2).max(10)),
-  tagInput: z.string().optional(),
+  groupSize: z.int().min(2, "Group size must be at least 2").max(10, "Group size cannot be more than 10"),
   tags: z.array(z.string().min(1)).min(1, "At least one tag is required").max(3, "Maximum 3 tags allowed"),
   chatTitle: z.string().trim().max(50, "Chat group title cannot be longer than 50 characters").optional(),
-  chatId: z.string().optional(),
-});
-
-export const UpdatePostSchmea = z.object({
-  title: z.string().max(50, "Title must be at most 50 characters long").nonempty("Title is required"),
-  description: z.string().trim().max(500, "Description is too long!").nonempty("Description is required"),
-  groupSize: z
-    .string()
-    .transform((v) => Number(v))
-    .pipe(z.number().int().min(2).max(10)),
-  tagInput: z.string().optional(),
-  tags: z.array(z.string().min(1)).min(1, "At least one tag is required").max(3, "Maximum 3 tags allowed"),
+  chatId: z.int().optional(),
 });
 
 export const ProfileSchema = z.object({
@@ -51,9 +36,3 @@ export const ProfileSchema = z.object({
   country: z.string().nonempty("Country is required"),
   bio: z.string().max(160, "Bio must be at most 160 characters long").optional(),
 });
-
-export type CreatePostInput = z.input<typeof CreatePostSchema>; // groupSize/chatId are strings
-export type CreatePostOutput = z.output<typeof CreatePostSchema>; // groupSize/chatId are number
-
-export type UpdatePostInput = z.input<typeof UpdatePostSchmea>; // groupSize is string
-export type UpdatePostOutput = z.output<typeof UpdatePostSchmea>; // groupSize is number

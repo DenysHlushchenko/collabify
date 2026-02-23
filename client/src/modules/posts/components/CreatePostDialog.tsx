@@ -24,7 +24,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "@/modules/sha
 import { Input } from "@/modules/shared/components/ui/Input";
 import { Textarea } from "@/modules/shared/components/ui/Textarea";
 import { Button } from "@/modules/shared/components/ui/Button";
-import { CreatePostSchema, type CreatePostInput, type CreatePostOutput } from "@/modules/shared/lib/validators";
+import { PostSchema, type CreatePostInput, type CreatePostOutput } from "@/modules/shared/lib/validators";
 import Error from "@/modules/shared/components/Error";
 import { type Control } from "react-hook-form";
 import z from "zod";
@@ -49,7 +49,7 @@ const CreatePostDialog = ({ submitPost }: PostDialogProps) => {
 
   const control = form.control as unknown as Control<CreatePostInput>;
 
-  const onSubmit = (values: z.output<typeof CreatePostSchema>) => {
+  const onSubmit = (values: z.output<typeof PostSchema>) => {
     submitPost(values);
     setDialogOpen(false);
     form.reset();

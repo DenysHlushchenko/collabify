@@ -120,7 +120,14 @@ export type PostFormValues = {
   groupSize: number;
   tags: string[];
   chatTitle?: string;
-  chatId?: string;
+  chatId?: number;
+};
+
+export type EditPostFormValues = {
+  title: string;
+  description: string;
+  groupSize: number;
+  tags: string[];
 };
 
 /* used to send request to the server */

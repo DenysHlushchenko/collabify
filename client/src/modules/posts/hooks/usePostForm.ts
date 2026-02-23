@@ -1,6 +1,6 @@
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CreatePostSchema, type CreatePostInput, type CreatePostOutput } from "@/modules/shared/lib/validators";
+import { PostSchema, type CreatePostInput, type CreatePostOutput } from "@/modules/shared/lib/validators";
 
 const MAX_TAGS = 3;
 
@@ -13,7 +13,7 @@ interface UsePostFormOptions {
 
 export const usePostForm = ({ mode = "create", defaultValues }: UsePostFormOptions) => {
   const form = useForm<CreatePostInput, unknown, CreatePostOutput>({
-    resolver: zodResolver(CreatePostSchema),
+    resolver: zodResolver(PostSchema),
     defaultValues: {
       title: "",
       description: "",
