@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { GenderType } from 'src/shared/enums/enums';
+import { GenderType, RoleType } from 'src/shared/enums/enums';
 import { RegisterUserDto } from './dtos/RegisterUser.dto';
 import { DuplicatedEmailException } from 'src/shared/exceptions/DuplictedEmail.exception';
 import { UserDoesNotExistException } from 'src/shared/exceptions/UserDoesNotExist.exception';
@@ -83,6 +82,7 @@ describe('UserService', () => {
     const dto: RegisterUserDto = {
       username: 'testuser',
       gender: GenderType.FEMALE,
+      role: RoleType.LEARNER,
       country: 'England',
       email: 'test@test.com',
       password: 'Password123',

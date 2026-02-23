@@ -33,6 +33,12 @@ export class Post {
   @UpdateDateColumn()
   updated_at: Date;
 
+  @Column({ default: 0, type: 'int' })
+  upvotesCount: number;
+
+  @Column({ default: 0, type: 'int' })
+  downvotesCount: number;
+
   @ManyToOne(() => User, (user) => user.posts)
   @JoinColumn({ name: 'user_id' })
   user: User;

@@ -8,6 +8,8 @@ import bcrypt from 'bcrypt';
 import { CountryService } from 'src/modules/country/country.service';
 import { EditUserDto } from './dtos/EditUserDto';
 import { UserDoesNotExistException } from 'src/shared/exceptions/UserDoesNotExist.exception';
+import { PostVoteStats, UserWithStats } from 'src/shared/types';
+import { assignBadges } from 'src/shared/utils/libs';
 
 enum Auth {
   SALT_ROUNDS = 10,
@@ -56,12 +58,90 @@ export class UserService {
   }
 
   /**
+   * Finds a user account by ID and retrieves associated statistics, including post count, comment count, feedback count, upvote count, downvote count, and badge counts. Throws NotFoundException if the user account is not found.
+   * @param id is required. It should be the ID of the user account to be retrieved.
+   * @returns a user account along with associated statistics and badge counts.
+   */
+  async findByIdWithStats(id: number): Promise<UserWithStats> {
+    const user = await this.usersRepository.findOne({
+      where: {
+        id,
+      },
+      relations: {
+        country: true,
+        posts: true,
+        chatMembers: true,
+      },
+    });
+
+    if (!user) {
+      throw new UserDoesNotExistException();
+    }
+
+    const postCount = await this.usersRepository.manager
+      .getRepository('posts')
+      .count({
+        where: {
+          user: { id },
+        },
+      });
+
+    const commentCount = await this.usersRepository.manager
+      .getRepository('comments')
+      .count({
+        where: {
+          sender: { id },
+        },
+      });
+
+    const postStats = await this.usersRepository.manager
+      .getRepository('posts')
+      .createQueryBuilder('post')
+      .where('post.user_id = :userId', { userId: id })
+      .select('SUM(post.upvotesCount)', 'upvotesCount')
+      .addSelect('SUM(post.downvotesCount)', 'downvotesCount')
+      .getRawOne<PostVoteStats>();
+
+    const totalUpvotes = Number(postStats?.upvotesCount) || 0;
+    const totalDownvotes = Number(postStats?.downvotesCount) || 0;
+
+    const feedbackCount = await this.usersRepository.manager
+      .getRepository('feedbacks')
+      .count({
+        where: {
+          user: { id },
+        },
+      });
+
+    const criteria = [
+      { type: 'POST_COUNT' as const, value: postCount },
+      { type: 'COMMENT_COUNT' as const, value: commentCount },
+      { type: 'POST_UPVOTES' as const, value: totalUpvotes },
+      { type: 'POST_DOWNVOTES' as const, value: totalDownvotes },
+      { type: 'FEEDBACK_COUNT' as const, value: feedbackCount },
+    ];
+
+    const badgeCounts = assignBadges({ criteria });
+    return {
+      user,
+      stats: {
+        postsCount: postCount,
+        commentsCount: commentCount,
+        feedbackCount,
+        upvotesCount: totalUpvotes,
+        downvotesCount: totalDownvotes,
+      },
+      badgeCounts,
+    };
+  }
+
+  /**
    * Creates a new user account with provided information. Throws DuplicatedEmailException if the email address is already in use.
    * @param body is required. It should contain username
    * @returns a newly created user account.
    */
   async create(body: RegisterUserDto): Promise<User> {
-    const { username, gender, country, email, password } = body;
+    const { username, gender, role, country, email, password } = body;
 
     const duplicatedUser = await this.findByEmail(email);
     if (duplicatedUser) {
@@ -74,6 +154,7 @@ export class UserService {
       this.usersRepository.create({
         username,
         gender,
+        role,
         country: countryEntity,
         email,
         reputation: 0,
@@ -91,7 +172,7 @@ export class UserService {
    * @returns an updated user account.
    */
   async updateUser(editUserDto: EditUserDto, id: number): Promise<User> {
-    const { username, gender, country } = editUserDto;
+    const { username, gender, role, country, bio } = editUserDto;
     const user = await this.findById(id);
 
     if (!user) {
@@ -102,7 +183,9 @@ export class UserService {
 
     user.username = username;
     user.gender = gender;
+    user.role = role;
     user.country = countryEntity;
+    user.bio = bio;
     user.updated_at = new Date();
 
     return this.usersRepository.save(user);

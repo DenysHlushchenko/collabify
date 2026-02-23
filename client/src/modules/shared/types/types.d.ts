@@ -1,18 +1,47 @@
+export type GenderType = "male" | "female" | "other";
+export type RoleType = "learner" | "organizer";
+
 export type UserType = {
-  id: string;
+  id: number;
   username: string;
-  country: string;
-  gender: string;
+  country: {
+    id: number;
+    name: string;
+  };
+  gender: GenderType;
+  role: RoleType;
   reputation: number;
+  bio?: string;
   email: string;
   createdAt: Date;
   updatedAt: Date;
+};
+
+export type EditUserType = {
+  username: string;
+  gender: GenderType;
+  role: RoleType;
+  country: string;
+  bio?: string;
+};
+
+export type UserTypeWithStats = {
+  user: UserType;
+  stats: {
+    postsCount: number;
+    commentsCount: number;
+    feedbackCount: number;
+    upvotesCount: number;
+    downvotesCount: number;
+  };
+  badgeCounts: BadgeCounts;
 };
 
 export type RegisterType = {
   username: string;
   country: string;
   gender: string;
+  role: string;
   email: string;
   password: string;
 };
@@ -117,3 +146,9 @@ export type JwtPayload = {
 };
 
 export type FilterType = "ASC" | "DESC" | undefined;
+
+export type BadgeCounts = {
+  GOLD: number;
+  SILVER: number;
+  BRONZE: number;
+};
