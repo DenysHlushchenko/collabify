@@ -1,3 +1,5 @@
+import { BADGE_CRITERIA } from 'src/constants';
+import { Chat } from 'src/modules/chat/entities/chat.entity';
 import { User } from 'src/modules/user/entities/user.entity';
 
 export interface ChatWithOwner extends Chat {
