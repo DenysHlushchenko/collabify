@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useAuthStore } from "@/modules/auth/store/userStore";
 import Filters from "@/modules/shared/components/Filters";
 import PostForm from "@/modules/shared/forms/PostForm";
-import type { PostSchema } from "@/modules/shared/lib/validators";
+import { PostSchema } from "@/modules/shared/lib/validators";
 
 const UserPosts = ({ posts }: { posts: PostType[] }) => {
   const [error, setError] = useState<string | null>(null);

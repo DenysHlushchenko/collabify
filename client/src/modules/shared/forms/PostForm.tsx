@@ -148,7 +148,12 @@ const PostForm = ({ type, postDetails, submitPost, error, isSubmitting }: PostFo
                 <FormItem>
                   <FormLabel>Group size</FormLabel>
                   <FormControl>
-                    <Input placeholder="Group size" {...field} type="number" />
+                    <Input
+                      placeholder="Group size"
+                      {...field}
+                      type="number"
+                      onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                    />
                   </FormControl>
                   {fieldState.error && <Error message={fieldState.error.message} />}
                 </FormItem>
@@ -185,7 +190,7 @@ const PostForm = ({ type, postDetails, submitPost, error, isSubmitting }: PostFo
                                   width={12}
                                   height={12}
                                   alt="Close icon"
-                                  className="cursor-pointer object-contain invert-0 dark:invert"
+                                  className="cursor-pointer object-contain invert-0"
                                 />
                               )}
                             </Badge>
@@ -198,60 +203,66 @@ const PostForm = ({ type, postDetails, submitPost, error, isSubmitting }: PostFo
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="chatTitle"
-              render={({ field, fieldState }) => (
-                <FormItem>
-                  <FormLabel>Chat title</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Chat title..." {...field} />
-                  </FormControl>
-                  {fieldState.error && <Error message={fieldState.error.message} />}
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="chatId"
-              render={({ field, fieldState }) => (
-                <FormItem>
-                  <FormLabel>Chats</FormLabel>
-                  <Select onValueChange={(value) => field.onChange(Number(value))} value={field.value?.toString()}>
+            {type === "create" && (
+              <FormField
+                control={form.control}
+                name="chatTitle"
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel>Chat title</FormLabel>
                     <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select your chat" />
-                      </SelectTrigger>
+                      <Input placeholder="Chat title..." {...field} />
                     </FormControl>
+                    {fieldState.error && <Error message={fieldState.error.message} />}
+                  </FormItem>
+                )}
+              />
+            )}
 
-                    <SelectContent className="bg-white">
-                      {chats?.map((chat) => (
-                        <SelectItem
-                          key={chat.id}
-                          value={chat.id.toString()}
-                          className="cursor-pointer hover:bg-gray-100"
-                        >
-                          {chat.title}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {fieldState.error && <Error message={fieldState.error.message} />}
-                </FormItem>
-              )}
-            />
+            {type === "create" && chats && chats?.length > 0 && (
+              <FormField
+                control={form.control}
+                name="chatId"
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel>Chats</FormLabel>
+                    <Select onValueChange={(value) => field.onChange(Number(value))} value={field.value?.toString()}>
+                      <FormControl>
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select your chat" />
+                        </SelectTrigger>
+                      </FormControl>
+
+                      <SelectContent className="bg-white">
+                        {chats?.map((chat) => (
+                          <SelectItem
+                            key={chat.id}
+                            value={chat.id.toString()}
+                            className="cursor-pointer hover:bg-gray-100"
+                          >
+                            {chat.title}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    {fieldState.error && <Error message={fieldState.error.message} />}
+                  </FormItem>
+                )}
+              />
+            )}
 
             <DialogFooter className="flex flex-col gap-2.5 sm:flex-row sm:gap-3">
               <Button
                 type="submit"
                 className="background-blue cursor-pointer border text-white hover:bg-[#226abb] sm:flex-1"
               >
-                {isSubmitting ? (
-                  <>{type === "edit" ? "Editing..." : "Edit"}</>
-                ) : (
-                  <>{type === "create" ? "Creating a Post" : "Create"}</>
-                )}
+                {isSubmitting
+                  ? type === "create"
+                    ? "Creating..."
+                    : "Editing..."
+                  : type === "create"
+                    ? "Create"
+                    : "Edit"}
               </Button>
               <DialogClose asChild>
                 <Button onClick={reset} variant="outline" className="cursor-pointer hover:bg-gray-100 sm:flex-1">

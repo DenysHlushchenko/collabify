@@ -329,10 +329,7 @@ describe('PostService', () => {
 
       expect(mockUserSevice.findById).toHaveBeenCalledWith(999);
       expect(mockPostRepository.find).toHaveBeenCalledWith({
-        relations: ['postTags.tag', 'comments'],
-        where: {
-          user: mockUser,
-        },
+        relations: ['user', 'postTags', 'postTags.tag', 'comments'],
         order: {
           created_at: 'DESC',
           updated_at: 'DESC',
