@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Post } from './entities/post.entity';
@@ -9,6 +13,7 @@ import { ChatService } from '../chat/chat.service';
 import { Chat } from '../chat/entities/chat.entity';
 import { TagService } from '../tag/tag.service';
 import { PostTag } from '../tag/entities/post_tag.entity';
+import { UpdatePostDto } from './dtos/UpdatePost.dto';
 
 @Injectable()
 export class PostService {
@@ -54,7 +59,7 @@ export class PostService {
 
     if (tagNames) {
       const tags = await this.tagService.findOrCreateMany(tagNames);
-      const postTagRepo = this.postRepository.manager.getRepository(PostTag);
+      const postTagRepo = this.getPostTagRepository();
       const postTags = tags.map((tag) =>
         postTagRepo.create({ postId: savedPost.id, tagId: tag.id }),
       );
@@ -122,7 +127,7 @@ export class PostService {
     }
 
     return await this.postRepository.find({
-      relations: ['postTags.tag', 'comments'],
+      relations: ['user', 'postTags', 'postTags.tag', 'comments'],
       where: {
         user: existingUser,
       },
@@ -131,5 +136,103 @@ export class PostService {
         updated_at: 'DESC',
       },
     });
+  }
+
+  /**
+   * Returns a specific post identified by provided ID.
+   * @param id
+   * @returns an exising post by ID; otherwise returns null.
+   */
+  async getPostById(id: number, userId: number): Promise<Post | null> {
+    return await this.postRepository.findOneOrFail({
+      relations: ['user', 'postTags', 'postTags.tag', 'comments'],
+      where: {
+        id,
+        user: { id: userId },
+      },
+    });
+  }
+
+  /**
+   * Updates user's post by post ID.
+   * @param updatePostDto (title, description, groupSize, postId, userId, tags).
+   */
+  async updatePost(
+    id: number,
+    updatePostDto: UpdatePostDto,
+    userId: number,
+  ): Promise<void> {
+    const { title, description, groupSize, tags: tagNames } = updatePostDto;
+
+    const currentUser = await this.userService.findById(userId);
+
+    if (!currentUser) {
+      throw new UserDoesNotExistException();
+    }
+
+    const post = await this.getPostById(id, userId);
+    if (!post) throw new NotFoundException('Post is not found');
+
+    if (post.user.id !== userId) {
+      throw new ForbiddenException(
+        'You are not authorized to update this post',
+      );
+    }
+
+    post.title = title;
+    post.description = description;
+    post.group_size = groupSize;
+
+    const postTagRepo = this.getPostTagRepository();
+
+    /* 
+        Clean up the post tags, then assign the changes and save the post update
+    */
+    await postTagRepo.delete({ post: { id: post.id } });
+
+    if (tagNames?.length > 0) {
+      const tags = await this.tagService.findOrCreateMany(tagNames);
+
+      post.postTags = tags.map((tag) => {
+        const postTag = new PostTag();
+        postTag.tag = tag;
+        postTag.post = post;
+        return postTag;
+      });
+    }
+
+    await this.postRepository.save(post);
+  }
+
+  /**
+   * Deletes a user's post by providing post ID and user ID.
+   * @param postId required.
+   * @param userId required.
+   */
+  async deletePost(postId: number, userId: number): Promise<void> {
+    const currentUser = await this.userService.findById(userId);
+    if (!currentUser) {
+      throw new UserDoesNotExistException();
+    }
+
+    const post = await this.getPostById(postId, userId);
+    if (!post) {
+      throw new NotFoundException('Post is not found');
+    }
+
+    if (post.user.id !== userId) {
+      throw new ForbiddenException(
+        'You are not authorized to delete this post',
+      );
+    }
+
+    const postTagRepo = this.getPostTagRepository();
+    await postTagRepo.delete({ post: { id: post.id } });
+
+    await this.postRepository.delete(postId);
+  }
+
+  private getPostTagRepository(): Repository<PostTag> {
+    return this.postRepository.manager.getRepository(PostTag);
   }
 }
