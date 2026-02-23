@@ -143,12 +143,11 @@ export class PostService {
    * @param id
    * @returns an exising post by ID; otherwise returns null.
    */
-  async getPostById(id: number, userId: number): Promise<Post | null> {
+  async getPostById(id: number): Promise<Post | null> {
     return await this.postRepository.findOneOrFail({
       relations: ['user', 'postTags', 'postTags.tag', 'comments'],
       where: {
         id,
-        user: { id: userId },
       },
     });
   }
@@ -170,7 +169,7 @@ export class PostService {
       throw new UserDoesNotExistException();
     }
 
-    const post = await this.getPostById(id, userId);
+    const post = await this.getPostById(id);
     if (!post) throw new NotFoundException('Post is not found');
 
     if (post.user.id !== userId) {
@@ -215,7 +214,7 @@ export class PostService {
       throw new UserDoesNotExistException();
     }
 
-    const post = await this.getPostById(postId, userId);
+    const post = await this.getPostById(postId);
     if (!post) {
       throw new NotFoundException('Post is not found');
     }

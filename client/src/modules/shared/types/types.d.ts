@@ -123,6 +123,13 @@ export type PostFormValues = {
   chatId?: number | undefined;
 };
 
+export type EditPostFormValues = {
+  title: string;
+  description: string;
+  groupSize: number;
+  tags: string[];
+};
+
 /* used to send request to the server */
 export type CreatePostPayload = {
   title: string;

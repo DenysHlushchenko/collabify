@@ -41,11 +41,8 @@ export class PostController {
   }
 
   @Get(':id')
-  async getPostById(
-    @Param('id', ParseIntPipe) id: number,
-    @CurrentUser() user: User,
-  ) {
-    return await this.postService.getPostById(id, user.id);
+  async getPostById(@Param('id', ParseIntPipe) id: number) {
+    return await this.postService.getPostById(id);
   }
 
   @Put(':id')
