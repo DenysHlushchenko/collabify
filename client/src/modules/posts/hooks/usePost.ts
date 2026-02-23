@@ -1,6 +1,6 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllChatsByUserId } from "@/modules/chats/api/chat";
-import { createPost, getPosts, getUserPosts } from "../api/post";
+import { createPost, getPostById, getPosts, getUserPosts, updatePost } from "../api/post";
 import type { AxiosError } from "axios";
 import { useState } from "react";
 import { useAuthStore } from "@/modules/auth/store/userStore";
@@ -22,11 +22,11 @@ export const usePost = () => {
   const filter = searchParams.get("filter") as FilterType;
   const search = searchParams.get("search");
 
-  const useChatsQuery = (userId?: number) => {
+  const useChatsQuery = (userId?: number, edit?: boolean) => {
     return useQuery({
       queryKey: ["chats", userId],
       queryFn: () => (userId ? getAllChatsByUserId(userId) : null),
-      enabled: !!userId,
+      enabled: !edit,
       staleTime: 1000 * 10,
       retry: 2,
     });
@@ -38,6 +38,13 @@ export const usePost = () => {
       queryFn: () => getPosts(filter, search!),
       placeholderData: keepPreviousData,
       staleTime: 1000 * 30,
+    });
+  };
+
+  const usePostQuery = (postId: number) => {
+    return useQuery({
+      queryKey: ["post", token],
+      queryFn: () => getPostById(postId),
     });
   };
 
@@ -67,12 +74,31 @@ export const usePost = () => {
     });
   };
 
+  const useUpdatePostMutation = () => {
+    return useMutation({
+      mutationFn: updatePost,
+
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: ["posts"] });
+      },
+
+      onError: (error) => {
+        const axiosError = error as AxiosError<{ message: string }>;
+        const backendError = axiosError.response?.data?.message || "Something went wrong. Please try again.";
+        setError(backendError);
+        console.error("Post update failed: ", error);
+      },
+    });
+  };
+
   return {
     error,
     user,
     useChatsQuery,
+    usePostQuery,
     usePostsQuery,
     useUserPostsQuery,
     useCreatePostMutation,
+    useUpdatePostMutation,
   };
 };

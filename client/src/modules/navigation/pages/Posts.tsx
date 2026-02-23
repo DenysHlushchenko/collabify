@@ -13,7 +13,7 @@ const Posts = () => {
 
   return (
     <>
-      <h1 className="h2-bold text-center">My Posts</h1>
+      <h1 className="h2-semibold text-center">My Posts</h1>
       <Separator className="border-gray my-5" />
       <PostsContainer posts={data} />
     </>

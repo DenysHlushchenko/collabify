@@ -14,14 +14,9 @@ import {
 } from "@/modules/shared/components/ui/Card";
 import PostTag from "./PostTag";
 import { Link } from "react-router-dom";
+import PostFooter from "./PostFooter";
 
 const MAX_DESCRIPTION_LENGTH = 90;
-
-interface PostFooterProps {
-  count: number;
-  imgSrc: string;
-  alt: string;
-}
 
 interface PostProps {
   post: PostType;
@@ -30,15 +25,6 @@ interface PostProps {
 const Post = ({ post }: PostProps) => {
   const desc = post.description;
   const adjustedDesc = desc.length >= MAX_DESCRIPTION_LENGTH ? `${desc.substring(0, MAX_DESCRIPTION_LENGTH)}...` : desc;
-
-  const PostFooter = (props: PostFooterProps) => {
-    return (
-      <div className="small-medium flex cursor-pointer items-center gap-x-1">
-        <img src={props.imgSrc} alt={props.alt} />
-        <p>{props.count}</p>
-      </div>
-    );
-  };
 
   return (
     <>
@@ -57,8 +43,10 @@ const Post = ({ post }: PostProps) => {
             </div>
           </CardTitle>
 
-          <CardDescription className="body-medium">{post.title}</CardDescription>
-          <CardDescription className="small-regular">{adjustedDesc}</CardDescription>
+          <Link to={`/posts/${post.id}`} className="flex cursor-pointer flex-col gap-2">
+            <CardDescription className="body-medium">{post.title}</CardDescription>
+            <CardDescription className="small-regular">{adjustedDesc}</CardDescription>
+          </Link>
           <CardAction>
             <Button className="body-semibold h-6 w-16 cursor-pointer rounded-lg bg-[#99dfc4] text-[#2d634e] hover:bg-[#acf0d6]">
               Join

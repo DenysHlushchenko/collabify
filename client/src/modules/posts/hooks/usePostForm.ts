@@ -59,6 +59,6 @@ export const usePostForm = ({ mode = "create", defaultValues }: UsePostFormOptio
     addTag,
     removeTag,
     MAX_TAGS,
-    isCreateMode: mode === "create",
+    mode,
   };
 };

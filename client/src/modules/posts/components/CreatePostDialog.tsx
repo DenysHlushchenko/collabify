@@ -45,7 +45,7 @@ const CreatePostDialog = ({ submitPost }: PostDialogProps) => {
   const { form, tags, addTag, removeTag } = usePostForm({ mode: "create" });
 
   const { useChatsQuery } = usePost();
-  const { data: chats, isPending, isError } = useChatsQuery(user?.id);
+  const { data: chats, isPending, isError } = useChatsQuery(user?.id, true);
 
   const control = form.control as unknown as Control<CreatePostInput>;
 
@@ -78,180 +78,178 @@ const CreatePostDialog = ({ submitPost }: PostDialogProps) => {
             </DialogDescription>
           </DialogHeader>
 
-          <Form {...form}>
-            <form className="space-y-5 py-4" onSubmit={form.handleSubmit(onSubmit)}>
-              <FormField
-                control={control}
-                name="title"
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>Title</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter your title..." type="text" {...field} />
-                    </FormControl>
-                    {fieldState.error && <Error message={fieldState.error.message} />}
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={control}
-                name="description"
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>Description</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        id="textarea-message"
-                        placeholder="Add your post description..."
-                        className="resize-none"
-                        {...field}
-                      />
-                    </FormControl>
-                    {fieldState.error && <Error message={fieldState.error.message} />}
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={control}
-                name="groupSize"
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>Group Size</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter group size" type="number" min={2} max={10} {...field} />
-                    </FormControl>
-                    {fieldState.error && <Error message={fieldState.error.message} />}
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={control}
-                name="tagInput"
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>Tags</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        disabled={tags.length >= MAX_TAGS}
-                        type="text"
-                        placeholder="Add tags..."
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter" && field.value) {
-                            e.preventDefault();
-                            addTag(field.value as string);
-                            field.onChange("");
-                          }
-                        }}
-                      />
-                    </FormControl>
-                    {fieldState.error && <Error message={fieldState.error.message} />}
-                  </FormItem>
-                )}
-              />
-
-              <div className="flex gap-1">
-                {tags.map((tag) => (
-                  <PostTag key={tag} isDeletable label={tag} removeTag={removeTag} />
-                ))}
-              </div>
-
-              <FormField
-                control={control}
-                name="tags"
-                render={({ fieldState }) => <>{fieldState.error && <Error message={fieldState.error.message} />}</>}
-              />
-
-              <FormField
-                control={control}
-                name="chatTitle"
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>Create a new chat</FormLabel>
-                    <FormControl>
-                      <Input {...field} type="text" placeholder="Add your chat title..." />
-                    </FormControl>
-                    {fieldState.error && <Error message={fieldState.error.message} />}
-                  </FormItem>
-                )}
-              />
-
-              {chats && chats.length > 0 && (
-                <FormField
-                  control={control}
-                  name="chatId"
-                  render={({ field, fieldState }) => (
-                    <FormItem>
-                      <FormLabel>Select an existing chat</FormLabel>
-
-                      <Select
-                        value={field.value ?? ""}
-                        onValueChange={(value) => field.onChange(value === "none" ? "" : value)}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-full cursor-pointer">
-                            <SelectValue
-                              placeholder={
-                                isPending
-                                  ? "Loading..."
-                                  : isError
-                                    ? "Error while fetching chats."
-                                    : "Select an available chat"
-                              }
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-
-                        <SelectContent className="bg-white">
-                          <SelectGroup>
-                            <SelectLabel className="bg-gray-200">Chats</SelectLabel>
-
-                            <SelectItem value="none" className="cursor-pointer hover:bg-gray-100">
-                              None
-                            </SelectItem>
-
-                            {chats?.map((chat: ChatType) => (
-                              <SelectItem
-                                key={chat.id}
-                                value={String(chat.id)}
-                                className="cursor-pointer hover:bg-gray-100"
-                              >
-                                {chat.title}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-
-                      {fieldState.error && <Error message={fieldState.error.message} />}
-                    </FormItem>
-                  )}
-                />
+          <form className="space-y-5 py-4" onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              control={control}
+              name="title"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel>Title</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your title..." type="text" {...field} />
+                  </FormControl>
+                  {fieldState.error && <Error message={fieldState.error.message} />}
+                </FormItem>
               )}
+            />
 
-              <DialogFooter className="flex flex-col gap-2.5 sm:flex-row sm:gap-3">
+            <FormField
+              control={control}
+              name="description"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      id="textarea-message"
+                      placeholder="Add your post description..."
+                      className="resize-none"
+                      {...field}
+                    />
+                  </FormControl>
+                  {fieldState.error && <Error message={fieldState.error.message} />}
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
+              name="groupSize"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel>Group Size</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter group size" type="number" min={2} max={10} {...field} />
+                  </FormControl>
+                  {fieldState.error && <Error message={fieldState.error.message} />}
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
+              name="tagInput"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel>Tags</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      disabled={tags.length >= MAX_TAGS}
+                      type="text"
+                      placeholder="Add tags..."
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && field.value) {
+                          e.preventDefault();
+                          addTag(field.value as string);
+                          field.onChange("");
+                        }
+                      }}
+                    />
+                  </FormControl>
+                  {fieldState.error && <Error message={fieldState.error.message} />}
+                </FormItem>
+              )}
+            />
+
+            <div className="flex gap-1">
+              {tags.map((tag) => (
+                <PostTag key={tag} isDeletable label={tag} removeTag={removeTag} />
+              ))}
+            </div>
+
+            <FormField
+              control={control}
+              name="tags"
+              render={({ fieldState }) => <>{fieldState.error && <Error message={fieldState.error.message} />}</>}
+            />
+
+            <FormField
+              control={control}
+              name="chatTitle"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel>Create a new chat</FormLabel>
+                  <FormControl>
+                    <Input {...field} type="text" placeholder="Add your chat title..." />
+                  </FormControl>
+                  {fieldState.error && <Error message={fieldState.error.message} />}
+                </FormItem>
+              )}
+            />
+
+            {chats && chats.length > 0 && (
+              <FormField
+                control={control}
+                name="chatId"
+                render={({ field, fieldState }) => (
+                  <FormItem>
+                    <FormLabel>Select an existing chat</FormLabel>
+
+                    <Select
+                      value={field.value ?? ""}
+                      onValueChange={(value) => field.onChange(value === "none" ? "" : value)}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-full cursor-pointer">
+                          <SelectValue
+                            placeholder={
+                              isPending
+                                ? "Loading..."
+                                : isError
+                                  ? "Error while fetching chats."
+                                  : "Select an available chat"
+                            }
+                          />
+                        </SelectTrigger>
+                      </FormControl>
+
+                      <SelectContent className="bg-white">
+                        <SelectGroup>
+                          <SelectLabel className="bg-gray-200">Chats</SelectLabel>
+
+                          <SelectItem value="none" className="cursor-pointer hover:bg-gray-100">
+                            None
+                          </SelectItem>
+
+                          {chats?.map((chat: ChatType) => (
+                            <SelectItem
+                              key={chat.id}
+                              value={String(chat.id)}
+                              className="cursor-pointer hover:bg-gray-100"
+                            >
+                              {chat.title}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+
+                    {fieldState.error && <Error message={fieldState.error.message} />}
+                  </FormItem>
+                )}
+              />
+            )}
+
+            <DialogFooter className="flex flex-col gap-2.5 sm:flex-row sm:gap-3">
+              <Button
+                type="submit"
+                className="background-blue cursor-pointer border text-white hover:bg-[#226abb] sm:flex-1"
+              >
+                Create
+              </Button>
+
+              <DialogClose asChild>
                 <Button
-                  type="submit"
-                  className="background-blue cursor-pointer border text-white hover:bg-[#226abb] sm:flex-1"
+                  onClick={() => form.reset()}
+                  variant="outline"
+                  className="cursor-pointer hover:bg-gray-100 sm:flex-1"
                 >
-                  Create
+                  Cancel
                 </Button>
-
-                <DialogClose asChild>
-                  <Button
-                    onClick={() => form.reset()}
-                    variant="outline"
-                    className="cursor-pointer hover:bg-gray-100 sm:flex-1"
-                  >
-                    Cancel
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </form>
-          </Form>
+              </DialogClose>
+            </DialogFooter>
+          </form>
         </DialogContent>
       </Form>
     </Dialog>

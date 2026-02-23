@@ -8,17 +8,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/modules/shared/components/ui/Dialog";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/modules/shared/components/ui/Select";
-import type { ChatType } from "@/modules/shared/types/types";
-import { useAuthStore } from "@/modules/auth/store/userStore";
 import { useState } from "react";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/modules/shared/components/ui/Form";
 import { Input } from "@/modules/shared/components/ui/Input";
@@ -30,22 +19,18 @@ import { type Control } from "react-hook-form";
 import z from "zod";
 import PostTag from "./PostTag";
 import { usePostForm } from "../hooks/usePostForm";
-import { usePost } from "@/modules/posts/hooks/usePost";
 
 const MAX_TAGS = 3;
 
 interface PostDialogProps {
   submitPost: (values: CreatePostOutput & { tags: string[] }) => void;
+  open: boolean;
 }
 
-const UpdatePostDialog = ({ submitPost }: PostDialogProps) => {
+const UpdatePostDialog = ({ submitPost, open }: PostDialogProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
-  const user = useAuthStore().getUser();
 
   const { form, tags, addTag, removeTag } = usePostForm({ mode: "edit" });
-
-  const { useChatsQuery } = usePost();
-  const { data: chats, isPending, isError } = useChatsQuery(user?.id);
 
   const control = form.control as unknown as Control<CreatePostInput>;
 
@@ -72,10 +57,8 @@ const UpdatePostDialog = ({ submitPost }: PostDialogProps) => {
 
         <DialogContent className="border-none bg-white [&>button:last-child]:hidden">
           <DialogHeader>
-            <DialogTitle>Add New Post</DialogTitle>
-            <DialogDescription className="body-light my-3">
-              Fill out the form below to create a new post.
-            </DialogDescription>
+            <DialogTitle>Edit Post</DialogTitle>
+            <DialogDescription className="body-light my-3">Fill out the form below to edit a post.</DialogDescription>
           </DialogHeader>
 
           <Form {...form}>
@@ -164,73 +147,6 @@ const UpdatePostDialog = ({ submitPost }: PostDialogProps) => {
                 name="tags"
                 render={({ fieldState }) => <>{fieldState.error && <Error message={fieldState.error.message} />}</>}
               />
-
-              <FormField
-                control={control}
-                name="chatTitle"
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>Create a new chat</FormLabel>
-                    <FormControl>
-                      <Input {...field} type="text" placeholder="Add your chat title..." />
-                    </FormControl>
-                    {fieldState.error && <Error message={fieldState.error.message} />}
-                  </FormItem>
-                )}
-              />
-
-              {chats && chats.length > 0 && (
-                <FormField
-                  control={control}
-                  name="chatId"
-                  render={({ field, fieldState }) => (
-                    <FormItem>
-                      <FormLabel>Select an existing chat</FormLabel>
-
-                      <Select
-                        value={field.value ?? ""}
-                        onValueChange={(value) => field.onChange(value === "none" ? "" : value)}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="w-full cursor-pointer">
-                            <SelectValue
-                              placeholder={
-                                isPending
-                                  ? "Loading..."
-                                  : isError
-                                    ? "Error while fetching chats."
-                                    : "Select an available chat"
-                              }
-                            />
-                          </SelectTrigger>
-                        </FormControl>
-
-                        <SelectContent className="bg-white">
-                          <SelectGroup>
-                            <SelectLabel className="bg-gray-200">Chats</SelectLabel>
-
-                            <SelectItem value="none" className="cursor-pointer hover:bg-gray-100">
-                              None
-                            </SelectItem>
-
-                            {chats?.map((chat: ChatType) => (
-                              <SelectItem
-                                key={chat.id}
-                                value={String(chat.id)}
-                                className="cursor-pointer hover:bg-gray-100"
-                              >
-                                {chat.title}
-                              </SelectItem>
-                            ))}
-                          </SelectGroup>
-                        </SelectContent>
-                      </Select>
-
-                      {fieldState.error && <Error message={fieldState.error.message} />}
-                    </FormItem>
-                  )}
-                />
-              )}
 
               <DialogFooter className="flex flex-col gap-2.5 sm:flex-row sm:gap-3">
                 <Button

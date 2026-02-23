@@ -134,6 +134,14 @@ export type CreatePostPayload = {
   chatId?: number;
 };
 
+export type UpdatePostPayload = {
+  postId: number;
+  title: string;
+  description: string;
+  groupSize: number;
+  tags: string[];
+};
+
 export type AuthResponse = {
   accessToken: string;
 };
