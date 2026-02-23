@@ -1,14 +1,14 @@
 import type { PostFormValues, PostType } from "@/modules/shared/types/types";
-import Post from "@/modules/posts/components/posts/Post";
-import PostDialog from "./PostDialog";
+import Post from "@/modules/posts/components/Post";
+import CreatePostDialog from "./CreatePostDialog";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createPost } from "../../api/post";
+import { createPost } from "../api/post";
 import type { AxiosError } from "axios";
 import { useState } from "react";
 import { useAuthStore } from "@/modules/auth/store/userStore";
 import Filters from "@/modules/shared/components/Filters";
 
-const UserPosts = ({ posts }: { posts: PostType[] }) => {
+const PostsContainer = ({ posts }: { posts: PostType[] }) => {
   const [error, setError] = useState<string | null>(null);
   const user = useAuthStore().getUser();
 
@@ -39,7 +39,7 @@ const UserPosts = ({ posts }: { posts: PostType[] }) => {
       groupSize: values.groupSize,
       tags: values.tags,
       userId: user.id,
-      chatId: values.chatId,
+      chatId: Number(values.chatId),
       chatTitle: values.chatTitle,
     });
   };
@@ -48,15 +48,16 @@ const UserPosts = ({ posts }: { posts: PostType[] }) => {
     <div>
       <div className="flex-between mb-4">
         <Filters />
-        <PostDialog submitPost={submitPost} error={error} />
+        <CreatePostDialog submitPost={submitPost} />
       </div>
       {posts.length !== 0 ? (
-        posts.map((post: PostType) => <Post key={post.id} post={post} />)
+        posts.map((post: PostType) => <Post isUserPost={false} key={post.id} post={post} />)
       ) : (
         <h1 className="pt-10 text-center text-sm">No posts yet!</h1>
       )}
+      {error}
     </div>
   );
 };
 
-export default UserPosts;
+export default PostsContainer;

@@ -27,11 +27,7 @@ export const PostSchema = z.object({
   tagInput: z.string().optional(),
   tags: z.array(z.string().min(1)).min(1, "At least one tag is required").max(3, "Maximum 3 tags allowed"),
   chatTitle: z.string().trim().max(50, "Chat group title cannot be longer than 50 characters").optional(),
-  chatId: z
-    .string()
-    .optional()
-    .transform((v) => (v == null || v === "" ? undefined : Number(v)))
-    .pipe(z.number().int().positive().optional()),
+  chatId: z.string().optional(),
 });
 
 export const ProfileSchema = z.object({

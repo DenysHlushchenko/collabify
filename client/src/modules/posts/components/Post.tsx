@@ -23,7 +23,12 @@ interface PostFooterProps {
   alt: string;
 }
 
-const Post = ({ post }: { post: PostType }) => {
+interface PostProps {
+  post: PostType;
+  isUserPost: boolean;
+}
+
+const Post = ({ post, isUserPost }: PostProps) => {
   const desc = post.description;
   const adjustedDesc = desc.length >= MAX_DESCRIPTION_LENGTH ? `${desc.substring(0, MAX_DESCRIPTION_LENGTH)}...` : desc;
 
@@ -42,12 +47,16 @@ const Post = ({ post }: { post: PostType }) => {
         <CardHeader className="">
           <CardTitle className="small-semibold post-author-color">
             <div className="flex-start gap-x-2">
-              <Link to={`/profile/${post.user.id}`}>
-                <Avatar className="flex-center bg-[#D9D9D9] text-gray-500">
-                  <AvatarFallback>{convertNameToInitial(post.user.username)}</AvatarFallback>
-                </Avatar>
-              </Link>
-              <p>c/{post.user.username}</p>
+              {!isUserPost && (
+                <>
+                  <Link to={`/profile/${post.user.id}`}>
+                    <Avatar className="flex-center bg-[#D9D9D9] text-gray-500">
+                      <AvatarFallback>{convertNameToInitial(post.user.username)}</AvatarFallback>
+                    </Avatar>
+                  </Link>
+                  <p>c/{post.user.username}</p>
+                </>
+              )}
               <span className="text-gray-400">{convertToDateString(post.created_at)}</span>
             </div>
           </CardTitle>

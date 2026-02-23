@@ -1,4 +1,4 @@
-import UserPosts from "@/modules/posts/components/posts/UserPosts";
+import PostsContainer from "@/modules/posts/components/PostsContainer";
 import Error from "@/modules/shared/components/Error";
 import { Skeleton } from "@/modules/shared/components/ui/Skeleton";
 import { useAuthStore } from "@/modules/auth/store/userStore";
@@ -38,7 +38,7 @@ const Home = () => {
   if (isError) return <Error message={`${error.message}: Sorry, there are currently no posts available.`} />;
   return (
     <>
-      <UserPosts posts={data} />
+      <PostsContainer posts={data} />
     </>
   );
 };

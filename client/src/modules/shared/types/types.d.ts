@@ -119,8 +119,8 @@ export type PostFormValues = {
   description: string;
   groupSize: number;
   tags: string[];
-  chatTitle?: string | undefined;
-  chatId?: number | undefined;
+  chatTitle?: string;
+  chatId?: string;
 };
 
 /* used to send request to the server */
