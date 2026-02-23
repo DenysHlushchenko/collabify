@@ -36,7 +36,20 @@ export class User {
   @Column({ enum: RoleType })
   role: RoleType;
 
-  @Column()
+  @Column({
+    type: 'decimal',
+    precision: 5,
+    scale: 2,
+    default: 0,
+    transformer: {
+      to(value: number): string | number {
+        return value;
+      },
+      from(value: string): number {
+        return value ? Number(value) : 0;
+      },
+    },
+  })
   reputation: number;
 
   @Column({ nullable: true })
@@ -71,6 +84,9 @@ export class User {
 
   @OneToMany(() => Feedback, (feedback) => feedback.user)
   feedbacks: Feedback[];
+
+  @OneToMany(() => Feedback, (feedback) => feedback.sender)
+  sentFeedbacks: Feedback[];
 
   @OneToMany(() => Notification, (notification) => notification.user)
   notifications: Notification[];

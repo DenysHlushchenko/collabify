@@ -16,10 +16,17 @@ export class Feedback {
   @Column()
   message: string;
 
+  @Column()
+  rating: number;
+
   @CreateDateColumn()
   created_at: Date;
 
   @ManyToOne(() => User, (user) => user.feedbacks)
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @ManyToOne(() => User, (user) => user.sentFeedbacks)
+  @JoinColumn({ name: 'sender_id' })
+  sender: User;
 }

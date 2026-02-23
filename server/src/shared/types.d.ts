@@ -30,3 +30,8 @@ export interface PostVoteStats {
   upvotesCount: string | null;
   downvotesCount: string | null;
 }
+
+export interface FeedbackStats {
+  avgRating: string | null;
+  feedbackCount: string | null;
+}
