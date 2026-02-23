@@ -40,12 +40,21 @@ export class PostController {
     return await this.postService.getAllPostsByUserId(userId);
   }
 
+  @Get(':id')
+  async getPostById(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: User,
+  ) {
+    return await this.postService.getPostById(id, user.id);
+  }
+
   @Put(':id')
   async updatePost(
     @Param('id', ParseIntPipe) id: number,
     @Body() updatePostDto: UpdatePostDto,
+    @CurrentUser() user: User,
   ): Promise<void> {
-    return await this.postService.updatePost(id, updatePostDto);
+    return await this.postService.updatePost(id, updatePostDto, user.id);
   }
 
   @Delete(':id')

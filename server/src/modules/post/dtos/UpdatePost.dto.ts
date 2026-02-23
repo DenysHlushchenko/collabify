@@ -5,7 +5,9 @@ import {
   IsNotEmpty,
   IsNumber,
   IsString,
+  Max,
   MaxLength,
+  Min,
 } from 'class-validator';
 
 export class UpdatePostDto {
@@ -17,6 +19,9 @@ export class UpdatePostDto {
   description: string;
 
   @IsNotEmpty()
+  @IsNumber()
+  @Min(2)
+  @Max(10)
   groupSize: number;
 
   @IsArray()
@@ -25,8 +30,4 @@ export class UpdatePostDto {
   @IsString({ each: true })
   @IsNotEmpty({ each: true })
   tags: string[];
-
-  @IsNotEmpty()
-  @IsNumber()
-  userId: number;
 }

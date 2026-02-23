@@ -9,7 +9,7 @@ import { UserDoesNotExistException } from 'src/shared/exceptions/UserDoesNotExis
 import { ChatService } from '../chat/chat.service';
 import { TagService } from '../tag/tag.service';
 import { PostTag } from '../tag/entities/post_tag.entity';
-import { NotFoundException } from '@nestjs/common';
+import { ForbiddenException, NotFoundException } from '@nestjs/common';
 
 describe('PostService', () => {
   let postService: PostService;
@@ -433,7 +433,7 @@ describe('PostService', () => {
         { id: 22, name: 'advanced' },
       ]);
 
-      await postService.updatePost(42, dto);
+      await postService.updatePost(42, dto, mockUser.id);
 
       expect(mockUserSevice.findById).toHaveBeenCalledWith(777);
       expect(mockPostTagRepo.delete).toHaveBeenCalledWith({ post: { id: 42 } });
@@ -459,12 +459,11 @@ describe('PostService', () => {
         description: 'New desc',
         groupSize: 6,
         tags: ['test'],
-        userId: 999,
       };
 
-      await expect(postService.updatePost(42, dto)).rejects.toThrow(
-        UserDoesNotExistException,
-      );
+      await expect(
+        postService.updatePost(42, dto, mockUser.id),
+      ).rejects.toThrow(UserDoesNotExistException);
 
       expect(mockPostTagRepo.delete).not.toHaveBeenCalled();
       expect(mockPostRepository.save).not.toHaveBeenCalled();
@@ -478,12 +477,11 @@ describe('PostService', () => {
         description: 'New desc',
         groupSize: 6,
         tags: ['update'],
-        userId: 777,
       };
 
-      await expect(postService.updatePost(999, dto)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        postService.updatePost(999, dto, mockUser.id),
+      ).rejects.toThrow(NotFoundException);
 
       expect(mockPostTagRepo.delete).not.toHaveBeenCalled();
       expect(mockPostRepository.save).not.toHaveBeenCalled();
@@ -495,14 +493,13 @@ describe('PostService', () => {
         description: 'Only one tag allowed',
         groupSize: 4,
         tags: ['important'],
-        userId: 777,
       };
 
       mockTagService.findOrCreateMany.mockResolvedValue([
         { id: 30, name: 'important' },
       ]);
 
-      await postService.updatePost(42, dto);
+      await postService.updatePost(42, dto, mockUser.id);
 
       expect(mockPostTagRepo.delete).toHaveBeenCalled();
       expect(existingPost.postTags).toHaveLength(1);
@@ -515,7 +512,6 @@ describe('PostService', () => {
         description: 'Testing limit',
         groupSize: 10,
         tags: ['tag1', 'tag2', 'tag3'],
-        userId: 777,
       };
 
       mockTagService.findOrCreateMany.mockResolvedValue([
@@ -524,7 +520,7 @@ describe('PostService', () => {
         { id: 33, name: 'tag3' },
       ]);
 
-      await postService.updatePost(42, dto);
+      await postService.updatePost(42, dto, mockUser.id);
 
       expect(existingPost.postTags).toHaveLength(3);
       expect(mockPostRepository.save).toHaveBeenCalled();
@@ -536,7 +532,6 @@ describe('PostService', () => {
         description: 'Testing duplicates',
         groupSize: 3,
         tags: ['react', 'react', 'frontend'],
-        userId: 777,
       };
 
       mockTagService.findOrCreateMany.mockResolvedValue([
@@ -545,10 +540,25 @@ describe('PostService', () => {
         { id: 41, name: 'frontend' },
       ]);
 
-      await postService.updatePost(42, dto);
+      await postService.updatePost(42, dto, mockUser.id);
 
       expect(existingPost.postTags).toHaveLength(3);
       expect(mockPostRepository.save).toHaveBeenCalled();
+    });
+
+    it("should throw ForbiddenException when user tries to update another user's post", async () => {
+      const dto = {
+        title: 'Unauthorized update',
+        description: 'Should fail',
+        groupSize: 5,
+        tags: ['test'],
+      };
+
+      await expect(postService.updatePost(42, dto, 888)).rejects.toThrow(
+        ForbiddenException,
+      );
+
+      expect(mockPostRepository.save).not.toHaveBeenCalled();
     });
   });
 

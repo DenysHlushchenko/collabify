@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Post } from './entities/post.entity';
@@ -123,7 +127,7 @@ export class PostService {
     }
 
     return await this.postRepository.find({
-      relations: ['postTags.tag', 'comments'],
+      relations: ['user', 'postTags', 'postTags.tag', 'comments'],
       where: {
         user: existingUser,
       },
@@ -139,11 +143,12 @@ export class PostService {
    * @param id
    * @returns an exising post by ID; otherwise returns null.
    */
-  async getPostById(id: number): Promise<Post | null> {
-    return await this.postRepository.findOne({
-      relations: ['postTags', 'postTags.tag', 'comments'],
+  async getPostById(id: number, userId: number): Promise<Post | null> {
+    return await this.postRepository.findOneOrFail({
+      relations: ['user', 'postTags', 'postTags.tag', 'comments'],
       where: {
         id,
+        user: { id: userId },
       },
     });
   }
@@ -152,14 +157,12 @@ export class PostService {
    * Updates user's post by post ID.
    * @param updatePostDto (title, description, groupSize, postId, userId, tags).
    */
-  async updatePost(id: number, updatePostDto: UpdatePostDto): Promise<void> {
-    const {
-      title,
-      description,
-      groupSize,
-      tags: tagNames,
-      userId,
-    } = updatePostDto;
+  async updatePost(
+    id: number,
+    updatePostDto: UpdatePostDto,
+    userId: number,
+  ): Promise<void> {
+    const { title, description, groupSize, tags: tagNames } = updatePostDto;
 
     const currentUser = await this.userService.findById(userId);
 
@@ -167,8 +170,14 @@ export class PostService {
       throw new UserDoesNotExistException();
     }
 
-    const post = await this.getPostById(id);
+    const post = await this.getPostById(id, userId);
     if (!post) throw new NotFoundException('Post is not found');
+
+    if (post.user.id !== userId) {
+      throw new ForbiddenException(
+        'You are not authorized to update this post',
+      );
+    }
 
     post.title = title;
     post.description = description;
@@ -206,9 +215,15 @@ export class PostService {
       throw new UserDoesNotExistException();
     }
 
-    const post = await this.getPostById(postId);
+    const post = await this.getPostById(postId, userId);
     if (!post) {
       throw new NotFoundException('Post is not found');
+    }
+
+    if (post.user.id !== userId) {
+      throw new ForbiddenException(
+        'You are not authorized to delete this post',
+      );
     }
 
     const postTagRepo = this.getPostTagRepository();
