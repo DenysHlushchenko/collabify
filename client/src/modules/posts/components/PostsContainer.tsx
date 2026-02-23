@@ -1,8 +1,8 @@
-import type { PostFormValues, PostType } from "@/modules/shared/types/types";
 import Post from "@/modules/posts/components/Post";
-import CreatePostDialog from "./CreatePostDialog";
 import Filters from "@/modules/shared/components/Filters";
+import PostForm from "@/modules/shared/components/forms/PostForm";
 import { usePost } from "../hooks/usePost";
+import type { PostFormValues, PostType } from "@/modules/shared/types/types";
 
 const PostsContainer = ({ posts }: { posts: PostType[] }) => {
   const { useCreatePostMutation, user } = usePost();
@@ -26,7 +26,7 @@ const PostsContainer = ({ posts }: { posts: PostType[] }) => {
     <div>
       <div className="flex-between mb-4">
         <Filters />
-        <CreatePostDialog submitPost={submitPost} />
+        <PostForm type="create" submitPost={submitPost} />
       </div>
       {posts.length !== 0 ? (
         posts.map((post: PostType) => <Post key={post.id} post={post} />)

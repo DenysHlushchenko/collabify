@@ -27,3 +27,7 @@ export const createPost = async (data: CreatePostPayload): Promise<void> => {
 export const updatePost = async (data: UpdatePostPayload): Promise<void> => {
   await request.put(`/posts/${data.postId}`, data);
 };
+
+export const deletePost = async (id: number): Promise<void> => {
+  await request.delete(`/posts/${id}`);
+};

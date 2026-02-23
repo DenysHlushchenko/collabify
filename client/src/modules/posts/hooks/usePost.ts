@@ -1,6 +1,6 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllChatsByUserId } from "@/modules/chats/api/chat";
-import { createPost, getPostById, getPosts, getUserPosts, updatePost } from "../api/post";
+import { createPost, deletePost, getPostById, getPosts, getUserPosts, updatePost } from "../api/post";
 import type { AxiosError } from "axios";
 import { useState } from "react";
 import { useAuthStore } from "@/modules/auth/store/userStore";
@@ -45,6 +45,7 @@ export const usePost = () => {
     return useQuery({
       queryKey: ["post", token],
       queryFn: () => getPostById(postId),
+      retry: 2,
     });
   };
 
@@ -62,6 +63,8 @@ export const usePost = () => {
 
       onSuccess: async () => {
         await queryClient.invalidateQueries({ queryKey: ["posts"] });
+        await queryClient.invalidateQueries({ queryKey: ["post"], exact: false });
+        await queryClient.invalidateQueries({ queryKey: ["userPosts"], exact: false });
         await queryClient.invalidateQueries({ queryKey: ["chats"] });
       },
 
@@ -80,6 +83,8 @@ export const usePost = () => {
 
       onSuccess: async () => {
         await queryClient.invalidateQueries({ queryKey: ["posts"] });
+        await queryClient.invalidateQueries({ queryKey: ["post"], exact: false });
+        await queryClient.invalidateQueries({ queryKey: ["userPosts"], exact: false });
       },
 
       onError: (error) => {
@@ -87,6 +92,25 @@ export const usePost = () => {
         const backendError = axiosError.response?.data?.message || "Something went wrong. Please try again.";
         setError(backendError);
         console.error("Post update failed: ", error);
+      },
+    });
+  };
+
+  const useDeletePostMutation = () => {
+    return useMutation({
+      mutationFn: deletePost,
+
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: ["posts"] });
+        await queryClient.invalidateQueries({ queryKey: ["post"], exact: false });
+        await queryClient.invalidateQueries({ queryKey: ["userPosts"], exact: false });
+      },
+
+      onError: (error) => {
+        const axiosError = error as AxiosError<{ message: string }>;
+        const backendError = axiosError.response?.data?.message || "Something went wrong. Please try again.";
+        setError(backendError);
+        console.error("Post delete failed: ", error);
       },
     });
   };
@@ -100,5 +124,6 @@ export const usePost = () => {
     useUserPostsQuery,
     useCreatePostMutation,
     useUpdatePostMutation,
+    useDeletePostMutation,
   };
 };
