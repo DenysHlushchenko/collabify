@@ -1,12 +1,14 @@
-import type { PostFormValues, PostType } from "@/modules/shared/types/types";
+import type { PostType } from "@/modules/shared/types/types";
 import Post from "@/modules/posts/components/posts/Post";
-import PostDialog from "./PostDialog";
+import * as z from "zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createPost } from "../../api/post";
 import type { AxiosError } from "axios";
 import { useState } from "react";
 import { useAuthStore } from "@/modules/auth/store/userStore";
 import Filters from "@/modules/shared/components/Filters";
+import PostForm from "@/modules/shared/forms/PostForm";
+import type { PostSchema } from "@/modules/shared/lib/validators";
 
 const UserPosts = ({ posts }: { posts: PostType[] }) => {
   const [error, setError] = useState<string | null>(null);
@@ -14,14 +16,12 @@ const UserPosts = ({ posts }: { posts: PostType[] }) => {
 
   const queryClient = useQueryClient();
 
-  const mutation = useMutation({
+  const createMutation = useMutation({
     mutationFn: createPost,
-
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["posts"] });
       await queryClient.invalidateQueries({ queryKey: ["chats"] });
     },
-
     onError: (error) => {
       const axiosError = error as AxiosError<{ message: string }>;
       const backendError = axiosError.response?.data?.message || "Something went wrong. Please try again.";
@@ -30,17 +30,11 @@ const UserPosts = ({ posts }: { posts: PostType[] }) => {
     },
   });
 
-  const submitPost = (values: PostFormValues) => {
-    if (!user) return;
-
-    mutation.mutate({
-      title: values.title.trim(),
-      description: values.description.trim(),
-      groupSize: values.groupSize,
-      tags: values.tags,
+  const handleCreate = (values: z.infer<typeof PostSchema>) => {
+    if (!user) return null;
+    createMutation.mutate({
+      ...values,
       userId: user.id,
-      chatId: values.chatId,
-      chatTitle: values.chatTitle,
     });
   };
 
@@ -48,7 +42,7 @@ const UserPosts = ({ posts }: { posts: PostType[] }) => {
     <div>
       <div className="flex-between mb-4">
         <Filters />
-        <PostDialog submitPost={submitPost} error={error} />
+        <PostForm type="create" submitPost={handleCreate} error={error} isSubmitting={createMutation.isPending} />
       </div>
       {posts.length !== 0 ? (
         posts.map((post: PostType) => <Post key={post.id} post={post} />)
