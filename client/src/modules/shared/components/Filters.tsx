@@ -30,14 +30,14 @@ const Filters = () => {
   return (
     <div>
       <Select onValueChange={handleChange} value={filter || ""}>
-        <SelectTrigger aria-label="Filter options" className="w-40">
+        <SelectTrigger aria-label="Filter options" className="w-40 border-none bg-[#e8edf3] hover:bg-[#f2f6fa]">
           <SelectValue placeholder="Select a filter" />
         </SelectTrigger>
 
         <SelectContent className="bg-white">
           <SelectGroup>
             {postsFilters.map((filter) => (
-              <SelectItem key={filter.value} value={filter.value}>
+              <SelectItem key={filter.value} value={filter.value} className="hover:bg-[#f2f6fa]">
                 {filter.name}
               </SelectItem>
             ))}

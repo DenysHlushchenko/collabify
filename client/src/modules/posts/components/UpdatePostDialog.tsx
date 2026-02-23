@@ -38,11 +38,11 @@ interface PostDialogProps {
   submitPost: (values: CreatePostOutput & { tags: string[] }) => void;
 }
 
-const CreatePostDialog = ({ submitPost }: PostDialogProps) => {
+const UpdatePostDialog = ({ submitPost }: PostDialogProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const user = useAuthStore().getUser();
 
-  const { form, tags, addTag, removeTag } = usePostForm({ mode: "create" });
+  const { form, tags, addTag, removeTag } = usePostForm({ mode: "edit" });
 
   const { useChatsQuery } = usePost();
   const { data: chats, isPending, isError } = useChatsQuery(user?.id);
@@ -258,4 +258,4 @@ const CreatePostDialog = ({ submitPost }: PostDialogProps) => {
   );
 };
 
-export default CreatePostDialog;
+export default UpdatePostDialog;

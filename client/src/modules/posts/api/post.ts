@@ -10,6 +10,11 @@ export const getPosts = async (filter?: FilterType, search?: string): Promise<Po
   return res.data;
 };
 
+export const getUserPosts = async (userId: number): Promise<PostType[]> => {
+  const res = await request.get(`/posts/users/${userId}`);
+  return res.data;
+};
+
 export const createPost = async (data: CreatePostPayload): Promise<void> => {
   await request.post("/posts", data);
 };
