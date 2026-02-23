@@ -1,7 +1,11 @@
-import React from "react";
+import PostForm from "@/modules/shared/forms/PostForm";
 
 const Posts = () => {
-  return <div>Posts</div>;
+  return (
+    <div>
+      <PostForm type="edit" submitPost={() => {}} />
+    </div>
+  );
 };
 
 export default Posts;
