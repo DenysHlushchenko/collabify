@@ -2,7 +2,7 @@ export type GenderType = "male" | "female" | "other";
 export type RoleType = "learner" | "organizer";
 
 export type UserType = {
-  id: string;
+  id: number;
   username: string;
   country: {
     id: number;

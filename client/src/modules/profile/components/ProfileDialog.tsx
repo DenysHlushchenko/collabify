@@ -102,149 +102,147 @@ const ProfileDialog = ({ userId }: ProfileDialogProps) => {
         if (!open) reset();
       }}
     >
-      <Form {...form}>
-        <DialogTrigger asChild>
-          <Button className="small-medium flex w-30 cursor-pointer rounded-md bg-[#e8edf3] px-4 py-3 text-center text-black hover:bg-[#f2f6fa]">
-            Edit
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="border-none bg-white [&>button:last-child]:hidden">
-          <DialogHeader>
-            <DialogTitle>Edit Profile</DialogTitle>
-            <DialogDescription className="body-light my-3">
-              Fill out the form below to edit your profile information.
-            </DialogDescription>
-          </DialogHeader>
+      <DialogTrigger asChild>
+        <Button className="small-medium flex w-30 cursor-pointer rounded-md bg-[#e8edf3] px-4 py-3 text-center text-black hover:bg-[#f2f6fa]">
+          Edit
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="border-none bg-white [&>button:last-child]:hidden">
+        <DialogHeader>
+          <DialogTitle>Edit Profile</DialogTitle>
+          <DialogDescription className="body-light my-3">
+            Fill out the form below to edit your profile information.
+          </DialogDescription>
+        </DialogHeader>
 
-          <Form {...form}>
-            <form className="space-y-5 py-4" onSubmit={form.handleSubmit(onSubmit)}>
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
+        <Form {...form}>
+          <form className="space-y-5 py-4" onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              control={form.control}
+              name="username"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel>Username</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Your username" {...field} />
+                  </FormControl>
+                  {fieldState.error && <Error message={fieldState.error.message} />}
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="country"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel>Country</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <Input placeholder="Your username" {...field} />
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select your country" />
+                      </SelectTrigger>
                     </FormControl>
-                    {fieldState.error && <Error message={fieldState.error.message} />}
-                  </FormItem>
-                )}
-              />
+                    <SelectContent className="bg-white">
+                      {countries.all.map((c) => (
+                        <SelectItem key={c.name} value={c.name} className="cursor-pointer hover:bg-gray-100">
+                          {c.emoji} {c.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {fieldState.error && <Error message={fieldState.error.message} />}
+                </FormItem>
+              )}
+            />
 
-              <FormField
-                control={form.control}
-                name="country"
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>Country</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select your country" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="bg-white">
-                        {countries.all.map((c) => (
-                          <SelectItem key={c.name} value={c.name} className="cursor-pointer hover:bg-gray-100">
-                            {c.emoji} {c.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {fieldState.error && <Error message={fieldState.error.message} />}
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="gender"
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>Gender</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select your gender" />
-                        </SelectTrigger>
-                      </FormControl>
-
-                      <SelectContent className="bg-white">
-                        {genders.map((gender) => (
-                          <SelectItem key={gender} value={gender} className="cursor-pointer hover:bg-gray-100">
-                            {gender.charAt(0).toUpperCase() + gender.slice(1)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {fieldState.error && <Error message={fieldState.error.message} />}
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="role"
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>Role</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <FormControl>
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select gender" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="bg-white">
-                        {roles.map((role) => (
-                          <SelectItem key={role} value={role} className="cursor-pointer hover:bg-gray-100">
-                            {role.charAt(0).toUpperCase() + role.slice(1)}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    {fieldState.error && <Error message={fieldState.error.message} />}
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="bio"
-                render={({ field, fieldState }) => (
-                  <FormItem>
-                    <FormLabel>Bio</FormLabel>
+            <FormField
+              control={form.control}
+              name="gender"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel>Gender</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <Textarea
-                        placeholder="Tell something about yourself..."
-                        className="resize-none"
-                        {...field}
-                        value={field.value ?? ""}
-                      />
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select your gender" />
+                      </SelectTrigger>
                     </FormControl>
-                    {fieldState.error && <Error message={fieldState.error.message} />}
-                  </FormItem>
-                )}
-              />
 
-              <DialogFooter className="flex flex-col gap-2.5 sm:flex-row sm:gap-3">
-                <Button
-                  type="submit"
-                  className="background-blue cursor-pointer border text-white hover:bg-[#226abb] sm:flex-1"
-                >
-                  Save changes
+                    <SelectContent className="bg-white">
+                      {genders.map((gender) => (
+                        <SelectItem key={gender} value={gender} className="cursor-pointer hover:bg-gray-100">
+                          {gender.charAt(0).toUpperCase() + gender.slice(1)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {fieldState.error && <Error message={fieldState.error.message} />}
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel>Role</FormLabel>
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select your role" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent className="bg-white">
+                      {roles.map((role) => (
+                        <SelectItem key={role} value={role} className="cursor-pointer hover:bg-gray-100">
+                          {role.charAt(0).toUpperCase() + role.slice(1)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {fieldState.error && <Error message={fieldState.error.message} />}
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="bio"
+              render={({ field, fieldState }) => (
+                <FormItem>
+                  <FormLabel>Bio</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Tell something about yourself..."
+                      className="resize-none"
+                      {...field}
+                      value={field.value ?? ""}
+                    />
+                  </FormControl>
+                  {fieldState.error && <Error message={fieldState.error.message} />}
+                </FormItem>
+              )}
+            />
+
+            <DialogFooter className="flex flex-col gap-2.5 sm:flex-row sm:gap-3">
+              <Button
+                type="submit"
+                className="background-blue cursor-pointer border text-white hover:bg-[#226abb] sm:flex-1"
+              >
+                Save changes
+              </Button>
+              <DialogClose asChild>
+                <Button onClick={reset} variant="outline" className="cursor-pointer hover:bg-gray-100 sm:flex-1">
+                  Cancel
                 </Button>
-                <DialogClose asChild>
-                  <Button onClick={reset} variant="outline" className="cursor-pointer hover:bg-gray-100 sm:flex-1">
-                    Cancel
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-              {error && <Error message={error} />}
-            </form>
-          </Form>
-        </DialogContent>
-      </Form>
+              </DialogClose>
+            </DialogFooter>
+            {error && <Error message={error} />}
+          </form>
+        </Form>
+      </DialogContent>
     </Dialog>
   );
 };

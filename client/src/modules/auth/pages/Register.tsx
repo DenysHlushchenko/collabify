@@ -113,7 +113,7 @@ const Register = () => {
             <FormField
               control={form.control}
               name="gender"
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel>Gender</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -131,6 +131,7 @@ const Register = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                  {fieldState.error && <Error message={fieldState.error.message} />}
                 </FormItem>
               )}
             />
@@ -138,7 +139,7 @@ const Register = () => {
             <FormField
               control={form.control}
               name="role"
-              render={({ field }) => (
+              render={({ field, fieldState }) => (
                 <FormItem>
                   <FormLabel>Role</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -156,6 +157,7 @@ const Register = () => {
                       ))}
                     </SelectContent>
                   </Select>
+                  {fieldState.error && <Error message={fieldState.error.message} />}
                 </FormItem>
               )}
             />

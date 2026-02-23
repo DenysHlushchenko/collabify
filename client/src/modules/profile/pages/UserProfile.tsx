@@ -12,9 +12,12 @@ import { useCurrentUser } from "../hooks/useCurrentUser";
 import UserProfileSkeleton from "../components/UserProfileSkeleton";
 import ProfileDialog from "../components/ProfileDialog";
 import { useParams } from "react-router-dom";
+import { useAuthStore } from "@/modules/auth/store/userStore";
 
 const UserProfile = () => {
   const { userId } = useParams();
+  const { getUser } = useAuthStore();
+  const loggedInUserId = getUser()?.id;
   const { isPending, isPlaceholderData, isError, data: currentUser, error } = useCurrentUser(Number(userId));
   if (isPending && !isPlaceholderData) return <UserProfileSkeleton />;
 
@@ -48,9 +51,11 @@ const UserProfile = () => {
           </div>
         </div>
 
-        <div className="flex w-full justify-end max-sm:mb-4 sm:mt-2 sm:w-auto">
-          <ProfileDialog userId={Number(userId)} />
-        </div>
+        {loggedInUserId === Number(userId) && (
+          <div className="flex w-full justify-end max-sm:mb-4 sm:mt-2 sm:w-auto">
+            <ProfileDialog userId={Number(userId)} />
+          </div>
+        )}
       </div>
 
       <Stats badges={currentUser.badgeCounts} />
