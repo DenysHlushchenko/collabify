@@ -311,9 +311,19 @@ describe('PostService', () => {
       },
     ];
 
+    let qb: Record<string, jest.Mock>;
+
     beforeEach(() => {
+      qb = {
+        leftJoinAndSelect: jest.fn().mockReturnThis(),
+        where: jest.fn().mockReturnThis(),
+        orderBy: jest.fn().mockReturnThis(),
+        addOrderBy: jest.fn().mockReturnThis(),
+        getMany: jest.fn().mockResolvedValue(mockPosts),
+      };
+
       mockUserSevice.findById.mockResolvedValue(mockUser);
-      mockPostRepository.find.mockResolvedValue(mockPosts);
+      mockPostRepository.createQueryBuilder.mockReturnValue(qb);
     });
 
     afterEach(() => {
@@ -328,19 +338,30 @@ describe('PostService', () => {
       const result = await postService.getAllPostsByUserId(999);
 
       expect(mockUserSevice.findById).toHaveBeenCalledWith(999);
-      expect(mockPostRepository.find).toHaveBeenCalledWith({
-        relations: ['user', 'postTags', 'postTags.tag', 'comments'],
-        order: {
-          created_at: 'DESC',
-          updated_at: 'DESC',
-        },
+      expect(mockPostRepository.createQueryBuilder).toHaveBeenCalledWith(
+        'post',
+      );
+
+      expect(qb.leftJoinAndSelect).toHaveBeenCalledWith('post.user', 'user');
+      expect(qb.leftJoinAndSelect).toHaveBeenCalledWith(
+        'post.postTags',
+        'postTags',
+      );
+      expect(qb.leftJoinAndSelect).toHaveBeenCalledWith('postTags.tag', 'tag');
+      expect(qb.leftJoinAndSelect).toHaveBeenCalledWith(
+        'post.comments',
+        'comments',
+      );
+
+      expect(qb.where).toHaveBeenCalledWith('post.user_id = :userId', {
+        userId: 999,
       });
 
-      expect(result).toHaveLength(3);
+      expect(qb.orderBy).toHaveBeenCalledWith('post.created_at', 'DESC');
+
+      expect(qb.getMany).toHaveBeenCalled();
       expect(result).toEqual(mockPosts);
       expect(result[0].id).toBe(103);
-      expect(result[1].id).toBe(104);
-      expect(result[2].id).toBe(105);
     });
 
     it('should throw UserDoesNotExistException when user does not exist', async () => {
@@ -356,11 +377,15 @@ describe('PostService', () => {
     });
 
     it('should return empty array when user exists but has no posts', async () => {
-      mockPostRepository.find.mockResolvedValue([]);
+      qb.getMany.mockResolvedValue([]);
 
       const result = await postService.getAllPostsByUserId(999);
 
-      expect(mockPostRepository.find).toHaveBeenCalled();
+      expect(mockUserSevice.findById).toHaveBeenCalledWith(999);
+      expect(mockPostRepository.createQueryBuilder).toHaveBeenCalled();
+      expect(qb.where).toHaveBeenCalledWith('post.user_id = :userId', {
+        userId: 999,
+      });
       expect(result).toEqual([]);
     });
   });

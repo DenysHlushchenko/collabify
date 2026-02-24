@@ -1,6 +1,6 @@
 import Post from "@/modules/posts/components/Post";
 import Filters from "@/modules/shared/components/Filters";
-import PostForm from "@/modules/shared/components/forms/PostForm";
+import PostForm from "@/modules/posts/components/PostForm";
 import { usePost } from "../hooks/usePost";
 import type { PostFormValues, PostType } from "@/modules/shared/types/types";
 

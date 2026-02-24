@@ -1,6 +1,6 @@
 import PostsContainer from "@/modules/posts/components/PostsContainer";
 import Error from "@/modules/shared/components/Error";
-import PostSkeleton from "../components/PostSkeleton";
+import { PostSkeleton } from "../../posts/components/PostSkeletons";
 import { usePost } from "@/modules/posts/hooks/usePost";
 
 const Posts = () => {

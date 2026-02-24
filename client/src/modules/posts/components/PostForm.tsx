@@ -1,5 +1,5 @@
 import { useForm, type ControllerRenderProps } from "react-hook-form";
-import { PostSchema } from "../../lib/validators";
+import { PostSchema } from "../../shared/lib/validators";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuthStore } from "@/modules/auth/store/userStore";
@@ -14,17 +14,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/Dialog";
-import { Button } from "../ui/Button";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/Form";
-import { Input } from "../ui/Input";
-import Error from "../Error";
+} from "../../shared/components/ui/Dialog";
+import { Button } from "../../shared/components/ui/Button";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "../../shared/components/ui/Form";
+import { Input } from "../../shared/components/ui/Input";
+import Error from "../../shared/components/Error";
 import { getAllChatsByUserId } from "@/modules/chats/api/chat";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/Select";
-import type { EditPostFormValues, PostFormValues, PostType } from "../../types/types";
-import { Badge } from "../ui/Badge";
-import close from "@/assets/close.svg";
-import { Textarea } from "../ui/Textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../shared/components/ui/Select";
+import type { EditPostFormValues, PostFormValues, PostType } from "../../shared/types/types";
+import { Textarea } from "../../shared/components/ui/Textarea";
+import PostTag from "./PostTag";
 
 interface PostFormProps {
   type: "create" | "edit";
@@ -63,7 +62,7 @@ const PostForm = ({ type, postDetails, submitPost, error, isSubmitting }: PostFo
       form.reset({
         title: postDetails.title,
         description: postDetails.description,
-        groupSize: postDetails.groupSize || 2,
+        groupSize: postDetails.group_size || 2,
         tags: postDetails.postTags?.map((pt) => pt.tag.name) || [],
       });
     }
@@ -209,20 +208,13 @@ const PostForm = ({ type, postDetails, submitPost, error, isSubmitting }: PostFo
                         {field.value.length > 0 && (
                           <div className="flex-start mt-2.5 gap-2.5">
                             {field.value.map((tag: string) => (
-                              <Badge
+                              <PostTag
                                 key={tag}
-                                className="subtle-medium flex items-center justify-center gap-2 rounded-md border-none bg-[#ececec] px-4 py-2 capitalize"
-                                onClick={() => handleRemoveTag(tag, field)}
-                              >
-                                {tag}
-                                <img
-                                  src={close}
-                                  width={12}
-                                  height={12}
-                                  alt="Close icon"
-                                  className="cursor-pointer object-contain invert-0"
-                                />
-                              </Badge>
+                                isDeletable={true}
+                                tag={tag}
+                                field={field}
+                                handleRemoveTag={handleRemoveTag}
+                              />
                             ))}
                           </div>
                         )}

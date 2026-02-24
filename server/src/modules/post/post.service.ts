@@ -126,16 +126,17 @@ export class PostService {
       throw new UserDoesNotExistException();
     }
 
-    return await this.postRepository.find({
-      relations: ['user', 'postTags', 'postTags.tag', 'comments'],
-      where: {
-        user: existingUser,
-      },
-      order: {
-        created_at: 'DESC',
-        updated_at: 'DESC',
-      },
-    });
+    const qb = this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.user', 'user')
+      .leftJoinAndSelect('post.postTags', 'postTags')
+      .leftJoinAndSelect('postTags.tag', 'tag')
+      .leftJoinAndSelect('post.comments', 'comments')
+      .where('post.user_id = :userId', { userId })
+      .orderBy('post.created_at', 'DESC')
+      .addOrderBy('post.updated_at', 'DESC');
+
+    return await qb.getMany();
   }
 
   /**

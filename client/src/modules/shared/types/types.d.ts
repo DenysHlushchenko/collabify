@@ -77,7 +77,7 @@ export type PostType = {
   id: number;
   title: string;
   description: string;
-  groupSize: number;
+  group_size: number;
   created_at: Date;
   updated_at: Date;
   user: UserType;

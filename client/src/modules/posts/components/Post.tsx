@@ -59,7 +59,7 @@ const Post = ({ post }: PostProps) => {
           ))}
           <div className="absolute right-6 bottom-2 flex gap-x-2">
             {post.postTags.map((postTag: PostTagType) => (
-              <PostTag key={postTag.tagId} isDeletable={false} label={postTag.tag.name} removeTag={() => {}} />
+              <PostTag key={postTag.tagId} isDeletable={false} tag={postTag.tag.name} handleRemoveTag={() => {}} />
             ))}
           </div>
         </CardFooter>

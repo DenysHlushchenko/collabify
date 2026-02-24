@@ -11,7 +11,7 @@ import Login from "./modules/auth/pages/Login";
 import ProtectedRoute from "./modules/auth/components/ProtectedRoute";
 import PublicRoute from "./modules/auth/components/PublicRoute";
 import UserProfile from "./modules/profile/pages/UserProfile";
-import PostDetails from "./modules/navigation/pages/PostDetails";
+import PostDetails from "./modules/posts/pages/PostDetails";
 
 function App() {
   const { pathname } = useLocation();

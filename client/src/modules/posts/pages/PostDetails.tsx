@@ -7,9 +7,10 @@ import { postFooterItems } from "@/modules/shared/components/constants/links";
 import PostTag from "@/modules/posts/components/PostTag";
 import type { PostFormValues, PostTagType } from "@/modules/shared/types/types";
 import PostFooter from "@/modules/posts/components/PostFooter";
-import PostForm from "@/modules/shared/components/forms/PostForm";
+import PostForm from "@/modules/posts/components/PostForm";
 import { useAuthStore } from "@/modules/auth/store/userStore";
 import PostDeleteDialog from "@/modules/posts/components/PostDeleteDialog";
+import { PostDetailsSkeleton } from "../components/PostSkeletons";
 
 const PostDetails = () => {
   const { postId } = useParams();
@@ -17,13 +18,11 @@ const PostDetails = () => {
   const loggedInUser = useAuthStore().getUser();
 
   const { usePostQuery, useUpdatePostMutation, useDeletePostMutation } = usePost();
-  const { data: postDetails, isPending, isError, error } = usePostQuery(Number(postId));
+  const { data: postDetails, isLoading, isError, error } = usePostQuery(Number(postId));
   const updateMutation = useUpdatePostMutation();
   const deleteMutation = useDeletePostMutation();
 
   if (!postDetails) return;
-  if (isPending) return <div>Loading...</div>;
-  if (isError) return <Error message={`${error.message}: Sorry, there was an error while fetching post details.`} />;
 
   const submitPost = (values: PostFormValues) => {
     updateMutation.mutate({
@@ -39,6 +38,9 @@ const PostDetails = () => {
     await deleteMutation.mutateAsync(postDetails.id);
     navigate("/posts");
   };
+
+  if (isLoading) return <PostDetailsSkeleton />;
+  if (isError) return <Error message={`${error.message}: Sorry, there was an error while fetching post details.`} />;
 
   return (
     <div className="relative rounded-lg border border-[#e6e6e6] p-5">
@@ -58,7 +60,7 @@ const PostDetails = () => {
 
       <div className="absolute top-16 left-5 flex gap-x-2">
         {postDetails.postTags.map((postTag: PostTagType) => (
-          <PostTag key={postTag.tagId} isDeletable={false} label={postTag.tag.name} removeTag={() => {}} />
+          <PostTag key={postTag.tagId} isDeletable={false} tag={postTag.tag.name} handleRemoveTag={() => {}} />
         ))}
       </div>
 

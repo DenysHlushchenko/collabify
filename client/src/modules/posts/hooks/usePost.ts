@@ -43,7 +43,7 @@ export const usePost = () => {
 
   const usePostQuery = (postId: number) => {
     return useQuery({
-      queryKey: ["post", token, postId],
+      queryKey: ["post", token],
       queryFn: () => getPostById(postId),
       retry: 2,
     });
@@ -53,6 +53,7 @@ export const usePost = () => {
     return useQuery({
       queryKey: ["userPosts", token],
       queryFn: () => (user ? getUserPosts(user.id) : []),
+      retry: 1,
       staleTime: 1000 * 30,
     });
   };
@@ -82,9 +83,9 @@ export const usePost = () => {
       mutationFn: updatePost,
 
       onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: ["userPosts"], exact: false });
         await queryClient.invalidateQueries({ queryKey: ["posts"] });
         await queryClient.invalidateQueries({ queryKey: ["post"], exact: false });
-        await queryClient.invalidateQueries({ queryKey: ["userPosts"], exact: false });
       },
 
       onError: (error) => {
@@ -102,7 +103,6 @@ export const usePost = () => {
 
       onSuccess: async () => {
         await queryClient.invalidateQueries({ queryKey: ["posts"] });
-        await queryClient.invalidateQueries({ queryKey: ["post"], exact: false });
         await queryClient.invalidateQueries({ queryKey: ["userPosts"], exact: false });
       },
 
