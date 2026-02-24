@@ -119,23 +119,39 @@ export class PostService {
    * @param userId
    * @returns An array of Post entities by user ID.
    */
-  async getAllPostsByUserId(userId: number): Promise<Post[]> {
+  async getAllPostsByUserId(
+    options: {
+      search?: string;
+      sort?: 'ASC' | 'DESC';
+    } = {},
+    userId: number,
+  ): Promise<Post[]> {
+    const { search, sort = 'DESC' } = options;
     const existingUser = await this.userService.findById(userId);
 
     if (!existingUser) {
       throw new UserDoesNotExistException();
     }
 
-    return await this.postRepository.find({
-      relations: ['user', 'postTags', 'postTags.tag', 'comments'],
-      where: {
-        user: existingUser,
-      },
-      order: {
-        created_at: 'DESC',
-        updated_at: 'DESC',
-      },
-    });
+    const db = this.postRepository.createQueryBuilder('post');
+    db.leftJoinAndSelect('post.user', 'user');
+    db.leftJoinAndSelect('user.country', 'country');
+    db.leftJoinAndSelect('post.postTags', 'postTags');
+    db.leftJoinAndSelect('postTags.tag', 'tag');
+    db.leftJoinAndSelect('post.comments', 'comments');
+
+    db.where('post.user_id = :userId', { userId });
+
+    if (search) {
+      const searchTerm = `%${search}%`;
+      db.where(`(post.title ILIKE :search OR tag.name ILIKE :search)`, {
+        search: searchTerm,
+      });
+    }
+
+    db.orderBy('post.created_at', sort);
+
+    return await db.getMany();
   }
 
   /**
