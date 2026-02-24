@@ -36,3 +36,8 @@ export const ProfileSchema = z.object({
   country: z.string().nonempty("Country is required"),
   bio: z.string().max(160, "Bio must be at most 160 characters long").optional(),
 });
+
+export const FeedbackSchema = z.object({
+  message: z.string().max(500, "Feedback message is too long!").nonempty("Feedback message is required"),
+  rating: z.number().int().min(1, "Rating must be between 1 and 5").max(5, "Rating must be between 1 and 5"),
+});

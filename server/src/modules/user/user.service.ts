@@ -8,7 +8,7 @@ import bcrypt from 'bcrypt';
 import { CountryService } from 'src/modules/country/country.service';
 import { EditUserDto } from './dtos/EditUserDto';
 import { UserDoesNotExistException } from 'src/shared/exceptions/UserDoesNotExist.exception';
-import { PostVoteStats, UserWithStats } from 'src/shared/types';
+import { FeedbackStats, PostVoteStats, UserWithStats } from 'src/shared/types';
 import { assignBadges } from 'src/shared/utils/libs';
 
 enum Auth {
@@ -189,6 +189,28 @@ export class UserService {
     user.updated_at = new Date();
 
     return this.usersRepository.save(user);
+  }
+
+  /**
+   * Calculates the average rating and total feedback count for a user based on received feedback, and updates the user's reputation accordingly.
+   * The reputation is set to the average rating rounded to one decimal place if there is at least one feedback entry, otherwise it is set to 0.
+   * @param userId is required. It should be the ID of the user for whom to update the reputation.
+   * @throws NotFoundException if the user does not exist.
+   */
+  async updateReputationAsAverage(userId: number): Promise<void> {
+    const result = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.feedbacks', 'feedback')
+      .where('user.id = :id', { id: userId })
+      .select('AVG(feedback.rating)', 'avgRating')
+      .addSelect('COUNT(feedback.id)', 'feedbackCount')
+      .getRawOne<FeedbackStats>();
+
+    const avg = result?.avgRating ? parseFloat(result.avgRating) : 0;
+    const count = result?.feedbackCount ? Number(result.feedbackCount) : 0;
+
+    const reputation = count > 0 ? Number(Math.round(avg * 10) / 10) : 0;
+    await this.usersRepository.update(userId, { reputation });
   }
 
   /**
