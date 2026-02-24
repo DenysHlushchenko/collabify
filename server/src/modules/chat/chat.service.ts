@@ -28,6 +28,19 @@ export class ChatService {
   }
 
   /**
+   * Finds an existing chat that matches provided post ID. Returns null if no matching chat is found.
+   * @param id is required. It should be the post ID of the chat to be found.
+   * @returns an existing chat that matches provided post ID, otherwise, returns null.
+   */
+  findByPostId(postId: number): Promise<Chat | null> {
+    return this.chatRepository.findOne({
+      where: {
+        post: { id: postId },
+      },
+    });
+  }
+
+  /**
    * Creates a new chat with provided information. Returns the newly created chat.
    * @param createChatDto is required. It should contain title, postId, and max_members.
    * @returns a newly created chat.
@@ -108,7 +121,7 @@ export class ChatService {
     });
     return chats.map((chat) => ({
       ...chat,
-      isOwner: chat.post.user.id === userId,
+      isOwner: chat.post?.user?.id === userId,
     }));
   }
 }

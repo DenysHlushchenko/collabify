@@ -25,9 +25,12 @@ export class Chat {
   @CreateDateColumn()
   created_at: Date;
 
-  @ManyToOne(() => Post, (post) => post.chats)
+  @ManyToOne(() => Post, (post) => post.chats, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
   @JoinColumn({ name: 'post_id' })
-  post: Post;
+  post: Post | null;
 
   @OneToMany(() => ChatMember, (chatMember) => chatMember.chat)
   members: ChatMember[];

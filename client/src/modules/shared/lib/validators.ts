@@ -36,6 +36,3 @@ export const ProfileSchema = z.object({
   country: z.string().nonempty("Country is required"),
   bio: z.string().max(160, "Bio must be at most 160 characters long").optional(),
 });
-
-// export type PostFormInput = z.input<typeof PostSchema>; // groupSize/chatId are strings
-// export type PostFormOutput = z.output<typeof PostSchema>; // groupSize/chatId are number

@@ -17,24 +17,13 @@ import { Link } from "react-router-dom";
 
 const MAX_DESCRIPTION_LENGTH = 90;
 
-interface PostFooterProps {
-  count: number;
-  imgSrc: string;
-  alt: string;
+interface PostProps {
+  post: PostType;
 }
 
-const Post = ({ post }: { post: PostType }) => {
+const Post = ({ post }: PostProps) => {
   const desc = post.description;
   const adjustedDesc = desc.length >= MAX_DESCRIPTION_LENGTH ? `${desc.substring(0, MAX_DESCRIPTION_LENGTH)}...` : desc;
-
-  const PostFooter = (props: PostFooterProps) => {
-    return (
-      <div className="small-medium flex cursor-pointer items-center gap-x-1">
-        <img src={props.imgSrc} alt={props.alt} />
-        <p>{props.count}</p>
-      </div>
-    );
-  };
 
   return (
     <>
@@ -48,12 +37,15 @@ const Post = ({ post }: { post: PostType }) => {
                 </Avatar>
               </Link>
               <p>c/{post.user.username}</p>
+
               <span className="text-gray-400">{convertToDateString(post.created_at)}</span>
             </div>
           </CardTitle>
 
-          <CardDescription className="body-medium">{post.title}</CardDescription>
-          <CardDescription className="small-regular">{adjustedDesc}</CardDescription>
+          <Link to={`/posts/${post.id}`} className="flex cursor-pointer flex-col gap-2">
+            <CardDescription className="body-medium">{post.title}</CardDescription>
+            <CardDescription className="small-regular">{adjustedDesc}</CardDescription>
+          </Link>
           <CardAction>
             <Button className="body-semibold h-6 w-16 cursor-pointer rounded-lg bg-[#99dfc4] text-[#2d634e] hover:bg-[#acf0d6]">
               Join
@@ -62,11 +54,14 @@ const Post = ({ post }: { post: PostType }) => {
         </CardHeader>
         <CardFooter className="flex-start gap-x-5">
           {postFooterItems.map((item) => (
-            <PostFooter key={item.imgUrl} count={10} alt={item.alt} imgSrc={item.imgUrl} />
+            <div className="small-medium flex cursor-pointer items-center gap-x-1">
+              <img src={item.imgUrl} alt={item.alt} />
+              <p>10</p>
+            </div>
           ))}
           <div className="absolute right-6 bottom-2 flex gap-x-2">
             {post.postTags.map((postTag: PostTagType) => (
-              <PostTag key={postTag.tagId} isDeletable={false} label={postTag.tag.name} removeTag={() => {}} />
+              <PostTag key={postTag.tagId} isDeletable={false} tag={postTag.tag.name} handleRemoveTag={() => {}} />
             ))}
           </div>
         </CardFooter>
