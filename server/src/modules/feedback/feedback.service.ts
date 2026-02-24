@@ -47,6 +47,7 @@ export class FeedbackService {
       rating,
       sender: existingSender,
       user: existingReceiver,
+      created_at: new Date(),
     });
 
     await this.feedbackRepository.save(feedback);

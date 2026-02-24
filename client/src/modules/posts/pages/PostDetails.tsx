@@ -40,6 +40,8 @@ const PostDetails = () => {
     navigate("/posts");
   };
 
+  console.log(postDetails);
+
   return (
     <div className="relative rounded-lg border border-[#e6e6e6] p-5">
       <div className="flex-start gap-x-2">
