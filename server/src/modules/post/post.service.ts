@@ -228,8 +228,6 @@ export class PostService {
     const postTagRepo = this.getPostTagRepository();
     await postTagRepo.delete({ post: { id: post.id } });
 
-    // await this.chatService.detachChatsFromPost(postId);
-
     await this.postRepository.delete(postId);
   }
 

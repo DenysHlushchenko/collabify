@@ -121,7 +121,7 @@ export class ChatService {
     });
     return chats.map((chat) => ({
       ...chat,
-      isOwner: chat.post.user.id === userId,
+      isOwner: chat.post?.user?.id === userId,
     }));
   }
 }

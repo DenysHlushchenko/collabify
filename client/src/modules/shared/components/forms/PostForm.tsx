@@ -141,7 +141,7 @@ const PostForm = ({ type, postDetails, submitPost, error, isSubmitting }: PostFo
 
         <Form {...form}>
           {isPending ? (
-            <div className="py-6 text-center">Loading post details...</div>
+            <div className="py-6 text-center">Loading form...</div>
           ) : (
             <form className="space-y-5 py-4" onSubmit={form.handleSubmit(onSubmit)}>
               <FormField

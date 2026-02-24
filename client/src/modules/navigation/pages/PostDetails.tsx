@@ -8,11 +8,13 @@ import PostTag from "@/modules/posts/components/PostTag";
 import type { PostFormValues, PostTagType } from "@/modules/shared/types/types";
 import PostFooter from "@/modules/posts/components/PostFooter";
 import PostForm from "@/modules/shared/components/forms/PostForm";
-import { Button } from "@/modules/shared/components/ui/Button";
+import { useAuthStore } from "@/modules/auth/store/userStore";
+import PostDeleteDialog from "@/modules/posts/components/PostDeleteDialog";
 
 const PostDetails = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
+  const loggedInUser = useAuthStore().getUser();
 
   const { usePostQuery, useUpdatePostMutation, useDeletePostMutation } = usePost();
   const { data: postDetails, isPending, isError, error } = usePostQuery(Number(postId));
@@ -50,15 +52,7 @@ const PostDetails = () => {
         <span className="body-medium text-gray-400">{convertToDateString(postDetails.created_at)}</span>
         <div className="ml-auto flex gap-x-2">
           <PostForm type="edit" submitPost={submitPost} postDetails={postDetails} />
-          {postDetails && (
-            <Button
-              onClick={handleDelete}
-              variant="outline"
-              className="small-medium flex h-7 w-15 cursor-pointer rounded-md border border-[#e8edf3] text-center text-black hover:bg-[#f2f6fa]"
-            >
-              Delete
-            </Button>
-          )}
+          {postDetails && loggedInUser?.id === postDetails.user.id && <PostDeleteDialog handleDelete={handleDelete} />}
         </div>
       </div>
 
