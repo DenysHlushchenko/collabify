@@ -38,7 +38,7 @@ const PostForm = ({ type, postDetails, submitPost, error, isSubmitting }: PostFo
   const [dialogOpen, setDialogOpen] = useState(false);
   const user = useAuthStore().getUser();
 
-  const { data: chats, isPending } = useQuery({
+  const { data: chats, isLoading } = useQuery({
     queryKey: ["chats", user?.id],
     queryFn: () => (user ? getAllChatsByUserId(user.id) : null),
     staleTime: 1000 * 10,
@@ -140,7 +140,7 @@ const PostForm = ({ type, postDetails, submitPost, error, isSubmitting }: PostFo
         </DialogDescription>
 
         <Form {...form}>
-          {isPending ? (
+          {isLoading ? (
             <div className="py-6 text-center">Loading form...</div>
           ) : (
             <form className="space-y-5 py-4" onSubmit={form.handleSubmit(onSubmit)}>
