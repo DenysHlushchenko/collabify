@@ -236,6 +236,7 @@ describe('UserService', () => {
     const editDto = {
       username: 'updatedUser',
       gender: GenderType.MALE,
+      role: RoleType.LEARNER,
       country: 'Germany',
     };
 

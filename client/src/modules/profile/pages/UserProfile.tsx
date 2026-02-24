@@ -13,6 +13,7 @@ import UserProfileSkeleton from "../components/UserProfileSkeleton";
 import ProfileDialog from "../components/ProfileDialog";
 import { useParams } from "react-router-dom";
 import { useAuthStore } from "@/modules/auth/store/userStore";
+import Feedbacks from "@/modules/feedback/components/Feedbacks";
 
 const UserProfile = () => {
   const { userId } = useParams();
@@ -34,7 +35,9 @@ const UserProfile = () => {
           />
 
           <div className="flex flex-col items-center gap-4 lg:items-start lg:gap-5">
-            <h2 className="h2-bold whitespace-nowrap">@{currentUser.user.username}</h2>
+            <h2 className="h2-bold whitespace-nowrap">
+              @{currentUser.user.username} <span className="text-sm text-gray-700">({currentUser.user.gender})</span>
+            </h2>
 
             <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-5 lg:justify-start">
               <ProfileLink imgUrl={location} title={currentUser.user.country.name} />
@@ -62,7 +65,7 @@ const UserProfile = () => {
 
       <div className="mt-10">
         <Separator className="border-gray my-5" />
-        <h2 className="h2-bold text-center">Feedback</h2>
+        <Feedbacks />
       </div>
     </>
   );

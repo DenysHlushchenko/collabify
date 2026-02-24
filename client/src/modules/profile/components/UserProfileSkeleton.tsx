@@ -28,7 +28,6 @@ const UserProfileSkeleton = () => {
       <Skeleton className="h-48 w-full rounded-xl bg-gray-100" />
       <div className="mt-10">
         <Separator className="my-5" />
-        <Skeleton className="mx-auto h-10 w-56 bg-gray-100" />
       </div>
     </div>
   );
