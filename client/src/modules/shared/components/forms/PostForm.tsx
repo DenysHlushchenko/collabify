@@ -283,6 +283,7 @@ const PostForm = ({ type, postDetails, submitPost, error, isSubmitting }: PostFo
               <DialogFooter className="flex flex-col gap-2.5 sm:flex-row sm:gap-3">
                 <Button
                   type="submit"
+                  disabled={isSubmitting}
                   className="background-blue cursor-pointer border text-white hover:bg-[#226abb] sm:flex-1"
                 >
                   {isSubmitting
