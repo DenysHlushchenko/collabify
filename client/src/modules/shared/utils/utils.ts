@@ -1,7 +1,6 @@
 export function convertToDateString(date: Date): string {
   const now = new Date();
   const receivedDate = new Date(date);
-  console.log(receivedDate);
   const timeDifference = now.getTime() - receivedDate.getTime();
 
   const minute = 60 * 1000;
