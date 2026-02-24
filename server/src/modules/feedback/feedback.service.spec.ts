@@ -90,6 +90,7 @@ describe('FeedbackService', () => {
         rating: validDto.rating,
         sender,
         user: receiver,
+        created_at: new Date(),
       });
       expect(mockFeedbackRepository.save).toHaveBeenCalledWith(
         createdFeedbackEntity,
