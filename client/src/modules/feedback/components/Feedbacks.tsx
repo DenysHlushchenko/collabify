@@ -8,6 +8,7 @@ import type { AxiosError } from "axios";
 import type { FeedbackFormValues } from "@/modules/shared/types/types";
 import Error from "@/modules/shared/components/Error";
 import Feedback from "./Feedback";
+import FeedbacksSkeleton from "./FeedbacksSkeleton";
 
 const Feedbacks = () => {
   const [error, setError] = useState<string | null>(null);
@@ -54,7 +55,7 @@ const Feedbacks = () => {
     });
   };
 
-  if (isPending && !isPlaceholderData) return <p>Loading feedbacks...</p>;
+  if (isPending && !isPlaceholderData) return <FeedbacksSkeleton />;
 
   if (isError) <Error message={`${fetchError.message}: There are currently no feedbacks available.`} />;
   return (

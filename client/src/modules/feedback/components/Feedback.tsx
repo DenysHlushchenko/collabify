@@ -11,7 +11,6 @@ interface FeedbackProps {
 }
 
 const Feedback = ({ feedback }: FeedbackProps) => {
-  console.log(feedback);
   return (
     <>
       <Card className="border-gray">
