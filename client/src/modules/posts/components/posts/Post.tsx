@@ -39,7 +39,7 @@ const Post = ({ post }: { post: PostType }) => {
   return (
     <>
       <Card className="border-gray relative">
-        <CardHeader className="">
+        <CardHeader>
           <CardTitle className="small-semibold post-author-color">
             <div className="flex-start gap-x-2">
               <Link to={`/profile/${post.user.id}`}>

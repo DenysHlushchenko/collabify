@@ -85,6 +85,14 @@ export type PostType = {
   comments: CommentType[];
 };
 
+export type FeedbackType = {
+  id: number;
+  message: string;
+  rating: number;
+  created_at: Date;
+  sender: UserType;
+};
+
 export type MessagesType = {
   id: number;
   message: string;
@@ -123,6 +131,11 @@ export type PostFormValues = {
   chatId?: number | undefined;
 };
 
+export type FeedbackFormValues = {
+  message: string;
+  rating: number;
+};
+
 /* used to send request to the server */
 export type CreatePostPayload = {
   title: string;
@@ -132,6 +145,13 @@ export type CreatePostPayload = {
   chatTitle?: string;
   userId: number;
   chatId?: number;
+};
+
+export type CreateFeedbackPayload = {
+  senderId: number;
+  receiverId: number;
+  message: string;
+  rating: number;
 };
 
 export type AuthResponse = {

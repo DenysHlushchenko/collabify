@@ -164,7 +164,7 @@ describe('FeedbackService', () => {
     });
   });
 
-  describe('getAllFeedbackByUserId', () => {
+  describe('getAllFeedbacksByUserId', () => {
     const userId = 7;
     const receiver = { id: 7, username: 'bob' } as User;
 
@@ -189,7 +189,7 @@ describe('FeedbackService', () => {
       mockUserService.findById.mockResolvedValue(receiver);
       mockFeedbackRepository.find.mockResolvedValue(mockFeedbacks);
 
-      const result = await feedbackService.getAllFeedbackByUserId(userId);
+      const result = await feedbackService.getAllFeedbacksByUserId(userId);
 
       expect(mockUserService.findById).toHaveBeenCalledWith(userId);
       expect(mockFeedbackRepository.find).toHaveBeenCalledWith({
@@ -202,9 +202,9 @@ describe('FeedbackService', () => {
     it('should throw NotFoundException when user does not exist', async () => {
       mockUserService.findById.mockResolvedValue(null);
 
-      await expect(feedbackService.getAllFeedbackByUserId(999)).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        feedbackService.getAllFeedbacksByUserId(999),
+      ).rejects.toThrow(NotFoundException);
 
       expect(mockFeedbackRepository.find).not.toHaveBeenCalled();
     });

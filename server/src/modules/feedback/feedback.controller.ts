@@ -13,7 +13,7 @@ import { CreateFeedbackDto } from './dtos/CreateFeedback.dto';
 import { Feedback } from './entities/feedback.entity';
 
 @UseGuards(AuthGuard)
-@Controller('feedback')
+@Controller('feedbacks')
 export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
 
@@ -25,9 +25,9 @@ export class FeedbackController {
   }
 
   @Get('users/:userId')
-  async getAllFeedbackByUserId(
+  async getAllFeedbacksByUserId(
     @Param('userId', ParseIntPipe) userId: number,
   ): Promise<Feedback[]> {
-    return await this.feedbackService.getAllFeedbackByUserId(userId);
+    return await this.feedbackService.getAllFeedbacksByUserId(userId);
   }
 }

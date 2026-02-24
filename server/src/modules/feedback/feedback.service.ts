@@ -60,7 +60,7 @@ export class FeedbackService {
    * @returns A promise that resolves to an array of Feedback entities.
    * @throws NotFoundException if the user does not exist.
    */
-  async getAllFeedbackByUserId(userId: number): Promise<Feedback[]> {
+  async getAllFeedbacksByUserId(userId: number): Promise<Feedback[]> {
     const existingUser = await this.userService.findById(userId);
 
     if (!existingUser) {

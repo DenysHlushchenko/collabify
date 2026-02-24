@@ -116,7 +116,7 @@ const ProfileDialog = ({ userId }: ProfileDialogProps) => {
         </DialogHeader>
 
         <Form {...form}>
-          <form className="space-y-5 py-4" onSubmit={form.handleSubmit(onSubmit)}>
+          <form className="space-y-5" onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
               name="username"
