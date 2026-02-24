@@ -43,7 +43,7 @@ export const usePost = () => {
 
   const usePostQuery = (postId: number) => {
     return useQuery({
-      queryKey: ["post", token],
+      queryKey: ["post", token, postId],
       queryFn: () => getPostById(postId),
       retry: 2,
     });

@@ -22,8 +22,8 @@ const PostDetails = () => {
   const deleteMutation = useDeletePostMutation();
 
   if (!postDetails) return;
-  if (isError) return <Error message={`${error.message}: Sorry, there was an error while fetching post details.`} />;
   if (isPending) return <div>Loading...</div>;
+  if (isError) return <Error message={`${error.message}: Sorry, there was an error while fetching post details.`} />;
 
   const submitPost = (values: PostFormValues) => {
     updateMutation.mutate({
@@ -35,8 +35,8 @@ const PostDetails = () => {
     });
   };
 
-  const handleDelete = () => {
-    deleteMutation.mutate(postDetails.id);
+  const handleDelete = async () => {
+    await deleteMutation.mutateAsync(postDetails.id);
     navigate("/posts");
   };
 

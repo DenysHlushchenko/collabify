@@ -39,10 +39,10 @@ const PostForm = ({ type, postDetails, submitPost, error, isSubmitting }: PostFo
   const user = useAuthStore().getUser();
 
   const { data: chats, isPending } = useQuery({
-    queryKey: ["chats"],
+    queryKey: ["chats", user?.id],
     queryFn: () => (user ? getAllChatsByUserId(user.id) : null),
     staleTime: 1000 * 10,
-    enabled: type === "create",
+    enabled: type === "create" && !!user,
     retry: 2,
   });
 
