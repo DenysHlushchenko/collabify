@@ -14,7 +14,6 @@ import {
 } from "@/modules/shared/components/ui/Card";
 import PostTag from "./PostTag";
 import { Link } from "react-router-dom";
-import PostFooter from "./PostFooter";
 
 const MAX_DESCRIPTION_LENGTH = 90;
 
@@ -55,7 +54,10 @@ const Post = ({ post }: PostProps) => {
         </CardHeader>
         <CardFooter className="flex-start gap-x-5">
           {postFooterItems.map((item) => (
-            <PostFooter key={item.imgUrl} count={10} alt={item.alt} imgSrc={item.imgUrl} />
+            <div className="small-medium flex cursor-pointer items-center gap-x-1">
+              <img src={item.imgUrl} alt={item.alt} />
+              <p>10</p>
+            </div>
           ))}
           <div className="absolute right-6 bottom-2 flex gap-x-2">
             {post.postTags.map((postTag: PostTagType) => (

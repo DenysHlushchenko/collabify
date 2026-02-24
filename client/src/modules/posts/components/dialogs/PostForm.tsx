@@ -1,5 +1,5 @@
 import { useForm, type ControllerRenderProps } from "react-hook-form";
-import { PostSchema } from "../../shared/lib/validators";
+import { PostSchema } from "@/modules/shared/lib/validators";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuthStore } from "@/modules/auth/store/userStore";
@@ -14,16 +14,16 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../../shared/components/ui/Dialog";
-import { Button } from "../../shared/components/ui/Button";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "../../shared/components/ui/Form";
-import { Input } from "../../shared/components/ui/Input";
-import Error from "../../shared/components/Error";
+} from "@/modules/shared/components/ui/Dialog";
+import { Button } from "@/modules/shared/components/ui/Button";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/modules/shared/components/ui/Form";
+import { Input } from "@/modules/shared/components/ui/Input";
+import Error from "@/modules/shared/components/Error";
 import { getAllChatsByUserId } from "@/modules/chats/api/chat";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../shared/components/ui/Select";
-import type { EditPostFormValues, PostFormValues, PostType } from "../../shared/types/types";
-import { Textarea } from "../../shared/components/ui/Textarea";
-import PostTag from "./PostTag";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/modules/shared/components/ui/Select";
+import type { EditPostFormValues, PostFormValues, PostType } from "@/modules/shared/types/types";
+import { Textarea } from "@/modules/shared/components/ui/Textarea";
+import PostTag from "../PostTag";
 
 interface PostFormProps {
   type: "create" | "edit";

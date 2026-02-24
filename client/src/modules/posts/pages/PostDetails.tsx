@@ -6,10 +6,9 @@ import Error from "@/modules/shared/components/Error";
 import { postFooterItems } from "@/modules/shared/components/constants/links";
 import PostTag from "@/modules/posts/components/PostTag";
 import type { PostFormValues, PostTagType } from "@/modules/shared/types/types";
-import PostFooter from "@/modules/posts/components/PostFooter";
-import PostForm from "@/modules/posts/components/PostForm";
+import PostForm from "@/modules/posts/components/dialogs/PostForm";
 import { useAuthStore } from "@/modules/auth/store/userStore";
-import PostDeleteDialog from "@/modules/posts/components/PostDeleteDialog";
+import PostDeleteDialog from "@/modules/posts/components/dialogs/PostDeleteDialog";
 import { PostDetailsSkeleton } from "../components/PostSkeletons";
 
 const PostDetails = () => {
@@ -18,11 +17,11 @@ const PostDetails = () => {
   const loggedInUser = useAuthStore().getUser();
 
   const { usePostQuery, useUpdatePostMutation, useDeletePostMutation } = usePost();
-  const { data: postDetails, isLoading, isError, error } = usePostQuery(Number(postId));
+  const { data: postDetails, isPending, isError, error } = usePostQuery(Number(postId));
   const updateMutation = useUpdatePostMutation();
   const deleteMutation = useDeletePostMutation();
 
-  if (isLoading) return <PostDetailsSkeleton />;
+  if (isPending) return <PostDetailsSkeleton />;
   if (isError) return <Error message={`${error.message}: Sorry, there was an error while fetching post details.`} />;
   if (!postDetails) return null;
 
@@ -68,7 +67,10 @@ const PostDetails = () => {
 
       <div className="flex-start mt-10 gap-x-5">
         {postFooterItems.map((item) => (
-          <PostFooter key={item.imgUrl} count={10} alt={item.alt} imgSrc={item.imgUrl} />
+          <div className="small-medium flex cursor-pointer items-center gap-x-1">
+            <img src={item.imgUrl} alt={item.alt} />
+            <p>10</p>
+          </div>
         ))}
       </div>
     </div>

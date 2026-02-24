@@ -53,7 +53,7 @@ export const usePost = () => {
     return useQuery({
       queryKey: ["userPosts", token, filter, search],
       queryFn: () => (user ? getUserPosts(user.id, filter, search!) : []),
-      retry: 1,
+      placeholderData: keepPreviousData,
       staleTime: 1000 * 30,
     });
   };
