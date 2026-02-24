@@ -22,7 +22,9 @@ const PostDetails = () => {
   const updateMutation = useUpdatePostMutation();
   const deleteMutation = useDeletePostMutation();
 
-  if (!postDetails) return;
+  if (isLoading) return <PostDetailsSkeleton />;
+  if (isError) return <Error message={`${error.message}: Sorry, there was an error while fetching post details.`} />;
+  if (!postDetails) return null;
 
   const submitPost = (values: PostFormValues) => {
     updateMutation.mutate({
@@ -38,9 +40,6 @@ const PostDetails = () => {
     await deleteMutation.mutateAsync(postDetails.id);
     navigate("/posts");
   };
-
-  if (isLoading) return <PostDetailsSkeleton />;
-  if (isError) return <Error message={`${error.message}: Sorry, there was an error while fetching post details.`} />;
 
   return (
     <div className="relative rounded-lg border border-[#e6e6e6] p-5">
