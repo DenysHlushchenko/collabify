@@ -57,7 +57,7 @@ const Feedbacks = () => {
 
   if (isPending && !isPlaceholderData) return <FeedbacksSkeleton />;
 
-  if (isError) <Error message={`${fetchError.message}: There are currently no feedbacks available.`} />;
+  if (isError) return <Error message={`${fetchError.message}: There are currently no feedbacks available.`} />;
   return (
     <div>
       <h2 className="h2-bold mb-5 text-center">Feedbacks</h2>
