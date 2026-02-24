@@ -21,7 +21,7 @@ export const sidebarLinks = [
   {
     imgUrl: postsIcon,
     link: "/posts",
-    name: "Posts",
+    name: "My Posts",
   },
   {
     imgUrl: profileIcon,

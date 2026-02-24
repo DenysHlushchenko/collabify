@@ -34,7 +34,7 @@ export const usePost = () => {
 
   const usePostsQuery = () => {
     return useQuery({
-      queryKey: ["posts", token, filter, search],
+      queryKey: ["posts", filter, search],
       queryFn: () => getPosts(filter, search!),
       placeholderData: keepPreviousData,
       staleTime: 1000 * 30,
@@ -43,7 +43,7 @@ export const usePost = () => {
 
   const usePostQuery = (postId: number) => {
     return useQuery({
-      queryKey: ["post", token],
+      queryKey: ["post"],
       queryFn: () => getPostById(postId),
       retry: 2,
     });
@@ -51,8 +51,8 @@ export const usePost = () => {
 
   const useUserPostsQuery = () => {
     return useQuery({
-      queryKey: ["userPosts", token],
-      queryFn: () => (user ? getUserPosts(user.id) : []),
+      queryKey: ["userPosts", token, filter, search],
+      queryFn: () => (user ? getUserPosts(user.id, filter, search!) : []),
       retry: 1,
       staleTime: 1000 * 30,
     });

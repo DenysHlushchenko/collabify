@@ -15,8 +15,12 @@ export const getPostById = async (id: number): Promise<PostType> => {
   return res.data;
 };
 
-export const getUserPosts = async (userId: number): Promise<PostType[]> => {
-  const res = await request.get(`/posts/users/${userId}`);
+export const getUserPosts = async (userId: number, filter?: string, search?: string): Promise<PostType[]> => {
+  const params = new URLSearchParams();
+  if (filter) params.set("filter", filter);
+  if (search) params.set("search", search);
+  const url = `/posts/users/${userId}?${params.toString()}`;
+  const res = await request.get(url);
   return res.data;
 };
 
