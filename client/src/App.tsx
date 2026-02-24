@@ -1,16 +1,17 @@
 import { Outlet, Route, Routes, useLocation } from "react-router-dom";
 import LeftsideBar from "./modules/navigation/components/LeftsideBar";
 import Navbar from "./modules/navigation/components/Navbar";
-import Home from "./modules/navigation/pages/Home";
-import Messages from "./modules/navigation/pages/Messages";
-import Posts from "./modules/navigation/pages/Posts";
-import NotFound from "./modules/navigation/pages/NotFound";
+import HomePage from "./modules/navigation/pages/HomePage";
+import MessagesPage from "./modules/navigation/pages/MessagesPage";
+import PostsPage from "./modules/navigation/pages/PostsPage";
+import NotFoundPage from "./modules/navigation/pages/NotFoundPage";
 import RightsideBar from "./modules/navigation/components/RightsideBar";
 import Register from "./modules/auth/pages/Register";
 import Login from "./modules/auth/pages/Login";
 import ProtectedRoute from "./modules/auth/components/ProtectedRoute";
 import PublicRoute from "./modules/auth/components/PublicRoute";
 import UserProfile from "./modules/profile/pages/UserProfile";
+import PostDetails from "./modules/posts/pages/PostDetails";
 
 function App() {
   const { pathname } = useLocation();
@@ -43,14 +44,15 @@ function AppRoutes() {
 
       <Route element={<ProtectedRoute />}>
         <Route element={<App />}>
-          <Route index element={<Home />} />
-          <Route path="messages" element={<Messages />} />
-          <Route path="posts" element={<Posts />} />
+          <Route index element={<HomePage />} />
+          <Route path="messages" element={<MessagesPage />} />
+          <Route path="posts" element={<PostsPage />} />
+          <Route path="posts/:postId" element={<PostDetails />} />
           <Route path="/profile/:userId" element={<UserProfile />} />
         </Route>
       </Route>
 
-      <Route path="*" element={<NotFound />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }

@@ -77,7 +77,7 @@ export type PostType = {
   id: number;
   title: string;
   description: string;
-  groupSize: number;
+  group_size: number;
   created_at: Date;
   updated_at: Date;
   user: UserType;
@@ -127,8 +127,15 @@ export type PostFormValues = {
   description: string;
   groupSize: number;
   tags: string[];
-  chatTitle?: string | undefined;
-  chatId?: number | undefined;
+  chatTitle?: string;
+  chatId?: number;
+};
+
+export type EditPostFormValues = {
+  title: string;
+  description: string;
+  groupSize: number;
+  tags: string[];
 };
 
 export type FeedbackFormValues = {
@@ -145,6 +152,14 @@ export type CreatePostPayload = {
   chatTitle?: string;
   userId: number;
   chatId?: number;
+};
+
+export type UpdatePostPayload = {
+  postId: number;
+  title: string;
+  description: string;
+  groupSize: number;
+  tags: string[];
 };
 
 export type CreateFeedbackPayload = {
