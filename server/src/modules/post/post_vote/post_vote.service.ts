@@ -57,9 +57,11 @@ export class PostVoteService {
     // a QueryRunner helps prevent data inconsistencies by either commiting all actions or rolling back if process fails
     // for instance: the addition of a like/dislike succeeds but vote record insertion might fail, leading to incorrect vote counter data.
     const qr = this.dataSource.createQueryRunner();
-    await qr.connect();
-    await qr.startTransaction();
+
     try {
+      await qr.connect();
+      await qr.startTransaction();
+
       const { type } = createPostVoteDto;
       const post = await this.getPostByIdWithQueryRunner(postId, qr);
       const existingPostVote = await this.getPostVote(userId, post.id, qr);
