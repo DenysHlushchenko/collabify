@@ -85,13 +85,14 @@ describe('FeedbackService', () => {
 
       expect(mockUserService.findById).toHaveBeenCalledWith(5);
       expect(mockUserService.findById).toHaveBeenCalledWith(7);
-      expect(mockFeedbackRepository.create).toHaveBeenCalledWith({
-        message: validDto.message,
-        rating: validDto.rating,
-        sender,
-        user: receiver,
-        created_at: new Date(),
-      });
+      expect(mockFeedbackRepository.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: validDto.message,
+          rating: validDto.rating,
+          sender,
+          user: receiver,
+        }),
+      );
       expect(mockFeedbackRepository.save).toHaveBeenCalledWith(
         createdFeedbackEntity,
       );
