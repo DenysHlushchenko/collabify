@@ -5,6 +5,7 @@ import { DataSource, QueryRunner } from 'typeorm';
 import { Post } from '../entities/post.entity';
 import { CreatePostVoteDto } from '../dtos/CreatePostVote.dto';
 import { VoteType } from 'src/shared/enums/enums';
+import { VoteResponse } from 'src/shared/types';
 
 @Injectable()
 export class PostVoteService {
@@ -62,7 +63,7 @@ export class PostVoteService {
     userId: number,
     postId: number,
     createPostVoteDto: CreatePostVoteDto,
-  ) {
+  ): Promise<VoteResponse> {
     const qr = this.dataSource.createQueryRunner();
     await qr.connect();
     await qr.startTransaction();
@@ -87,12 +88,7 @@ export class PostVoteService {
             await this.decrementLike(postId, qr);
             await this.incrementDislike(postId, qr);
           } else {
-            await qr.manager.decrement(
-              Post,
-              { id: postId },
-              'downvotesCount',
-              1,
-            );
+            await this.decrementDislike(postId, qr);
             await this.incrementLike(postId, qr);
           }
 
@@ -121,8 +117,10 @@ export class PostVoteService {
 
       return {
         userVote: currentVote?.type ?? null,
-        upvotesCount: updatedPost.upvotesCount,
-        downvotesCount: updatedPost.downvotesCount,
+        votesCounts: {
+          upvotesCount: updatedPost.upvotesCount,
+          downvotesCount: updatedPost.downvotesCount,
+        },
       };
     } catch (error) {
       await qr.rollbackTransaction();

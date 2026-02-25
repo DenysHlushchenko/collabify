@@ -17,6 +17,7 @@ import { UpdatePostDto } from './dtos/UpdatePost.dto';
 import { User } from '../user/entities/user.entity';
 import { CreatePostVoteDto } from './dtos/CreatePostVote.dto';
 import { PostVoteService } from './post_vote/post_vote.service';
+import { VoteResponse } from 'src/shared/types';
 
 @Injectable()
 export class PostService {
@@ -255,7 +256,7 @@ export class PostService {
     postId: number,
     user: User,
     createPostVoteDto: CreatePostVoteDto,
-  ) {
+  ): Promise<VoteResponse> {
     return await this.postVoteService.sendVote(
       user.id,
       postId,

@@ -17,6 +17,7 @@ import { UpdatePostDto } from './dtos/UpdatePost.dto';
 import { CurrentUser } from 'src/shared/decorators/current-user.decorator';
 import { User } from '../user/entities/user.entity';
 import { CreatePostVoteDto } from './dtos/CreatePostVote.dto';
+import { VoteResponse } from 'src/shared/types';
 
 @UseGuards(AuthGuard)
 @Controller('posts')
@@ -75,7 +76,7 @@ export class PostController {
     @Param('id', ParseIntPipe) id: number,
     @CurrentUser() user: User,
     @Body() createPostVoteDto: CreatePostVoteDto,
-  ) {
+  ): Promise<VoteResponse> {
     return await this.postService.sendPostVote(id, user, createPostVoteDto);
   }
 }
