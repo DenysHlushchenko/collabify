@@ -54,15 +54,21 @@ const PostVotes = ({ postId }: Props) => {
         <Skeleton className="h-5 w-10" />
       ) : (
         <>
-          <button onClick={handleVote} value="like" className="small-medium flex cursor-pointer items-center gap-x-1">
+          <button
+            onClick={handleVote}
+            aria-label="Upvote post"
+            value="like"
+            className="small-medium flex cursor-pointer items-center gap-x-1"
+          >
             <ArrowBigUp
               className={cn("h-4 w-4 transition-colors", userVote === "like" ? "fill-black stroke-black" : "fill-none")}
             />
-            <p>{postVote?.userVote === "like" && (postVote?.votesCounts.upvotesCount ?? 0)}</p>
+            <p>{postVote?.votesCounts.upvotesCount ?? 0}</p>
           </button>
           <button
             onClick={handleVote}
             value="dislike"
+            aria-label="Downvote post"
             className="small-medium flex cursor-pointer items-center gap-x-1"
           >
             <ArrowBigDown
@@ -71,7 +77,7 @@ const PostVotes = ({ postId }: Props) => {
                 userVote === "dislike" ? "fill-black stroke-black" : "fill-none"
               )}
             />
-            <p>{postVote?.userVote === "dislike" && (postVote?.votesCounts.downvotesCount ?? 0)}</p>
+            <p>{postVote?.votesCounts.downvotesCount ?? 0}</p>
           </button>
           {error && <Error message={error} />}
         </>

@@ -58,7 +58,7 @@ const PostDetails = () => {
 
       <div className="absolute top-16 left-5 flex gap-x-2">
         {postDetails.postTags.map((postTag: PostTagType) => (
-          <PostTag key={postTag.tagId} isDeletable={false} tag={postTag.tag.name} handleRemoveTag={() => {}} />
+          <PostTag key={postTag.tagId} isDeletable={false} tag={postTag.tag.name} />
         ))}
       </div>
 

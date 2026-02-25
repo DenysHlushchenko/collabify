@@ -43,7 +43,7 @@ export class PostVoteService {
   }
 
   /**
-   * Handles concurrently like/dislike/no-action on a post for a given user.
+   * Handles atomicly like/dislike/no-action on a post for a given user
    * It supports a new vote addition (like or dislike), existing vote toggle, and switch between votes.
    * @param userId
    * @param postId
@@ -54,6 +54,8 @@ export class PostVoteService {
     postId: number,
     createPostVoteDto: CreatePostVoteDto,
   ): Promise<void> {
+    // a QueryRunner helps prevent data inconsistencies by either commiting all actions or rolling back if process fails
+    // for instance: the addition of a like/dislike succeeds but vote record insertion might fail, leading to incorrect vote counter data.
     const qr = this.dataSource.createQueryRunner();
     await qr.connect();
     await qr.startTransaction();

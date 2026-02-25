@@ -7,10 +7,12 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 import { VoteType } from 'src/shared/enums/enums';
 import { IsOptional } from 'class-validator';
 
+@Unique(['user', 'post'])
 @Entity('post_votes')
 export class PostVote {
   @PrimaryGeneratedColumn()
