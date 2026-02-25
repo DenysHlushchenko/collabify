@@ -29,6 +29,7 @@ const PostVotes = ({ postId }: Props) => {
     mutationFn: sendPostVote,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["userVote", postId] });
+      setError("");
     },
 
     onError: (error) => {
@@ -57,11 +58,7 @@ const PostVotes = ({ postId }: Props) => {
             <ArrowBigUp
               className={cn("h-4 w-4 transition-colors", userVote === "like" ? "fill-black stroke-black" : "fill-none")}
             />
-            <p>
-              {postVote?.userVote === "like"
-                ? postVote.votesCounts.upvotesCount
-                : (postVote?.votesCounts.upvotesCount ?? 0)}
-            </p>
+            <p>{postVote?.userVote === "like" && (postVote?.votesCounts.upvotesCount ?? 0)}</p>
           </button>
           <button
             onClick={handleVote}
@@ -74,11 +71,7 @@ const PostVotes = ({ postId }: Props) => {
                 userVote === "dislike" ? "fill-black stroke-black" : "fill-none"
               )}
             />
-            <p>
-              {postVote?.userVote === "dislike"
-                ? postVote.votesCounts.downvotesCount
-                : (postVote?.votesCounts.downvotesCount ?? 0)}
-            </p>
+            <p>{postVote?.userVote === "dislike" && (postVote?.votesCounts.downvotesCount ?? 0)}</p>
           </button>
           {error && <Error message={error} />}
         </>

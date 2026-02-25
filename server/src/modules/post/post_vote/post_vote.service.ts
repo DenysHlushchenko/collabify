@@ -48,7 +48,6 @@ export class PostVoteService {
    * @param userId
    * @param postId
    * @param createPostVoteDto
-   * @returns User vote, upvotes and downvotes counts in JSON format.
    */
   async sendVote(
     userId: number,

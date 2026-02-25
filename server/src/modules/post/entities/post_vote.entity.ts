@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { VoteType } from 'src/shared/enums/enums';
+import { IsOptional } from 'class-validator';
 
 @Entity('post_votes')
 export class PostVote {
@@ -23,6 +24,7 @@ export class PostVote {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
+  @IsOptional()
   @Column({
     type: 'enum',
     enum: VoteType,
