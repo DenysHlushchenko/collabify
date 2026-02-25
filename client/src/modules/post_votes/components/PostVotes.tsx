@@ -2,9 +2,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { getPostVote, sendPostVote } from "../api/postVotes";
 import type { AxiosError } from "axios";
-import likeIcon from "@/assets/like.svg";
-import dislikeIcon from "@/assets/dislike.svg";
 import { Skeleton } from "@/modules/shared/components/ui/Skeleton";
+import Error from "@/modules/shared/components/Error";
+import { cn } from "@/modules/shared/lib/utils";
+import { ArrowBigUp, ArrowBigDown } from "lucide-react";
 
 interface Props {
   postId: number;
@@ -12,7 +13,7 @@ interface Props {
 }
 
 const PostVotes = ({ postId }: Props) => {
-  const [error, setError] = useState("");
+  const [error, setError] = useState<string>("");
   const queryClient = useQueryClient();
 
   const { data: postVote, isPending } = useQuery({
@@ -22,9 +23,10 @@ const PostVotes = ({ postId }: Props) => {
     retry: 1,
   });
 
+  const userVote = postVote?.userVote;
+
   const votesMutation = useMutation({
     mutationFn: sendPostVote,
-
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["userVote", postId] });
     },
@@ -52,7 +54,9 @@ const PostVotes = ({ postId }: Props) => {
       ) : (
         <>
           <button onClick={handleVote} value="like" className="small-medium flex cursor-pointer items-center gap-x-1">
-            <img src={likeIcon} alt="Like Icon" />
+            <ArrowBigUp
+              className={cn("h-4 w-4 transition-colors", userVote === "like" ? "fill-black stroke-black" : "fill-none")}
+            />
             <p>
               {postVote?.userVote === "like"
                 ? postVote.votesCounts.upvotesCount
@@ -64,17 +68,21 @@ const PostVotes = ({ postId }: Props) => {
             value="dislike"
             className="small-medium flex cursor-pointer items-center gap-x-1"
           >
-            <img src={dislikeIcon} alt="Dislike Icon" />
+            <ArrowBigDown
+              className={cn(
+                "h-4 w-4 transition-colors",
+                userVote === "dislike" ? "fill-black stroke-black" : "fill-none"
+              )}
+            />
             <p>
               {postVote?.userVote === "dislike"
                 ? postVote.votesCounts.downvotesCount
                 : (postVote?.votesCounts.downvotesCount ?? 0)}
             </p>
           </button>
+          {error && <Error message={error} />}
         </>
       )}
-
-      {error}
     </div>
   );
 };
