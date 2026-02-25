@@ -14,6 +14,9 @@ import { Chat } from '../chat/entities/chat.entity';
 import { TagService } from '../tag/tag.service';
 import { PostTag } from '../tag/entities/post_tag.entity';
 import { UpdatePostDto } from './dtos/UpdatePost.dto';
+import { User } from '../user/entities/user.entity';
+import { CreatePostVoteDto } from './dtos/CreatePostVote.dto';
+import { PostVoteService } from './post_vote/post_vote.service';
 
 @Injectable()
 export class PostService {
@@ -22,6 +25,7 @@ export class PostService {
     private readonly userService: UserService,
     private readonly chatService: ChatService,
     private readonly tagService: TagService,
+    private readonly postVoteService: PostVoteService,
   ) {}
 
   /**
@@ -245,6 +249,18 @@ export class PostService {
     await postTagRepo.delete({ post: { id: post.id } });
 
     await this.postRepository.delete(postId);
+  }
+
+  async sendPostVote(
+    postId: number,
+    user: User,
+    createPostVoteDto: CreatePostVoteDto,
+  ) {
+    return await this.postVoteService.sendVote(
+      user.id,
+      postId,
+      createPostVoteDto,
+    );
   }
 
   private getPostTagRepository(): Repository<PostTag> {

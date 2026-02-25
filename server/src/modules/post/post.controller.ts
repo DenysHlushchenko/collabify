@@ -16,6 +16,7 @@ import { AuthGuard } from 'src/modules/user/auth/auth.guard';
 import { UpdatePostDto } from './dtos/UpdatePost.dto';
 import { CurrentUser } from 'src/shared/decorators/current-user.decorator';
 import { User } from '../user/entities/user.entity';
+import { CreatePostVoteDto } from './dtos/CreatePostVote.dto';
 
 @UseGuards(AuthGuard)
 @Controller('posts')
@@ -67,5 +68,14 @@ export class PostController {
     @CurrentUser() user: User,
   ): Promise<void> {
     return await this.postService.deletePost(id, user.id);
+  }
+
+  @Post(':id/votes')
+  async sendPostVote(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: User,
+    @Body() createPostVoteDto: CreatePostVoteDto,
+  ) {
+    return await this.postService.sendPostVote(id, user, createPostVoteDto);
   }
 }
