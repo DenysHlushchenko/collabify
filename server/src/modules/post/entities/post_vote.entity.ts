@@ -18,7 +18,9 @@ export class PostVote {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Post)
+  @ManyToOne(() => Post, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'post_id' })
   post: Post;
 
