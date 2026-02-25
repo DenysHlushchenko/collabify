@@ -10,6 +10,7 @@ import PostForm from "@/modules/posts/components/dialogs/PostForm";
 import { useAuthStore } from "@/modules/auth/store/userStore";
 import PostDeleteDialog from "@/modules/posts/components/dialogs/PostDeleteDialog";
 import { PostDetailsSkeleton } from "../components/PostSkeletons";
+import Comments from "@/modules/comments/components/Comments";
 
 const PostDetails = () => {
   const { postId } = useParams();
@@ -41,39 +42,45 @@ const PostDetails = () => {
   };
 
   return (
-    <div className="relative rounded-lg border border-[#e6e6e6] p-5">
-      <div className="flex-start gap-x-2">
-        <Link to={`/profile/${postDetails?.user.id}`}>
-          <Avatar className="flex-center h-8 w-8 bg-[#D9D9D9] text-gray-500">
-            <AvatarFallback>{convertNameToInitial(postDetails.user.username)}</AvatarFallback>
-          </Avatar>
-        </Link>
-        <p className="body-medium">c/{postDetails.user.username}</p>
-        <span className="body-medium text-gray-400">{convertToDateString(postDetails.created_at)}</span>
-        <div className="ml-auto flex gap-x-2">
-          <PostForm type="edit" submitPost={submitPost} postDetails={postDetails} />
-          {postDetails && loggedInUser?.id === postDetails.user.id && <PostDeleteDialog handleDelete={handleDelete} />}
+    <>
+      <div className="relative rounded-lg border border-[#e6e6e6] p-5">
+        <div className="flex-start gap-x-2">
+          <Link to={`/profile/${postDetails?.user.id}`}>
+            <Avatar className="flex-center h-8 w-8 bg-[#D9D9D9] text-gray-500">
+              <AvatarFallback>{convertNameToInitial(postDetails.user.username)}</AvatarFallback>
+            </Avatar>
+          </Link>
+          <p className="body-medium">c/{postDetails.user.username}</p>
+          <span className="body-medium text-gray-400">{convertToDateString(postDetails.created_at)}</span>
+          <div className="ml-auto flex gap-x-2">
+            <PostForm type="edit" submitPost={submitPost} postDetails={postDetails} />
+            {postDetails && loggedInUser?.id === postDetails.user.id && (
+              <PostDeleteDialog handleDelete={handleDelete} />
+            )}
+          </div>
+        </div>
+
+        <div className="absolute top-16 left-5 flex gap-x-2">
+          {postDetails.postTags.map((postTag: PostTagType) => (
+            <PostTag key={postTag.tagId} isDeletable={false} tag={postTag.tag.name} handleRemoveTag={() => {}} />
+          ))}
+        </div>
+
+        <p className="base-medium mt-10">{postDetails.title}</p>
+        <p className="body-regular mt-5">{postDetails.description}</p>
+
+        <div className="flex-start mt-10 gap-x-5">
+          {postFooterItems.map((item) => (
+            <div className="small-medium flex cursor-pointer items-center gap-x-1">
+              <img src={item.imgUrl} alt={item.alt} />
+              <p>10</p>
+            </div>
+          ))}
         </div>
       </div>
 
-      <div className="absolute top-16 left-5 flex gap-x-2">
-        {postDetails.postTags.map((postTag: PostTagType) => (
-          <PostTag key={postTag.tagId} isDeletable={false} tag={postTag.tag.name} handleRemoveTag={() => {}} />
-        ))}
-      </div>
-
-      <p className="base-medium mt-10">{postDetails.title}</p>
-      <p className="body-regular mt-5">{postDetails.description}</p>
-
-      <div className="flex-start mt-10 gap-x-5">
-        {postFooterItems.map((item) => (
-          <div className="small-medium flex cursor-pointer items-center gap-x-1">
-            <img src={item.imgUrl} alt={item.alt} />
-            <p>10</p>
-          </div>
-        ))}
-      </div>
-    </div>
+      <Comments />
+    </>
   );
 };
 

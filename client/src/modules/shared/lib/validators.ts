@@ -41,3 +41,7 @@ export const FeedbackSchema = z.object({
   message: z.string().max(500, "Feedback message is too long!").nonempty("Feedback message is required"),
   rating: z.number().int().min(1, "Rating must be between 1 and 5").max(5, "Rating must be between 1 and 5"),
 });
+
+export const CommentSchema = z.object({
+  content: z.string().max(300, "Comment is too long!").nonempty("Comment content is required"),
+});

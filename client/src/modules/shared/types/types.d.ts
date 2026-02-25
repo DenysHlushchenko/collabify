@@ -93,6 +93,14 @@ export type FeedbackType = {
   sender: UserType;
 };
 
+export type CommeentType = {
+  id: number;
+  message: string;
+  created_at: Date;
+  updated_at: Date;
+  sender: UserType;
+};
+
 export type MessagesType = {
   id: number;
   message: string;
@@ -143,6 +151,10 @@ export type FeedbackFormValues = {
   rating: number;
 };
 
+export type CommentFormValues = {
+  content: string;
+};
+
 /* used to send request to the server */
 export type CreatePostPayload = {
   title: string;
@@ -167,6 +179,11 @@ export type CreateFeedbackPayload = {
   receiverId: number;
   message: string;
   rating: number;
+};
+
+export type CreateCommentPayload = {
+  content: string;
+  senderId: number;
 };
 
 export type AuthResponse = {
