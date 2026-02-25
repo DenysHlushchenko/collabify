@@ -102,8 +102,12 @@ export class UserService {
       .addSelect('SUM(post.downvotesCount)', 'downvotesCount')
       .getRawOne<PostVoteStats>();
 
-    const totalUpvotes = Number(postStats?.upvotesCount) || 0;
-    const totalDownvotes = Number(postStats?.downvotesCount) || 0;
+    const totalUpvotes = postStats?.upvotesCount
+      ? Number(postStats.upvotesCount)
+      : 0;
+    const totalDownvotes = postStats?.downvotesCount
+      ? Number(postStats.downvotesCount)
+      : 0;
 
     const feedbackCount = await this.usersRepository.manager
       .getRepository('feedbacks')

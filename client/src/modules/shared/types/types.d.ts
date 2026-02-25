@@ -169,15 +169,23 @@ export type CreateFeedbackPayload = {
   rating: number;
 };
 
-export type AuthResponse = {
-  accessToken: string;
-};
-
 export type JwtPayload = {
   id: number;
   username: string;
   iat: number;
   exp: number;
+};
+
+export type AuthResponse = {
+  accessToken: string;
+};
+
+export type VoteResponse = {
+  userVote: "like" | "dislike" | null;
+  votesCounts: {
+    upvotesCount: number;
+    downvotesCount: number;
+  };
 };
 
 export type FilterType = "ASC" | "DESC" | undefined;
