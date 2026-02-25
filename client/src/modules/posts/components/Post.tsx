@@ -1,4 +1,3 @@
-import { postFooterItems } from "@/modules/shared/components/constants/links";
 import { Avatar, AvatarFallback } from "@/modules/shared/components/ui/Avatar";
 import { Button } from "@/modules/shared/components/ui/Button";
 import { Separator } from "@/modules/shared/components/ui/Separator";
@@ -14,6 +13,8 @@ import {
 } from "@/modules/shared/components/ui/Card";
 import PostTag from "./PostTag";
 import { Link } from "react-router-dom";
+
+import PostVotes from "@/modules/post_votes/components/PostVotes";
 
 const MAX_DESCRIPTION_LENGTH = 90;
 
@@ -53,12 +54,8 @@ const Post = ({ post }: PostProps) => {
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-start gap-x-5">
-          {postFooterItems.map((item) => (
-            <div className="small-medium flex cursor-pointer items-center gap-x-1">
-              <img src={item.imgUrl} alt={item.alt} />
-              <p>10</p>
-            </div>
-          ))}
+          <PostVotes postId={post.id} />
+
           <div className="absolute right-6 bottom-2 flex gap-x-2">
             {post.postTags.map((postTag: PostTagType) => (
               <PostTag key={postTag.tagId} isDeletable={false} tag={postTag.tag.name} handleRemoveTag={() => {}} />

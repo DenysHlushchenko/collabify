@@ -5,7 +5,6 @@ import { DataSource, QueryRunner } from 'typeorm';
 import { Post } from '../entities/post.entity';
 import { CreatePostVoteDto } from '../dtos/CreatePostVote.dto';
 import { VoteType } from 'src/shared/enums/enums';
-import { VoteResponse } from 'src/shared/types';
 
 @Injectable()
 export class PostVoteService {
@@ -35,20 +34,12 @@ export class PostVoteService {
     });
   }
 
-  private async incrementLike(postId: number, qr: QueryRunner) {
-    await qr.manager.increment(Post, { id: postId }, 'upvotesCount', 1);
+  private async updateLike(postId: number, qr: QueryRunner, delta: number) {
+    await qr.manager.increment(Post, { id: postId }, 'upvotesCount', delta);
   }
 
-  private async decrementLike(postId: number, qr: QueryRunner) {
-    await qr.manager.decrement(Post, { id: postId }, 'upvotesCount', 1);
-  }
-
-  private async incrementDislike(postId: number, qr: QueryRunner) {
-    await qr.manager.increment(Post, { id: postId }, 'downvotesCount', 1);
-  }
-
-  private async decrementDislike(postId: number, qr: QueryRunner) {
-    await qr.manager.decrement(Post, { id: postId }, 'downvotesCount', 1);
+  private async updateDislike(postId: number, qr: QueryRunner, delta: number) {
+    await qr.manager.increment(Post, { id: postId }, 'downvotesCount', delta);
   }
 
   /**
@@ -63,7 +54,7 @@ export class PostVoteService {
     userId: number,
     postId: number,
     createPostVoteDto: CreatePostVoteDto,
-  ): Promise<VoteResponse> {
+  ): Promise<void> {
     const qr = this.dataSource.createQueryRunner();
     await qr.connect();
     await qr.startTransaction();
@@ -76,20 +67,20 @@ export class PostVoteService {
         // toggle off (either like or dislike button)
         if (type === null || existingPostVote.type === type) {
           if (existingPostVote.type === VoteType.LIKE) {
-            await this.decrementLike(postId, qr);
+            await this.updateLike(postId, qr, -1);
           } else if (existingPostVote.type === VoteType.DISLIKE) {
-            await this.decrementDislike(postId, qr);
+            await this.updateDislike(postId, qr, -1);
           }
           await qr.manager.remove(existingPostVote);
         }
         // switch type
         else {
           if (existingPostVote.type === VoteType.LIKE) {
-            await this.decrementLike(postId, qr);
-            await this.incrementDislike(postId, qr);
+            await this.updateLike(postId, qr, -1);
+            await this.updateDislike(postId, qr, 1);
           } else {
-            await this.decrementDislike(postId, qr);
-            await this.incrementLike(postId, qr);
+            await this.updateDislike(postId, qr, -1);
+            await this.updateLike(postId, qr, 1);
           }
 
           existingPostVote.type = type as VoteType;
@@ -98,9 +89,9 @@ export class PostVoteService {
       } else {
         // new vote
         if (type === VoteType.LIKE) {
-          await this.incrementLike(postId, qr);
+          await this.updateLike(postId, qr, 1);
         } else if (type === VoteType.DISLIKE) {
-          await this.incrementDislike(postId, qr);
+          await this.updateDislike(postId, qr, 1);
         }
 
         if (type !== null) {
@@ -112,16 +103,6 @@ export class PostVoteService {
         }
       }
       await qr.commitTransaction();
-      const updatedPost = await this.getPostByIdWithQueryRunner(postId, qr);
-      const currentVote = await this.getPostVote(userId, post.id, qr);
-
-      return {
-        userVote: currentVote?.type ?? null,
-        votesCounts: {
-          upvotesCount: updatedPost.upvotesCount,
-          downvotesCount: updatedPost.downvotesCount,
-        },
-      };
     } catch (error) {
       await qr.rollbackTransaction();
       throw error;

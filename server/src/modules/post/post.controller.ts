@@ -71,12 +71,20 @@ export class PostController {
     return await this.postService.deletePost(id, user.id);
   }
 
+  @Get(':id/votes')
+  async getPostVote(
+    @Param('id', ParseIntPipe) id: number,
+    @CurrentUser() user: User,
+  ): Promise<VoteResponse> {
+    return await this.postService.getPostVote(id, user.id);
+  }
+
   @Post(':id/votes')
   async sendPostVote(
     @Param('id', ParseIntPipe) id: number,
     @CurrentUser() user: User,
     @Body() createPostVoteDto: CreatePostVoteDto,
-  ): Promise<VoteResponse> {
+  ): Promise<void> {
     return await this.postService.sendPostVote(id, user, createPostVoteDto);
   }
 }
