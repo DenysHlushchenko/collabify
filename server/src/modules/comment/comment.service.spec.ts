@@ -169,6 +169,9 @@ describe('CommentService', () => {
         relations: {
           sender: true,
         },
+        order: {
+          created_at: 'DESC',
+        },
       });
 
       expect(result).toEqual(mockComments);

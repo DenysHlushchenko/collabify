@@ -57,6 +57,9 @@ export class CommentService {
       relations: {
         sender: true,
       },
+      order: {
+        created_at: 'DESC',
+      },
     });
   }
 
