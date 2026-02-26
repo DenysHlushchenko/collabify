@@ -1,4 +1,4 @@
-import { Outlet, Route, Routes, useLocation } from "react-router-dom";
+import { Outlet, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import LeftsideBar from "./modules/navigation/components/LeftsideBar";
 import Navbar from "./modules/navigation/components/Navbar";
 import HomePage from "./modules/navigation/pages/HomePage";
@@ -12,10 +12,23 @@ import ProtectedRoute from "./modules/auth/components/ProtectedRoute";
 import PublicRoute from "./modules/auth/components/PublicRoute";
 import UserProfile from "./modules/profile/pages/UserProfile";
 import PostDetails from "./modules/posts/pages/PostDetails";
+import { useEffect } from "react";
+import { useAuthStore } from "./modules/auth/store/userStore";
 
 function App() {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated());
+  const logout = useAuthStore((state) => state.logout);
   const showRightsideBar = pathname !== "/messages";
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      logout();
+      navigate("/login");
+    }
+  });
+
   return (
     <main className="relative">
       <Navbar />
