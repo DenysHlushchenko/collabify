@@ -3,7 +3,6 @@ import { Avatar, AvatarFallback } from "@/modules/shared/components/ui/Avatar";
 import { convertNameToInitial, convertToDateString } from "@/modules/shared/utils/utils";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Error from "@/modules/shared/components/Error";
-import { postFooterItems } from "@/modules/shared/components/constants/links";
 import PostTag from "@/modules/posts/components/PostTag";
 import type { PostFormValues, PostTagType } from "@/modules/shared/types/types";
 import PostForm from "@/modules/posts/components/dialogs/PostForm";
@@ -11,6 +10,7 @@ import { useAuthStore } from "@/modules/auth/store/userStore";
 import PostDeleteDialog from "@/modules/posts/components/dialogs/PostDeleteDialog";
 import { PostDetailsSkeleton } from "../components/PostSkeletons";
 import Comments from "@/modules/comments/components/Comments";
+import PostVotes from "@/modules/post_votes/components/PostVotes";
 
 const PostDetails = () => {
   const { postId } = useParams();
@@ -62,20 +62,15 @@ const PostDetails = () => {
 
         <div className="absolute top-16 left-5 flex gap-x-2">
           {postDetails.postTags.map((postTag: PostTagType) => (
-            <PostTag key={postTag.tagId} isDeletable={false} tag={postTag.tag.name} handleRemoveTag={() => {}} />
+            <PostTag key={postTag.tagId} isDeletable={false} tag={postTag.tag.name} />
           ))}
         </div>
 
         <p className="base-medium mt-10">{postDetails.title}</p>
         <p className="body-regular mt-5">{postDetails.description}</p>
 
-        <div className="flex-start mt-10 gap-x-5">
-          {postFooterItems.map((item) => (
-            <div className="small-medium flex cursor-pointer items-center gap-x-1">
-              <img src={item.imgUrl} alt={item.alt} />
-              <p>10</p>
-            </div>
-          ))}
+        <div className="mt-5">
+          <PostVotes postId={postDetails.id} />
         </div>
       </div>
 

@@ -13,6 +13,7 @@ import { User } from '../../modules/user/entities/user.entity';
 import { DataSourceOptions } from 'typeorm';
 
 import * as dotenv from 'dotenv';
+import { PostVote } from 'src/modules/post/entities/post_vote.entity';
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ export const databaseConfig: DataSourceOptions = {
     MessageReaction,
     Notification,
     PostTag,
+    PostVote,
     Tag,
   ],
   synchronize: process.env.NODE_ENV !== 'production',

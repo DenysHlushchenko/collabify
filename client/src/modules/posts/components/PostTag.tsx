@@ -8,7 +8,7 @@ interface TagProps {
   tag: string;
   field?: ControllerRenderProps<z.infer<typeof PostSchema>, "tags">;
   isDeletable: boolean;
-  handleRemoveTag: (tag: string, field: ControllerRenderProps<z.infer<typeof PostSchema>, "tags">) => void;
+  handleRemoveTag?: (tag: string, field: ControllerRenderProps<z.infer<typeof PostSchema>, "tags">) => void;
 }
 
 const PostTag = ({ tag, field, isDeletable, handleRemoveTag }: TagProps) => {
@@ -16,7 +16,7 @@ const PostTag = ({ tag, field, isDeletable, handleRemoveTag }: TagProps) => {
     <Badge
       key={tag}
       className="subtle-medium flex items-center justify-center gap-2 rounded-md border-none bg-[#ececec] px-3 py-1 capitalize"
-      onClick={() => handleRemoveTag(tag, field!)}
+      onClick={() => handleRemoveTag && handleRemoveTag(tag, field!)}
     >
       {tag}
       {isDeletable && (

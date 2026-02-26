@@ -188,6 +188,18 @@ export type JwtPayload = {
   exp: number;
 };
 
+export type AuthResponse = {
+  accessToken: string;
+};
+
+export type VoteResponse = {
+  userVote: "like" | "dislike" | null;
+  votesCounts: {
+    upvotesCount: number;
+    downvotesCount: number;
+  };
+};
+
 export type FilterType = "ASC" | "DESC" | undefined;
 
 export type BadgeCounts = {
