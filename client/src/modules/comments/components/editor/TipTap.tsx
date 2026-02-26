@@ -39,7 +39,7 @@ const TipTap = ({ description, onChange }: TipTapProps) => {
 
   useEffect(() => {
     if (editor && description !== editor.getHTML()) {
-      editor.commands.setContent("");
+      editor.commands.clearContent(false);
     }
   }, [description, editor]);
 
