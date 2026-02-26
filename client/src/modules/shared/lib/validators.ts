@@ -43,5 +43,16 @@ export const FeedbackSchema = z.object({
 });
 
 export const CommentSchema = z.object({
-  content: z.string().max(300, "Comment is too long!").nonempty("Comment content is required"),
+  content: z.string().refine(
+    (html) => {
+      const textOnly = html
+        .replace(/<[^>]+>/g, "")
+        .replace(/&nbsp;/gi, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      return textOnly.length > 0;
+    },
+    { message: "Comment is required" }
+  ),
 });
