@@ -64,15 +64,6 @@ export type PostTagType = {
   tag: TagType;
 };
 
-export type CommentType = {
-  id: number;
-  message: string;
-  created_at: Date;
-  updated_at: Date;
-  post: PostType;
-  sender: UserType;
-};
-
 export type PostType = {
   id: number;
   title: string;
@@ -90,6 +81,14 @@ export type FeedbackType = {
   message: string;
   rating: number;
   created_at: Date;
+  sender: UserType;
+};
+
+export type CommentType = {
+  id: number;
+  message: string;
+  created_at: Date;
+  updated_at: Date;
   sender: UserType;
 };
 
@@ -143,6 +142,10 @@ export type FeedbackFormValues = {
   rating: number;
 };
 
+export type CommentFormValues = {
+  content: string;
+};
+
 /* used to send request to the server */
 export type CreatePostPayload = {
   title: string;
@@ -167,6 +170,15 @@ export type CreateFeedbackPayload = {
   receiverId: number;
   message: string;
   rating: number;
+};
+
+export type CreateCommentPayload = {
+  content: string;
+  senderId: number;
+};
+
+export type AuthResponse = {
+  accessToken: string;
 };
 
 export type JwtPayload = {

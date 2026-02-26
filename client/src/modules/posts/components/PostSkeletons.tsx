@@ -16,42 +16,36 @@ const PostSkeleton = () => {
 const PostDetailsSkeleton = () => {
   return (
     <div className="relative rounded-lg border border-[#e6e6e6] bg-white p-5">
-      <div className="flex items-start gap-x-3">
-        <Skeleton className="h-8 w-8 shrink-0 rounded-full" />
+      <div className="flex items-center gap-x-2">
+        <Skeleton className="h-8 w-8 shrink-0 rounded-full bg-gray-100" />
 
-        <div className="flex flex-col gap-y-1">
-          <Skeleton className="h-5 w-32 rounded-md" />
-          <Skeleton className="h-4 w-24 rounded-md" />
-        </div>
+        <Skeleton className="h-5 w-28 rounded-md bg-gray-100" />
+        <Skeleton className="h-5 w-24 rounded-md bg-gray-100" />
 
         <div className="ml-auto flex gap-x-2">
-          <Skeleton className="h-8 w-16 rounded-md" />
-          <Skeleton className="h-8 w-16 rounded-md" />
+          <Skeleton className="h-8 w-16 rounded-md bg-gray-100" />
+          <Skeleton className="h-8 w-16 rounded-md bg-gray-100" />
         </div>
       </div>
 
       <div className="absolute top-16 left-5 flex gap-x-2">
-        <Skeleton className="h-6 w-16 rounded-full" />
-        <Skeleton className="h-6 w-20 rounded-full" />
-        <Skeleton className="h-6 w-18 rounded-full" />
+        <Skeleton className="h-6 w-16 rounded-full bg-gray-100" />
+        <Skeleton className="h-6 w-20 rounded-full bg-gray-100" />
+        <Skeleton className="h-6 w-14 rounded-full bg-gray-100" />
       </div>
 
-      <div className="mt-14">
-        <Skeleton className="h-7 w-4/5 rounded-md" />
+      <div className="mt-10">
+        <Skeleton className="h-6 w-4/5 rounded-md bg-gray-100" />
       </div>
 
-      <div className="mt-6 space-y-2">
-        <Skeleton className="h-4 w-full rounded-md" />
-        <Skeleton className="h-4 w-full rounded-md" />
-        <Skeleton className="h-4 w-5/6 rounded-md" />
-        <Skeleton className="h-4 w-3/4 rounded-md" />
-        <Skeleton className="h-4 w-11/12 rounded-md" />
+      <div className="mt-5 space-y-3">
+        <Skeleton className="h-4 w-full rounded-md bg-gray-100" />
+        <Skeleton className="h-4 w-full rounded-md bg-gray-100" />
+        <Skeleton className="h-4 w-5/6 rounded-md bg-gray-100" />
       </div>
 
-      <div className="mt-10 flex items-center gap-x-6">
-        <Skeleton className="h-8 w-10 rounded-md" />
-        <Skeleton className="h-8 w-10 rounded-md" />
-        <Skeleton className="h-8 w-10 rounded-md" />
+      <div className="mt-5">
+        <Skeleton className="h-8 w-24 rounded-md bg-gray-100" />
       </div>
     </div>
   );

@@ -18,5 +18,6 @@ import { PostVoteService } from './post_vote/post_vote.service';
   ],
   controllers: [PostController],
   providers: [PostService, PostVoteService],
+  exports: [PostService],
 })
 export class PostModule {}
