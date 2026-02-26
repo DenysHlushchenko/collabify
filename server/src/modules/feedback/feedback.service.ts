@@ -23,8 +23,8 @@ export class FeedbackService {
    * @throws NotFoundException if either the sender or receiver does not exist.
    * @throws BadRequestException if the sender and receiver are the same or if the rating is out of bounds.
    */
-  async create(createdFeedbackDto: CreateFeedbackDto): Promise<void> {
-    const { senderId, receiverId, message, rating } = createdFeedbackDto;
+  async create(createFeedbackDto: CreateFeedbackDto): Promise<void> {
+    const { senderId, receiverId, message, rating } = createFeedbackDto;
     const existingSender = await this.userService.findById(senderId);
     const existingReceiver = await this.userService.findById(receiverId);
 
