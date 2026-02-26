@@ -25,7 +25,7 @@ export class CommentController {
     @Param('postId', ParseIntPipe) postId: number,
     @Body() createCommentDto: CreateCommentDto,
   ): Promise<void> {
-    return await this.commentService.create(createCommentDto, postId);
+    await this.commentService.create(createCommentDto, postId);
   }
 
   @Get('/posts/:postId')

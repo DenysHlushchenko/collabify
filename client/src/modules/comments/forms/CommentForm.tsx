@@ -29,7 +29,7 @@ const CommentForm = ({ submitComment, error, isSubmitting }: CommentFormProps) =
   };
 
   async function onSubmit(values: z.infer<typeof CommentSchema>) {
-    submitComment(values);
+    await submitComment(values);
     reset();
   }
   return (

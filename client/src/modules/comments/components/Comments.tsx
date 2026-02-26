@@ -12,7 +12,7 @@ const Comments = () => {
   if (isLoading) return <CommentsSkeleton />;
 
   if (isError) {
-    return <Error message={errorMessage || "There are currently no comments available."} />;
+    return <Error message={errorMessage || "Failed to load comments. Please try again."} />;
   }
 
   const totalComments = comments.length;
@@ -27,7 +27,12 @@ const Comments = () => {
       {comments.length > 0 ? (
         <div>
           {comments?.map((comment: CommentType) => (
-            <Comment key={comment.id} comment={comment} onDelete={handleDelete} isOwnComment={comment.sender.id === currentUserId} />
+            <Comment
+              key={comment.id}
+              comment={comment}
+              onDelete={handleDelete}
+              isOwnComment={comment.sender.id === currentUserId}
+            />
           ))}
         </div>
       ) : (

@@ -60,7 +60,6 @@ export const useComments = () => {
     errorMessage: commentsQuery.error?.message,
 
     isCreating: createMutation.isPending,
-    isDeleting: deleteMutation.isPending,
 
     handleSubmit,
     handleDelete,

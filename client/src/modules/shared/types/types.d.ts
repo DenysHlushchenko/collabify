@@ -64,15 +64,6 @@ export type PostTagType = {
   tag: TagType;
 };
 
-export type CommentType = {
-  id: number;
-  message: string;
-  created_at: Date;
-  updated_at: Date;
-  post: PostType;
-  sender: UserType;
-};
-
 export type PostType = {
   id: number;
   title: string;
@@ -93,7 +84,7 @@ export type FeedbackType = {
   sender: UserType;
 };
 
-export type CommeentType = {
+export type CommentType = {
   id: number;
   message: string;
   created_at: Date;
