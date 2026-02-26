@@ -49,7 +49,10 @@ export class Post {
   })
   postTags: PostTag[];
 
-  @OneToMany(() => Comment, (comment) => comment.post)
+  @OneToMany(() => Comment, (comment) => comment.post, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   comments: Comment[];
 
   @OneToMany(() => Chat, (chat) => chat.post)

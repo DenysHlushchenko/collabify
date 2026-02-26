@@ -9,14 +9,19 @@ import { Repository } from 'typeorm';
 import { UserService } from '../user/user.service';
 import { CreateCommentDto } from './dtos/CreateComment.dto';
 import { PostService } from '../post/post.service';
+import { VoteResponse } from 'src/shared/types';
+import { CreateCommentVoteDto } from './dtos/CreateCommentVote.dto';
+import { VoteService } from 'src/shared/vote/vote.service';
+import { Voteable } from 'src/shared/vote/vote.interface';
 
 @Injectable()
-export class CommentService {
+export class CommentService implements Voteable {
   constructor(
     @InjectRepository(Comment)
     private readonly commentRepository: Repository<Comment>,
     private readonly userService: UserService,
     private readonly postService: PostService,
+    private readonly voteService: VoteService,
   ) {}
 
   async create(
@@ -80,5 +85,26 @@ export class CommentService {
     }
 
     await this.commentRepository.delete(commentId);
+  }
+
+  async getVote(commentId: number, userId?: number): Promise<VoteResponse> {
+    return this.voteService.findVoteByEntity(
+      this.commentRepository,
+      commentId,
+      userId,
+    );
+  }
+
+  async sendVote(
+    commentId: number,
+    userId: number,
+    createCommentVoteDto: CreateCommentVoteDto,
+  ): Promise<void> {
+    return await this.voteService.sendVote(
+      userId,
+      commentId,
+      Comment,
+      createCommentVoteDto,
+    );
   }
 }
