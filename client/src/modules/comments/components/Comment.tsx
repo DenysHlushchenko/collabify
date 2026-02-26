@@ -4,6 +4,8 @@ import { Avatar, AvatarFallback } from "@/modules/shared/components/ui/Avatar";
 import { Link } from "react-router-dom";
 import RichTextViewer from "./editor/RichTextViewer";
 import { Button } from "@/modules/shared/components/ui/Button";
+import useVote from "@/modules/votes/hooks/useVote";
+import Votes from "@/modules/votes/components/Votes";
 
 interface CommentProps {
   comment: CommentType;
@@ -12,8 +14,12 @@ interface CommentProps {
 }
 
 const Comment = ({ comment, onDelete, isOwnComment }: CommentProps) => {
+  const { useCommentVoteQuery, useCreateCommentVoteMutation } = useVote();
+  const { data, isPending } = useCommentVoteQuery(comment.id);
+  const mutation = useCreateCommentVoteMutation(comment.id);
+
   return (
-    <article className="border-b py-10">
+    <article className="relative border-b py-10">
       <div className="mb-5 flex flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
         <div className="flex flex-1 items-start gap-1 sm:items-center">
           <Link to={`/profile/${comment.sender.id}`}>
@@ -45,6 +51,9 @@ const Comment = ({ comment, onDelete, isOwnComment }: CommentProps) => {
       </div>
 
       <RichTextViewer content={comment.message} className="border-l-2 border-gray-200 px-1 py-2 pl-4" />
+      <div className="absolute bottom-2">
+        <Votes entityId={comment.id} voteData={data} voteMutation={mutation} isPending={isPending} />
+      </div>
     </article>
   );
 };

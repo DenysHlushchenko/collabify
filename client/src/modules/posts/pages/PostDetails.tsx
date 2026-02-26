@@ -10,7 +10,8 @@ import { useAuthStore } from "@/modules/auth/store/userStore";
 import PostDeleteDialog from "@/modules/posts/components/dialogs/PostDeleteDialog";
 import { PostDetailsSkeleton } from "../components/PostSkeletons";
 import Comments from "@/modules/comments/components/Comments";
-import PostVotes from "@/modules/post_votes/components/PostVotes";
+import Votes from "@/modules/votes/components/Votes";
+import useVote from "@/modules/votes/hooks/useVote";
 
 const PostDetails = () => {
   const { postId } = useParams();
@@ -21,6 +22,10 @@ const PostDetails = () => {
   const { data: postDetails, isPending, isError, error } = usePostQuery(Number(postId));
   const updateMutation = useUpdatePostMutation();
   const deleteMutation = useDeletePostMutation();
+
+  const { usePostVoteQuery, useCreatePostVoteMutation } = useVote();
+  const { data: voteData, isPending: isVotePending } = usePostVoteQuery(Number(postId));
+  const voteMutation = useCreatePostVoteMutation(Number(postId));
 
   if (isPending) return <PostDetailsSkeleton />;
   if (isError) return <Error message={`${error.message}: Sorry, there was an error while fetching post details.`} />;
@@ -70,7 +75,7 @@ const PostDetails = () => {
         <p className="body-regular mt-5">{postDetails.description}</p>
 
         <div className="mt-5">
-          <PostVotes postId={postDetails.id} />
+          <Votes entityId={Number(postId)} voteData={voteData} voteMutation={voteMutation} isPending={isVotePending} />
         </div>
       </div>
 

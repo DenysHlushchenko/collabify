@@ -14,7 +14,8 @@ import {
 import PostTag from "./PostTag";
 import { Link } from "react-router-dom";
 
-import PostVotes from "@/modules/post_votes/components/PostVotes";
+import Votes from "@/modules/votes/components/Votes";
+import useVote from "@/modules/votes/hooks/useVote";
 
 const MAX_DESCRIPTION_LENGTH = 90;
 
@@ -25,6 +26,10 @@ interface PostProps {
 const Post = ({ post }: PostProps) => {
   const desc = post.description;
   const adjustedDesc = desc.length >= MAX_DESCRIPTION_LENGTH ? `${desc.substring(0, MAX_DESCRIPTION_LENGTH)}...` : desc;
+
+  const { usePostVoteQuery, useCreatePostVoteMutation } = useVote();
+  const { data, isPending } = usePostVoteQuery(post.id);
+  const mutation = useCreatePostVoteMutation(post.id);
 
   return (
     <>
@@ -54,7 +59,7 @@ const Post = ({ post }: PostProps) => {
           </CardAction>
         </CardHeader>
         <CardFooter className="flex-start gap-x-5">
-          <PostVotes postId={post.id} />
+          <Votes entityId={post.id} voteData={data} voteMutation={mutation} isPending={isPending} />
 
           <div className="absolute right-6 bottom-2 flex gap-x-2">
             {post.postTags.map((postTag: PostTagType) => (
