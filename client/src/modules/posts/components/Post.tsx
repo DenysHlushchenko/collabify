@@ -44,7 +44,7 @@ const Post = ({ post }: PostProps) => {
               </Link>
               <p>c/{post.user.username}</p>
 
-              <span className="text-gray-400">{convertToDateString(post.created_at)}</span>
+              <span className="hidden text-gray-400 sm:block">{convertToDateString(post.created_at)}</span>
             </div>
           </CardTitle>
 

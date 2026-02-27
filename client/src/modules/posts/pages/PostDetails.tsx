@@ -57,7 +57,7 @@ const PostDetails = () => {
           </Link>
           <p className="body-medium">c/{postDetails.user.username}</p>
           <span className="body-medium text-gray-400">{convertToDateString(postDetails.created_at)}</span>
-          <div className="ml-auto flex gap-x-2">
+          <div className="absolute right-4 bottom-4 ml-auto flex gap-x-2 sm:static">
             <PostForm type="edit" submitPost={submitPost} postDetails={postDetails} />
             {postDetails && loggedInUser?.id === postDetails.user.id && (
               <PostDeleteDialog handleDelete={handleDelete} />

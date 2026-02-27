@@ -10,16 +10,11 @@ import { ChatService } from '../chat/chat.service';
 import { TagService } from '../tag/tag.service';
 import { PostTag } from '../tag/entities/post_tag.entity';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
-import { PostVoteService } from './post_vote/post_vote.service';
-import { DataSource } from 'typeorm';
-import { PostVote } from './entities/post_vote.entity';
-import { VoteType } from 'src/shared/enums/enums';
-import { User } from '../user/entities/user.entity';
-import { CreatePostVoteDto } from './dtos/CreatePostVote.dto';
+import { VoteService } from 'src/shared/vote/vote.service';
+import { mockDataSourceProvider } from '../../../test/mocks/data-source.mock';
 
 describe('PostService', () => {
   let postService: PostService;
-  let postVoteService: PostVoteService;
 
   let mockPostRepository: {
     save: jest.Mock;
@@ -30,29 +25,6 @@ describe('PostService', () => {
     createQueryBuilder: jest.Mock;
     manager: {
       getRepository: jest.Mock;
-    };
-  };
-
-  let mockPostVoteRepository: {
-    findOne: jest.Mock;
-    findOneOrFail: jest.Mock;
-  };
-
-  let mockDataSource: {
-    createQueryRunner: jest.Mock;
-  };
-  let mockQueryRunner: {
-    connect: jest.Mock;
-    startTransaction: jest.Mock;
-    commitTransaction: jest.Mock;
-    rollbackTransaction: jest.Mock;
-    release: jest.Mock;
-    manager: {
-      findOne: jest.Mock;
-      findOneOrFail: jest.Mock;
-      increment: jest.Mock;
-      save: jest.Mock;
-      remove: jest.Mock;
     };
   };
 
@@ -83,11 +55,6 @@ describe('PostService', () => {
       },
     };
 
-    mockPostVoteRepository = {
-      findOne: jest.fn(),
-      findOneOrFail: jest.fn(),
-    };
-
     mockUserSevice = {
       findById: jest.fn(),
     };
@@ -102,36 +69,14 @@ describe('PostService', () => {
       findOrCreateMany: jest.fn(),
     };
 
-    mockQueryRunner = {
-      connect: jest.fn(),
-      startTransaction: jest.fn(),
-      commitTransaction: jest.fn(),
-      rollbackTransaction: jest.fn(),
-      release: jest.fn(),
-      manager: {
-        findOne: jest.fn(),
-        findOneOrFail: jest.fn(),
-        increment: jest.fn(),
-        save: jest.fn(),
-        remove: jest.fn(),
-      },
-    };
-
-    mockDataSource = {
-      createQueryRunner: jest.fn().mockReturnValue(mockQueryRunner),
-    };
-
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         PostService,
-        PostVoteService,
+        VoteService,
+        mockDataSourceProvider,
         {
           provide: getRepositoryToken(Post),
           useValue: mockPostRepository,
-        },
-        {
-          provide: getRepositoryToken(PostVote),
-          useValue: mockPostVoteRepository,
         },
         {
           provide: UserService,
@@ -145,15 +90,10 @@ describe('PostService', () => {
           provide: TagService,
           useValue: mockTagService,
         },
-        {
-          provide: DataSource,
-          useValue: mockDataSource,
-        },
       ],
     }).compile();
 
     postService = module.get<PostService>(PostService);
-    postVoteService = module.get<PostVoteService>(PostVoteService);
   });
 
   it('should be defined', () => {
@@ -787,186 +727,6 @@ describe('PostService', () => {
 
       expect(mockPostTagRepo.delete).toHaveBeenCalledWith({ post: { id: 42 } });
       expect(mockPostRepository.delete).toHaveBeenCalledWith(42);
-    });
-  });
-
-  describe('PostVoteService (sendVote)', () => {
-    const userId = 7;
-    const postId = 15;
-
-    const basePost = {
-      id: postId,
-      upvotesCount: 4,
-      downvotesCount: 1,
-    };
-
-    it('should create new upvote when no previous vote exists', async () => {
-      mockQueryRunner.manager.findOneOrFail.mockResolvedValueOnce(basePost);
-      mockQueryRunner.manager.findOne.mockResolvedValueOnce(null);
-
-      await postVoteService.sendVote(userId, postId, { type: VoteType.LIKE });
-
-      expect(mockQueryRunner.manager.increment).toHaveBeenCalledWith(
-        Post,
-        { id: postId },
-        'upvotesCount',
-        1,
-      );
-      expect(mockQueryRunner.manager.save).toHaveBeenCalledWith(
-        PostVote,
-        expect.objectContaining({
-          post: { id: postId },
-          user: { id: userId },
-          type: VoteType.LIKE,
-        }),
-      );
-      expect(mockQueryRunner.commitTransaction).toHaveBeenCalled();
-    });
-
-    it('should create new downvote vote when no previous vote', async () => {
-      mockQueryRunner.manager.findOneOrFail.mockResolvedValueOnce(basePost);
-      mockQueryRunner.manager.findOne.mockResolvedValueOnce(null);
-
-      await postVoteService.sendVote(userId, postId, {
-        type: VoteType.DISLIKE,
-      });
-
-      expect(mockQueryRunner.manager.increment).toHaveBeenCalledWith(
-        Post,
-        { id: postId },
-        'downvotesCount',
-        1,
-      );
-      expect(mockQueryRunner.manager.save).toHaveBeenCalled();
-    });
-
-    it('should remove existing upvote when it is sent again', async () => {
-      const existingVote = {
-        id: 300,
-        type: VoteType.LIKE,
-        post: { id: postId },
-      };
-
-      mockQueryRunner.manager.findOneOrFail.mockResolvedValueOnce(basePost);
-      mockQueryRunner.manager.findOne.mockResolvedValueOnce(existingVote);
-
-      await postVoteService.sendVote(userId, postId, { type: VoteType.LIKE });
-
-      expect(mockQueryRunner.manager.increment).toHaveBeenCalledWith(
-        Post,
-        { id: postId },
-        'upvotesCount',
-        -1,
-      );
-      expect(mockQueryRunner.manager.remove).toHaveBeenCalledWith(existingVote);
-    });
-
-    it('should switch upvote to downvote', async () => {
-      const existingVote = { id: 301, type: VoteType.LIKE };
-
-      mockQueryRunner.manager.findOneOrFail.mockResolvedValueOnce(basePost);
-      mockQueryRunner.manager.findOne.mockResolvedValueOnce(existingVote);
-
-      await postVoteService.sendVote(userId, postId, {
-        type: VoteType.DISLIKE,
-      });
-
-      expect(mockQueryRunner.manager.increment).toHaveBeenNthCalledWith(
-        1,
-        Post,
-        { id: postId },
-        'upvotesCount',
-        -1,
-      );
-      expect(mockQueryRunner.manager.increment).toHaveBeenNthCalledWith(
-        2,
-        Post,
-        { id: postId },
-        'downvotesCount',
-        1,
-      );
-      expect(mockQueryRunner.manager.save).toHaveBeenCalledWith(
-        expect.objectContaining({ type: VoteType.DISLIKE }),
-      );
-    });
-
-    it('should remove vote when type = null', async () => {
-      const existingVote = { id: 302, type: VoteType.DISLIKE };
-
-      mockQueryRunner.manager.findOneOrFail.mockResolvedValueOnce(basePost);
-      mockQueryRunner.manager.findOne.mockResolvedValueOnce(existingVote);
-
-      await postVoteService.sendVote(userId, postId, { type: null });
-
-      expect(mockQueryRunner.manager.increment).toHaveBeenCalledWith(
-        Post,
-        { id: postId },
-        'downvotesCount',
-        -1,
-      );
-      expect(mockQueryRunner.manager.remove).toHaveBeenCalled();
-    });
-
-    it('should rollback transaction when error occurs', async () => {
-      mockQueryRunner.manager.findOneOrFail.mockRejectedValueOnce(
-        new Error('DB boom'),
-      );
-
-      await expect(
-        postVoteService.sendVote(userId, postId, { type: VoteType.LIKE }),
-      ).rejects.toThrow();
-
-      expect(mockQueryRunner.rollbackTransaction).toHaveBeenCalled();
-      expect(mockQueryRunner.commitTransaction).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('PostService with getPostVote & sendPostVote', () => {
-    const mockUser = { id: 8 } as User;
-    const postId = 20;
-
-    beforeEach(() => {
-      mockPostRepository.findOneOrFail.mockResolvedValue({
-        upvotesCount: 12,
-        downvotesCount: 3,
-      });
-    });
-
-    it('should return vote counts and null userVote when not logged in', async () => {
-      const result = await postService.getPostVote(postId);
-
-      expect(result).toEqual({
-        userVote: null,
-        votesCounts: {
-          upvotesCount: 12,
-          downvotesCount: 3,
-        },
-      });
-      expect(mockPostVoteRepository.findOne).not.toHaveBeenCalled();
-    });
-
-    it('should return userVote when user has voted', async () => {
-      mockPostVoteRepository.findOne.mockResolvedValue({
-        type: VoteType.LIKE,
-      } as PostVote);
-
-      const result = await postService.getPostVote(postId, mockUser.id);
-
-      expect(result.userVote).toBe(VoteType.LIKE);
-      expect(result.votesCounts.upvotesCount).toBe(12);
-      expect(result.votesCounts.downvotesCount).toBe(3);
-    });
-
-    it('should include sendPostVote to PostVoteService', async () => {
-      const dto: CreatePostVoteDto = { type: VoteType.DISLIKE };
-
-      const spy = jest
-        .spyOn(postVoteService, 'sendVote')
-        .mockResolvedValue(undefined);
-
-      await postService.sendPostVote(postId, mockUser, dto);
-
-      expect(spy).toHaveBeenCalledWith(mockUser.id, postId, dto);
     });
   });
 });
