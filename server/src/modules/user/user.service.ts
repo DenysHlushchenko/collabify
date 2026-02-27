@@ -8,7 +8,7 @@ import bcrypt from 'bcrypt';
 import { CountryService } from 'src/modules/country/country.service';
 import { EditUserDto } from './dtos/EditUserDto';
 import { UserDoesNotExistException } from 'src/shared/exceptions/UserDoesNotExist.exception';
-import { FeedbackStats, PostVoteStats, UserWithStats } from 'src/shared/types';
+import { FeedbackStats, VoteStats, UserWithStats } from 'src/shared/types';
 import { assignBadges } from 'src/shared/utils/libs';
 
 enum Auth {
@@ -100,7 +100,7 @@ export class UserService {
       .where('post.user_id = :userId', { userId: id })
       .select('SUM(post.upvotesCount)', 'upvotesCount')
       .addSelect('SUM(post.downvotesCount)', 'downvotesCount')
-      .getRawOne<PostVoteStats>();
+      .getRawOne<VoteStats>();
 
     const totalUpvotes = postStats?.upvotesCount
       ? Number(postStats.upvotesCount)

@@ -18,6 +18,12 @@ export class Comment {
   @Column()
   message: string;
 
+  @Column({ default: 0, type: 'int' })
+  upvotesCount: number;
+
+  @Column({ default: 0, type: 'int' })
+  downvotesCount: number;
+
   @CreateDateColumn()
   created_at: Date;
 

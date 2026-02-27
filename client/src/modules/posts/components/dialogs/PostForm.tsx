@@ -182,6 +182,8 @@ const PostForm = ({ type, postDetails, submitPost, error, isSubmitting }: PostFo
                         placeholder="Group size"
                         {...field}
                         type="number"
+                        min={2}
+                        max={10}
                         onChange={(e) => field.onChange(e.target.valueAsNumber)}
                       />
                     </FormControl>
