@@ -76,7 +76,7 @@ export class PostController {
     @Param('id', ParseIntPipe) id: number,
     @CurrentUser() user: User,
   ): Promise<VoteResponse> {
-    return await this.postService.getPostVote(id, user.id);
+    return await this.postService.getVote(id, user.id);
   }
 
   @Post(':id/votes')
@@ -85,6 +85,6 @@ export class PostController {
     @CurrentUser() user: User,
     @Body() createPostVoteDto: CreatePostVoteDto,
   ): Promise<void> {
-    return await this.postService.sendPostVote(id, user, createPostVoteDto);
+    return await this.postService.sendVote(id, user.id, createPostVoteDto);
   }
 }

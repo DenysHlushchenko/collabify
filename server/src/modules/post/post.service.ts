@@ -14,23 +14,19 @@ import { Chat } from '../chat/entities/chat.entity';
 import { TagService } from '../tag/tag.service';
 import { PostTag } from '../tag/entities/post_tag.entity';
 import { UpdatePostDto } from './dtos/UpdatePost.dto';
-import { User } from '../user/entities/user.entity';
 import { CreatePostVoteDto } from './dtos/CreatePostVote.dto';
-import { PostVoteService } from './post_vote/post_vote.service';
-import { PostVote } from './entities/post_vote.entity';
 import { VoteResponse } from 'src/shared/types';
-import { VoteType } from 'src/shared/enums/enums';
+import { VoteService } from 'src/shared/vote/vote.service';
+import { Voteable } from 'src/shared/vote/vote.interface';
 
 @Injectable()
-export class PostService {
+export class PostService implements Voteable {
   constructor(
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
-    @InjectRepository(PostVote)
-    private readonly postVoteRepository: Repository<PostVote>,
     private readonly userService: UserService,
     private readonly chatService: ChatService,
     private readonly tagService: TagService,
-    private readonly postVoteService: PostVoteService,
+    private readonly voteService: VoteService,
   ) {}
 
   /**
@@ -256,45 +252,23 @@ export class PostService {
     await this.postRepository.delete(postId);
   }
 
-  async getPostVote(postId: number, userId?: number): Promise<VoteResponse> {
-    const post = await this.postRepository.findOneOrFail({
-      where: { id: postId },
-      select: {
-        upvotesCount: true,
-        downvotesCount: true,
-      },
-    });
-
-    let userVote: VoteType | null = null;
-
-    if (userId) {
-      const vote = await this.postVoteRepository.findOne({
-        where: {
-          post: { id: postId },
-          user: { id: userId },
-        },
-      });
-
-      userVote = vote?.type ?? null;
-    }
-
-    return {
-      userVote,
-      votesCounts: {
-        upvotesCount: post.upvotesCount || 0,
-        downvotesCount: post.downvotesCount || 0,
-      },
-    };
+  async getVote(postId: number, userId?: number): Promise<VoteResponse> {
+    return this.voteService.findVoteByEntity(
+      this.postRepository,
+      postId,
+      userId,
+    );
   }
 
-  async sendPostVote(
+  async sendVote(
     postId: number,
-    user: User,
+    userId: number,
     createPostVoteDto: CreatePostVoteDto,
   ): Promise<void> {
-    return await this.postVoteService.sendVote(
-      user.id,
+    return await this.voteService.sendVote(
+      userId,
       postId,
+      Post,
       createPostVoteDto,
     );
   }

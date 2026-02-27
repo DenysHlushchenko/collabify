@@ -1,7 +1,6 @@
 import { BADGE_CRITERIA } from 'src/constants';
 import { Chat } from 'src/modules/chat/entities/chat.entity';
 import { User } from 'src/modules/user/entities/user.entity';
-import { VoteType } from './enums/enums';
 
 export interface ChatWithOwner extends Chat {
   isOwner: boolean;
@@ -27,7 +26,7 @@ export interface UserWithStats {
   badgeCounts: BadgeCounts;
 }
 
-export interface PostVoteStats {
+export interface VoteStats {
   upvotesCount: number | null;
   downvotesCount: number | null;
 }
@@ -38,6 +37,6 @@ export interface FeedbackStats {
 }
 
 export interface VoteResponse {
-  userVote: VoteType | null;
-  votesCounts: PostVoteStats;
+  userVote: 'like' | 'dislike' | null;
+  votesCounts: VoteStats;
 }

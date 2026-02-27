@@ -7,7 +7,7 @@ import { Post } from './entities/post.entity';
 import { ChatModule } from '../chat/chat.module';
 import { TagModule } from '../tag/tag.module';
 import { PostVote } from './entities/post_vote.entity';
-import { PostVoteService } from './post_vote/post_vote.service';
+import { VoteService } from 'src/shared/vote/vote.service';
 
 @Module({
   imports: [
@@ -17,7 +17,7 @@ import { PostVoteService } from './post_vote/post_vote.service';
     TagModule,
   ],
   controllers: [PostController],
-  providers: [PostService, PostVoteService],
+  providers: [PostService, VoteService],
   exports: [PostService],
 })
 export class PostModule {}

@@ -8,6 +8,8 @@ import { CreateCommentDto } from './dtos/CreateComment.dto';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { User } from '../user/entities/user.entity';
 import { Post } from '../post/entities/post.entity';
+import { VoteService } from 'src/shared/vote/vote.service';
+import { mockDataSourceProvider } from '../../../test/mocks/data-source.mock';
 
 describe('CommentService', () => {
   let commentService: CommentService;
@@ -48,6 +50,8 @@ describe('CommentService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CommentService,
+        VoteService,
+        mockDataSourceProvider,
         {
           provide: getRepositoryToken(Comment),
           useValue: mockCommentRepository,

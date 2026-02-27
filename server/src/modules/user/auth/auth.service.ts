@@ -9,7 +9,7 @@ import { User } from '../entities/user.entity';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 
-const JWT_TOKEN_EXPIRATION = '60s';
+const JWT_TOKEN_EXPIRATION = '1h';
 
 @Injectable()
 export class AuthService {
