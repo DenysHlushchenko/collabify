@@ -1,49 +1,32 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { getPostVote, sendPostVote } from "../api/postVotes";
-import type { AxiosError } from "axios";
 import { Skeleton } from "@/modules/shared/components/ui/Skeleton";
 import Error from "@/modules/shared/components/Error";
 import { cn } from "@/modules/shared/lib/utils";
 import { ArrowBigUp, ArrowBigDown } from "lucide-react";
+import type { VoteResponse } from "@/modules/shared/types/types";
+import type { UseMutationResult } from "@tanstack/react-query";
 
 interface Props {
-  postId: number;
-  commentId?: number; // for a later feature
+  entityId: number;
+  voteData?: VoteResponse;
+  voteMutation: UseMutationResult<
+    void,
+    Error,
+    {
+      entityId: number;
+      type: "like" | "dislike" | null;
+    },
+    unknown
+  >;
+  isPending?: boolean;
 }
 
-const PostVotes = ({ postId }: Props) => {
-  const [error, setError] = useState<string>("");
-  const queryClient = useQueryClient();
-
-  const { data: postVote, isPending } = useQuery({
-    queryKey: ["userVote", postId],
-    queryFn: () => getPostVote(postId),
-    staleTime: 1000 * 30,
-    retry: 1,
-  });
-
-  const userVote = postVote?.userVote;
-
-  const votesMutation = useMutation({
-    mutationFn: sendPostVote,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["userVote", postId] });
-      setError("");
-    },
-
-    onError: (error) => {
-      const axiosError = error as AxiosError<{ message: string }>;
-      const backendError = axiosError.response?.data?.message || "Something went wrong. Please try again.";
-      console.error("Post vote creation failed: ", error);
-      setError(backendError);
-    },
-  });
+const Votes = ({ entityId, voteData, voteMutation, isPending }: Props) => {
+  const userVote = voteData?.userVote;
 
   const handleVote = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    votesMutation.mutate({
-      postId,
+    voteMutation.mutate({
+      entityId,
       type: e.currentTarget.value as "like" | "dislike" | null,
     });
   };
@@ -63,7 +46,7 @@ const PostVotes = ({ postId }: Props) => {
             <ArrowBigUp
               className={cn("h-4 w-4 transition-colors", userVote === "like" ? "fill-black stroke-black" : "fill-none")}
             />
-            <p>{postVote?.votesCounts.upvotesCount ?? 0}</p>
+            <p>{voteData?.votesCounts.upvotesCount ?? 0}</p>
           </button>
           <button
             onClick={handleVote}
@@ -77,13 +60,13 @@ const PostVotes = ({ postId }: Props) => {
                 userVote === "dislike" ? "fill-black stroke-black" : "fill-none"
               )}
             />
-            <p>{postVote?.votesCounts.downvotesCount ?? 0}</p>
+            <p>{voteData?.votesCounts.downvotesCount ?? 0}</p>
           </button>
-          {error && <Error message={error} />}
+          {voteMutation.error && <Error message={voteMutation.error.message} />}
         </>
       )}
     </div>
   );
 };
 
-export default PostVotes;
+export default Votes;
