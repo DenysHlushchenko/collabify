@@ -188,10 +188,6 @@ export type JwtPayload = {
   exp: number;
 };
 
-export type AuthResponse = {
-  accessToken: string;
-};
-
 export type VoteResponse = {
   userVote: "like" | "dislike" | null;
   votesCounts: {
@@ -199,6 +195,13 @@ export type VoteResponse = {
     downvotesCount: number;
   };
 };
+
+export type PopularTagsResponse = {
+  id: number;
+  name: string;
+  created_at: Date;
+  postCount: number;
+}
 
 export type FilterType = "ASC" | "DESC" | undefined;
 
