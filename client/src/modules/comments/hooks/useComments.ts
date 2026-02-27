@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useAuthStore } from "@/modules/auth/store/userStore";
 import type { CreateCommentPayload, CommentFormValues } from "@/modules/shared/types/types";
 import { createComment, deleteComment, getComments } from "../api/comment";
+import { toast } from "sonner";
 
 export const useComments = () => {
   const { postId } = useParams();
@@ -27,6 +28,11 @@ export const useComments = () => {
       queryClient.invalidateQueries({ queryKey: ["comments", postIdNum] });
       queryClient.invalidateQueries({ queryKey: ["post"] });
       queryClient.invalidateQueries({ queryKey: ["posts"] });
+
+      toast.success("Comment posted successfully!", {
+        position: "bottom-center",
+        className: "toast-success font-inter",
+      });
     },
   });
 
@@ -37,6 +43,11 @@ export const useComments = () => {
       queryClient.invalidateQueries({ queryKey: ["comments", postIdNum] });
       queryClient.invalidateQueries({ queryKey: ["post"] });
       queryClient.invalidateQueries({ queryKey: ["posts"] });
+
+      toast.success("Comment deleted successfully!", {
+        position: "bottom-center",
+        className: "toast-success font-inter",
+      });
     },
   });
 

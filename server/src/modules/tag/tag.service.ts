@@ -29,4 +29,6 @@ export class TagService {
 
     return [...existing, ...newTags];
   }
+
+  //   async deleteTagsByPostId(postId: number) {}
 }

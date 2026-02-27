@@ -18,6 +18,7 @@ import { CreatePostVoteDto } from './dtos/CreatePostVote.dto';
 import { VoteResponse } from 'src/shared/types';
 import { VoteService } from 'src/shared/vote/vote.service';
 import { Voteable } from 'src/shared/vote/vote.interface';
+import { ChatWasNotSelected } from 'src/shared/exceptions/ChatWasNotSelected.expection';
 
 @Injectable()
 export class PostService implements Voteable {
@@ -49,6 +50,10 @@ export class PostService implements Voteable {
 
     if (!currentUser) {
       throw new UserDoesNotExistException();
+    }
+
+    if (!chatId && !chatTitle) {
+      throw new ChatWasNotSelected();
     }
 
     const post = this.postRepository.create({
@@ -248,6 +253,9 @@ export class PostService implements Voteable {
 
     const postTagRepo = this.getPostTagRepository();
     await postTagRepo.delete({ post: { id: post.id } });
+    // TODO:
+    // await this.tagService.removeAllTagsByPostId(post.id);
+    // await this.commentSerivce.deleteAllCommentsByPostId(post.id);
 
     await this.postRepository.delete(postId);
   }
