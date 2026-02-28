@@ -73,6 +73,7 @@ export const usePost = () => {
           position: "bottom-center",
           className: "toast-success font-inter",
         });
+        await queryClient.invalidateQueries({ queryKey: ["tags", "popular"] });
       },
 
       onError: (error) => {
@@ -101,6 +102,7 @@ export const usePost = () => {
           position: "bottom-center",
           className: "toast-success font-inter",
         });
+        await queryClient.invalidateQueries({ queryKey: ["tags", "popular"] });
       },
 
       onError: (error) => {
@@ -124,6 +126,7 @@ export const usePost = () => {
           position: "bottom-center",
           className: "toast-success font-inter",
         });
+        await queryClient.invalidateQueries({ queryKey: ["tags", "popular"] });
       },
 
       onError: (error) => {
