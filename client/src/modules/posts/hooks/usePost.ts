@@ -67,6 +67,7 @@ export const usePost = () => {
         await queryClient.invalidateQueries({ queryKey: ["post"], exact: false });
         await queryClient.invalidateQueries({ queryKey: ["userPosts"], exact: false });
         await queryClient.invalidateQueries({ queryKey: ["chats"] });
+        await queryClient.invalidateQueries({queryKey: ["tags", "popular"]})
       },
 
       onError: (error) => {
@@ -86,6 +87,7 @@ export const usePost = () => {
         await queryClient.invalidateQueries({ queryKey: ["userPosts"], exact: false });
         await queryClient.invalidateQueries({ queryKey: ["posts"] });
         await queryClient.invalidateQueries({ queryKey: ["post"], exact: false });
+        await queryClient.invalidateQueries({queryKey: ["tags", "popular"]})
       },
 
       onError: (error) => {
@@ -104,6 +106,7 @@ export const usePost = () => {
       onSuccess: async () => {
         await queryClient.invalidateQueries({ queryKey: ["posts"] });
         await queryClient.invalidateQueries({ queryKey: ["userPosts"], exact: false });
+        await queryClient.invalidateQueries({queryKey: ["tags", "popular"]})
       },
 
       onError: (error) => {
