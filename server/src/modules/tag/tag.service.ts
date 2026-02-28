@@ -35,8 +35,6 @@ export class TagService {
     return [...existing, ...newTags];
   }
 
-  //   async deleteTagsByPostId(postId: number) {}
-
   /**
    * Retrieves the top 10 most popular tags based on the number of posts associated with each tag. The tags are ordered in descending order of popularity.
    * @returns Promise resolving to an array of Tag entities, each with an additional 'postCount' property indicating the number of posts associated with that tag.
@@ -51,5 +49,9 @@ export class TagService {
       )
       .limit(10)
       .getMany();
+  }
+
+  async delete(id: number) {
+    await this.tagRepo.delete(id);
   }
 }

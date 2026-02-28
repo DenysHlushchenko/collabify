@@ -18,7 +18,8 @@ import { CreatePostVoteDto } from './dtos/CreatePostVote.dto';
 import { VoteResponse } from 'src/shared/types';
 import { VoteService } from 'src/shared/vote/vote.service';
 import { Voteable } from 'src/shared/vote/vote.interface';
-import { ChatWasNotSelected } from 'src/shared/exceptions/ChatWasNotSelected.expection';
+import { ChatWasNotSelectedException } from 'src/shared/exceptions/ChatWasNotSelected.expection';
+import { CommentService } from '../comment/comment.service';
 
 @Injectable()
 export class PostService implements Voteable {
@@ -28,6 +29,7 @@ export class PostService implements Voteable {
     private readonly chatService: ChatService,
     private readonly tagService: TagService,
     private readonly voteService: VoteService,
+    private readonly commentService: CommentService,
   ) {}
 
   /**
@@ -53,7 +55,7 @@ export class PostService implements Voteable {
     }
 
     if (!chatId && !chatTitle) {
-      throw new ChatWasNotSelected();
+      throw new ChatWasNotSelectedException();
     }
 
     const post = this.postRepository.create({
@@ -253,11 +255,28 @@ export class PostService implements Voteable {
 
     const postTagRepo = this.getPostTagRepository();
     await postTagRepo.delete({ post: { id: post.id } });
-    // TODO:
-    // await this.tagService.removeAllTagsByPostId(post.id);
-    // await this.commentSerivce.deleteAllCommentsByPostId(post.id);
+
+    const tagIds = post.postTags.map((postTag) => postTag.tag.id);
+
+    const comments = await this.commentService.getAllCommentsByPostId(postId);
+    if (comments) {
+      for (const comment of comments) {
+        await this.commentService.deleteComment(comment.id, comment.sender.id);
+      }
+    }
 
     await this.postRepository.delete(postId);
+
+    // after deleting post, check if tags are unused
+    for (const tagId of tagIds) {
+      const useCount = await postTagRepo.count({
+        where: { tag: { id: tagId } },
+      });
+
+      if (useCount === 0) {
+        await this.tagService.delete(tagId);
+      }
+    }
   }
 
   async getVote(postId: number, userId?: number): Promise<VoteResponse> {
