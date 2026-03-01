@@ -5,7 +5,7 @@ import { usePost } from "../hooks/usePost";
 import type { PostFormValues, PostType } from "@/modules/shared/types/types";
 
 const Posts = ({ posts }: { posts: PostType[] }) => {
-  const { useCreatePostMutation, user } = usePost();
+  const { useCreatePostMutation, user, error } = usePost();
   const createMutation = useCreatePostMutation();
 
   const submitPost = (values: PostFormValues) => {
@@ -26,7 +26,7 @@ const Posts = ({ posts }: { posts: PostType[] }) => {
     <div>
       <div className="flex-between mb-4">
         <Filters />
-        <PostForm type="create" submitPost={submitPost} />
+        <PostForm type="create" submitPost={submitPost} postError={error} />
       </div>
       {posts.length !== 0 ? (
         posts.map((post: PostType) => <Post key={post.id} post={post} />)

@@ -14,6 +14,7 @@ import UserProfile from "./modules/profile/pages/UserProfile";
 import PostDetails from "./modules/posts/pages/PostDetails";
 import { useEffect } from "react";
 import { useAuthStore } from "./modules/auth/store/userStore";
+import { Toaster } from "@/modules/shared/components/ui/sonner";
 
 function App() {
   const { pathname } = useLocation();
@@ -38,6 +39,7 @@ function App() {
         <section className="flex flex-1 flex-col overflow-y-auto px-6 pt-20 pb-6 max-md:pb-14 sm:px-14">
           <div className="mx-auto w-full max-w-5xl">
             <Outlet />
+            <Toaster />
           </div>
         </section>
 

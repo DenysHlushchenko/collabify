@@ -11,6 +11,7 @@ import { FeedbackModule } from './modules/feedback/feedback.module';
 import { MessagesModule } from './modules/messages/messages.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { TagModule } from './modules/tag/tag.module';
+import { VoteModule } from './shared/vote/vote.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { TagModule } from './modules/tag/tag.module';
     MessagesModule,
     NotificationModule,
     TagModule,
+    VoteModule,
   ],
 })
 export class AppModule {}
