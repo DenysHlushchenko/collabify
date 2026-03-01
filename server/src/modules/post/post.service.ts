@@ -206,6 +206,8 @@ export class PostService implements Voteable {
       );
     }
 
+    const oldTagIds = post.postTags.map((postTag) => postTag.tag.id);
+
     post.title = title;
     post.description = description;
     post.group_size = groupSize;
@@ -219,7 +221,6 @@ export class PostService implements Voteable {
 
     if (tagNames?.length > 0) {
       const tags = await this.tagService.findOrCreateMany(tagNames);
-
       post.postTags = tags.map((tag) => {
         const postTag = new PostTag();
         postTag.tag = tag;
@@ -229,6 +230,9 @@ export class PostService implements Voteable {
     }
 
     await this.postRepository.save(post);
+
+    // cleanup tags what are not used anymore
+    await this.cleanUnusedTags(oldTagIds);
   }
 
   /**
@@ -268,15 +272,7 @@ export class PostService implements Voteable {
     await this.postRepository.delete(postId);
 
     // after deleting post, check if tags are unused
-    for (const tagId of tagIds) {
-      const useCount = await postTagRepo.count({
-        where: { tag: { id: tagId } },
-      });
-
-      if (useCount === 0) {
-        await this.tagService.delete(tagId);
-      }
-    }
+    await this.cleanUnusedTags(tagIds);
   }
 
   async getVote(postId: number, userId?: number): Promise<VoteResponse> {
@@ -302,5 +298,17 @@ export class PostService implements Voteable {
 
   private getPostTagRepository(): Repository<PostTag> {
     return this.postRepository.manager.getRepository(PostTag);
+  }
+
+  private async cleanUnusedTags(tagIds: number[]) {
+    for (const tagId of tagIds) {
+      const useCount = await this.getPostTagRepository().count({
+        where: { tag: { id: tagId } },
+      });
+
+      if (useCount === 0) {
+        await this.tagService.delete(tagId);
+      }
+    }
   }
 }
