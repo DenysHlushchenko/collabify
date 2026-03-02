@@ -19,6 +19,9 @@ export class Notification {
   @Column()
   content: string;
 
+  @Column()
+  postId: number;
+
   @CreateDateColumn()
   created_at: Date;
 
