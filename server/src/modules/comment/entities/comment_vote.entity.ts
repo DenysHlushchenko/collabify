@@ -28,12 +28,6 @@ export class CommentVote {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @Column({ default: 0, type: 'int' })
-  upvotesCount: number;
-
-  @Column({ default: 0, type: 'int' })
-  downvotesCount: number;
-
   @IsOptional()
   @Column({
     type: 'enum',

@@ -50,4 +50,8 @@ export class TagService {
       .limit(10)
       .getMany();
   }
+
+  async delete(id: number) {
+    await this.tagRepo.delete(id);
+  }
 }

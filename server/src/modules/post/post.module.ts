@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostController } from './post.controller';
 import { PostService } from './post.service';
@@ -6,8 +6,9 @@ import { UserModule } from 'src/modules/user/user.module';
 import { Post } from './entities/post.entity';
 import { ChatModule } from '../chat/chat.module';
 import { TagModule } from '../tag/tag.module';
+import { CommentModule } from '../comment/comment.module';
 import { PostVote } from './entities/post_vote.entity';
-import { VoteService } from 'src/shared/vote/vote.service';
+import { VoteModule } from 'src/shared/vote/vote.module';
 
 @Module({
   imports: [
@@ -15,9 +16,11 @@ import { VoteService } from 'src/shared/vote/vote.service';
     UserModule,
     ChatModule,
     TagModule,
+    forwardRef(() => CommentModule),
+    VoteModule,
   ],
   controllers: [PostController],
-  providers: [PostService, VoteService],
+  providers: [PostService],
   exports: [PostService],
 })
 export class PostModule {}

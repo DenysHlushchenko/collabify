@@ -18,6 +18,8 @@ import { CreatePostVoteDto } from './dtos/CreatePostVote.dto';
 import { VoteResponse } from 'src/shared/types';
 import { VoteService } from 'src/shared/vote/vote.service';
 import { Voteable } from 'src/shared/vote/vote.interface';
+import { ChatWasNotSelectedException } from 'src/shared/exceptions/ChatWasNotSelected.expection';
+import { CommentService } from '../comment/comment.service';
 
 @Injectable()
 export class PostService implements Voteable {
@@ -27,6 +29,7 @@ export class PostService implements Voteable {
     private readonly chatService: ChatService,
     private readonly tagService: TagService,
     private readonly voteService: VoteService,
+    private readonly commentService: CommentService,
   ) {}
 
   /**
@@ -49,6 +52,10 @@ export class PostService implements Voteable {
 
     if (!currentUser) {
       throw new UserDoesNotExistException();
+    }
+
+    if (!chatId && !chatTitle) {
+      throw new ChatWasNotSelectedException();
     }
 
     const post = this.postRepository.create({
@@ -199,6 +206,8 @@ export class PostService implements Voteable {
       );
     }
 
+    const oldTagIds = post.postTags.map((postTag) => postTag.tag.id);
+
     post.title = title;
     post.description = description;
     post.group_size = groupSize;
@@ -212,7 +221,6 @@ export class PostService implements Voteable {
 
     if (tagNames?.length > 0) {
       const tags = await this.tagService.findOrCreateMany(tagNames);
-
       post.postTags = tags.map((tag) => {
         const postTag = new PostTag();
         postTag.tag = tag;
@@ -222,6 +230,9 @@ export class PostService implements Voteable {
     }
 
     await this.postRepository.save(post);
+
+    // cleanup tags what are not used anymore
+    await this.cleanUnusedTags(oldTagIds);
   }
 
   /**
@@ -249,7 +260,19 @@ export class PostService implements Voteable {
     const postTagRepo = this.getPostTagRepository();
     await postTagRepo.delete({ post: { id: post.id } });
 
+    const tagIds = post.postTags.map((postTag) => postTag.tag.id);
+
+    const comments = await this.commentService.getAllCommentsByPostId(postId);
+    if (comments) {
+      for (const comment of comments) {
+        await this.commentService.deleteComment(comment.id, comment.sender.id);
+      }
+    }
+
     await this.postRepository.delete(postId);
+
+    // after deleting post, check if tags are unused
+    await this.cleanUnusedTags(tagIds);
   }
 
   async getVote(postId: number, userId?: number): Promise<VoteResponse> {
@@ -275,5 +298,17 @@ export class PostService implements Voteable {
 
   private getPostTagRepository(): Repository<PostTag> {
     return this.postRepository.manager.getRepository(PostTag);
+  }
+
+  private async cleanUnusedTags(tagIds: number[]) {
+    for (const tagId of tagIds) {
+      const useCount = await this.getPostTagRepository().count({
+        where: { tag: { id: tagId } },
+      });
+
+      if (useCount === 0) {
+        await this.tagService.delete(tagId);
+      }
+    }
   }
 }

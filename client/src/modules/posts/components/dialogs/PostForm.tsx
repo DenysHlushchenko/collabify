@@ -29,11 +29,11 @@ interface PostFormProps {
   type: "create" | "edit";
   postDetails?: PostType;
   submitPost: (values: PostFormValues | EditPostFormValues) => void;
-  error?: string | null;
+  postError?: string | null;
   isSubmitting?: boolean;
 }
 
-const PostForm = ({ type, postDetails, submitPost, error, isSubmitting }: PostFormProps) => {
+const PostForm = ({ type, postDetails, submitPost, isSubmitting }: PostFormProps) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const user = useAuthStore().getUser();
 
@@ -195,7 +195,7 @@ const PostForm = ({ type, postDetails, submitPost, error, isSubmitting }: PostFo
               <FormField
                 control={form.control}
                 name="tags"
-                render={({ field }) => (
+                render={({ field, fieldState }) => (
                   <FormItem>
                     <FormLabel className="paragraph-semibold">Tags</FormLabel>
                     <FormControl>
@@ -222,6 +222,7 @@ const PostForm = ({ type, postDetails, submitPost, error, isSubmitting }: PostFo
                         )}
                       </div>
                     </FormControl>
+                    {fieldState.error && <Error message={fieldState.error.message} />}
                   </FormItem>
                 )}
               />
@@ -294,7 +295,6 @@ const PostForm = ({ type, postDetails, submitPost, error, isSubmitting }: PostFo
                   </Button>
                 </DialogClose>
               </DialogFooter>
-              {error && <Error message={error} />}
             </form>
           )}
         </Form>

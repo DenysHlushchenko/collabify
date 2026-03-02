@@ -154,6 +154,14 @@ body {
     @apply text-[10px] leading-3.25 font-normal;
   }
 
+  .toast-error {
+    @apply min-h-16! rounded-lg! border-l-4! border-red-300! bg-red-50! px-5! py-4! text-[15px]! font-medium! text-gray-900! shadow-md! shadow-red-100/40!;
+  }
+
+  .toast-success {
+    @apply min-h-16! rounded-lg! border-l-4! border-green-300! bg-green-50! px-5! py-4! text-[15px]! font-medium! text-gray-900! shadow-md! shadow-green-100/40!;
+  }
+
   /* Hide scrollbar for Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {
     display: none;
