@@ -1,6 +1,5 @@
 import { usePost } from "@/modules/posts/hooks/usePost";
 import { Avatar, AvatarFallback } from "@/modules/shared/components/ui/Avatar";
-import { convertNameToInitial, convertToDateString } from "@/modules/shared/utils/utils";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Error from "@/modules/shared/components/Error";
 import PostTag from "@/modules/posts/components/PostTag";
@@ -12,6 +11,7 @@ import { PostDetailsSkeleton } from "../components/PostSkeletons";
 import Comments from "@/modules/comments/components/Comments";
 import Votes from "@/modules/votes/components/Votes";
 import useVote from "@/modules/votes/hooks/useVote";
+import { convertNameToInitial, convertToDateString } from "@/modules/shared/lib";
 
 const PostDetails = () => {
   const { postId } = useParams();

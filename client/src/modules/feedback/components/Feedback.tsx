@@ -1,8 +1,8 @@
 import { Avatar, AvatarFallback } from "@/modules/shared/components/ui/Avatar";
 import { Card, CardDescription, CardHeader } from "@/modules/shared/components/ui/Card";
 import { Separator } from "@/modules/shared/components/ui/Separator";
+import { convertNameToInitial, convertToDateString } from "@/modules/shared/lib";
 import type { FeedbackType } from "@/modules/shared/types/types";
-import { convertNameToInitial, convertToDateString } from "@/modules/shared/utils/utils";
 import { Star } from "lucide-react";
 import { Link } from "react-router-dom";
 

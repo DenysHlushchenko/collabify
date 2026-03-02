@@ -2,7 +2,6 @@ import { Avatar, AvatarFallback } from "@/modules/shared/components/ui/Avatar";
 import { Button } from "@/modules/shared/components/ui/Button";
 import { Separator } from "@/modules/shared/components/ui/Separator";
 import type { PostTagType, PostType } from "@/modules/shared/types/types";
-import { convertNameToInitial, convertToDateString } from "@/modules/shared/utils/utils";
 import {
   Card,
   CardAction,
@@ -16,6 +15,7 @@ import { Link } from "react-router-dom";
 
 import Votes from "@/modules/votes/components/Votes";
 import useVote from "@/modules/votes/hooks/useVote";
+import { convertNameToInitial, convertToDateString } from "@/modules/shared/lib";
 
 const MAX_DESCRIPTION_LENGTH = 90;
 

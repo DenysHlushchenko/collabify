@@ -1,11 +1,11 @@
 import type { CommentType } from "@/modules/shared/types/types";
-import { convertNameToInitial, convertToDateString } from "@/modules/shared/utils/utils";
 import { Avatar, AvatarFallback } from "@/modules/shared/components/ui/Avatar";
 import { Link } from "react-router-dom";
 import RichTextViewer from "./editor/RichTextViewer";
 import { Button } from "@/modules/shared/components/ui/Button";
 import useVote from "@/modules/votes/hooks/useVote";
 import Votes from "@/modules/votes/components/Votes";
+import { convertNameToInitial, convertToDateString } from "@/modules/shared/lib";
 
 interface CommentProps {
   comment: CommentType;

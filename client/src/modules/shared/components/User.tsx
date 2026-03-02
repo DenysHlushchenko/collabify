@@ -1,5 +1,5 @@
+import { convertNameToInitial } from "../lib";
 import { cn } from "../lib/utils";
-import { convertNameToInitial } from "../utils/utils";
 import { Avatar, AvatarFallback } from "./ui/Avatar";
 
 interface UserProps {
