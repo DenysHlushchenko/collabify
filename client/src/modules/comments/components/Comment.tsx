@@ -1,11 +1,10 @@
 import type { CommentType } from "@/modules/shared/types/types";
-import { Avatar, AvatarFallback } from "@/modules/shared/components/ui/Avatar";
-import { Link } from "react-router-dom";
 import RichTextViewer from "./editor/RichTextViewer";
 import { Button } from "@/modules/shared/components/ui/Button";
 import useVote from "@/modules/votes/hooks/useVote";
 import Votes from "@/modules/votes/components/Votes";
-import { convertNameToInitial, convertToDateString } from "@/modules/shared/lib";
+import { convertToDateString } from "@/modules/shared/lib";
+import User from "@/modules/shared/components/User";
 
 interface CommentProps {
   comment: CommentType;
@@ -22,11 +21,11 @@ const Comment = ({ comment, onDelete, isOwnComment }: CommentProps) => {
     <article className="relative border-b py-10">
       <div className="mb-5 flex flex-col-reverse justify-between gap-5 sm:flex-row sm:items-center sm:gap-2">
         <div className="flex flex-1 items-start gap-1 sm:items-center">
-          <Link to={`/profile/${comment.sender.id}`}>
-            <Avatar className="flex-center bg-[#D9D9D9] text-gray-500">
-              <AvatarFallback>{convertNameToInitial(comment.sender.username)}</AvatarFallback>
-            </Avatar>
-          </Link>
+          <User
+            userId={comment.sender.id}
+            username={comment.sender.username}
+            className="flex-center bg-[#D9D9D9] text-gray-500"
+          />
 
           <div className="ml-1 flex flex-col sm:flex-row sm:items-center">
             <p className="body-semibold">{comment.sender.username}</p>

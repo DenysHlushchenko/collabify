@@ -1,8 +1,7 @@
 import { useAuthStore } from "@/modules/auth/store/userStore";
-import { Avatar, AvatarFallback } from "@/modules/shared/components/ui/Avatar";
-import { convertNameToInitial, convertToDateString } from "@/modules/shared/lib";
+import User from "@/modules/shared/components/User";
+import { convertToDateString } from "@/modules/shared/lib";
 import { cn } from "@/modules/shared/lib/utils";
-import { Link } from "react-router-dom";
 
 interface MessageBoxProps {
   data: {
@@ -28,11 +27,7 @@ const MessageBox = ({ data }: MessageBoxProps) => {
   return (
     <div className={container}>
       <div className={avatar}>
-        <Link to={`/profile/${data.sender.id}`}>
-          <Avatar className="flex-center bg-[#D9D9D9] text-gray-500">
-            <AvatarFallback>{convertNameToInitial(data.sender.username)}</AvatarFallback>
-          </Avatar>
-        </Link>
+        <User userId={data.sender.id} username={data.sender.username} className="flex-center bg-[#D9D9D9] text-gray-500" />
       </div>
 
       <div className={body}>
