@@ -127,6 +127,7 @@ export type NotificationType = {
   isRead: boolean;
   created_at: Date;
   user: UserType;
+  fromUser: UserType;
   postId: number;
 };
 

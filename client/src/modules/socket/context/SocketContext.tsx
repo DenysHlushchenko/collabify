@@ -1,14 +1,12 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useAuthStore } from "@/modules/auth/store/userStore";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect } from "react";
 import { socket } from "../socket";
 import type { Socket } from "socket.io-client";
-import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface SocketContextType {
   socket: Socket;
-  isConnected: boolean;
 }
 
 const SocketContext = createContext<SocketContextType | null>(null);
@@ -27,34 +25,22 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const token = useAuthStore((state) => state.token);
   const queryClient = useQueryClient();
 
-  const [isConnected, setIsConnected] = useState<boolean>(socket.connected);
-
   useEffect(() => {
     if (!isAuthenticated || !token) {
       socket.disconnect();
       return;
     }
 
-    const onConnect = () => {
-      setIsConnected(true);
-    };
-
-    const onDisconnect = () => {
-      setIsConnected(false);
-    };
-
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
-    socket.on("userConnected", (message) => {
-      console.log(message);
+    socket.on("notification_join_request", () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications", token] });
     });
 
-    socket.on("notification_join_request", (data) => {
-      toast.success(data.notification.content, {
-        position: "top-right",
-        className: "toast-success font-inter",
-      });
-      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    socket.on("notification_join_response", () => {
+      queryClient.invalidateQueries({ queryKey: ["notifications", token] });
+    });
+
+    socket.on("error", (data) => {
+      console.log("Error from the socket: " + data);
     });
 
     socket.io.opts.extraHeaders = {
@@ -74,7 +60,6 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     <SocketContext.Provider
       value={{
         socket,
-        isConnected,
       }}
     >
       {children}

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Notification } from './entities/notification.entity';
 import { Repository } from 'typeorm';
@@ -13,12 +13,34 @@ export class NotificationService {
     private readonly userService: UserService,
   ) {}
 
+  /**
+   * Finds a notification by ID.
+   * @param id
+   * @returns either an existing notification or null.
+   */
+  private async findById(id: number): Promise<Notification | null> {
+    return await this.notificationRepository.findOne({
+      where: {
+        id,
+      },
+    });
+  }
+
+  /**
+   * Creates a new notification, saving join request user and post author IDs.
+   * @param notification
+   */
   async create(notification: Notification): Promise<void> {
     await this.notificationRepository.save(
       this.notificationRepository.create(notification),
     );
   }
 
+  /**
+   * Finds all user's notifications and counts their occurances from the database.
+   * @param userId
+   * @returns an array that holds list of notifications, combining post author and joiner instances in descending order, and a total count of existing notifications.
+   */
   async getUserNotificationsAndCount(
     userId: number,
   ): Promise<[Notification[], number]> {
@@ -31,8 +53,21 @@ export class NotificationService {
       where: {
         user: { id: userId },
       },
-      relations: ['user'],
+      relations: ['user', 'fromUser'],
       order: { created_at: 'DESC' },
     });
+  }
+
+  /**
+   * Deletes a notification by ID from the database.
+   * @param notificationId
+   */
+  async delete(notificationId: number): Promise<void> {
+    const notification = await this.findById(notificationId);
+    if (!notification) {
+      throw new NotFoundException('Notification does not exist');
+    }
+
+    await this.notificationRepository.delete(notificationId);
   }
 }

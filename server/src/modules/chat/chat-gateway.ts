@@ -130,15 +130,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     notification.content = `${requestUser.username} wants to join your ${chat.title} chat.`;
     notification.created_at = new Date();
     notification.postId = postId;
-
     notification.user = postCreator;
+    notification.fromUser = requestUser;
+
     await this.notificationService.create(notification);
 
     const postCreatorSocket = this.sessions.get(postCreatorId);
     if (postCreatorSocket) {
       this.server
         .to(`user_${postCreatorId}`)
-        .emit('notification_join_request', { notification, requestUserId });
+        .emit('notification_join_request', { notification });
     }
   }
 
@@ -165,6 +166,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     notification.created_at = new Date();
     notification.postId = postId;
     notification.user = requestUser;
+    notification.fromUser = postCreator;
 
     if (response === JoinResponse.APPROVE) {
       const chat = await this.chatService.findByPostId(postId);

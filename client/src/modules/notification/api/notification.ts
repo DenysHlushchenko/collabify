@@ -9,3 +9,7 @@ export const getAllNotificationsByUserId = async (userId: number): Promise<Notif
     notificationCount: count,
   };
 };
+
+export const deleteNotification = async (id: number): Promise<void> => {
+  await request.delete(`/notifications/${id}`);
+};
