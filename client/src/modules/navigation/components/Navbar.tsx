@@ -30,7 +30,12 @@ const Navbar = () => {
             </span>
           </Button>
 
-          <User username={currentUser?.user.username} className="h-8 w-8" />
+          <User
+            userId={userId!}
+            username={currentUser?.user.username}
+            className="h-8 w-8"
+            fallbackClassName="bg-[#6395CD] text-white"
+          />
 
           <MobileNavigation />
         </div>

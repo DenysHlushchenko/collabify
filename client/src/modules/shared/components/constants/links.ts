@@ -14,8 +14,8 @@ export const sidebarLinks = [
   },
   {
     imgUrl: messagesIcon,
-    link: "/messages",
-    name: "Messages",
+    link: "/chats",
+    name: "Chats",
   },
 
   {
