@@ -37,7 +37,12 @@ interface AuthenticatedSocket extends Socket {
   };
 }
 
-@WebSocketGateway(5001, { cors: { origin: '*' } })
+@WebSocketGateway(5001, {
+  cors: {
+    origin: ['http://localhost:5173'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  },
+})
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
   private sessions = new Map<number, AuthenticatedSocket>();
@@ -68,7 +73,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const id = client.data.user.id;
 
       await client.join(`user_${id}`);
-      client.emit('userConnected', 'User has connected...');
+      client.emit(
+        'userConnected',
+        `User ${client.data.user.username} has connected...`,
+      );
 
       this.sessions.set(id, client);
     } catch {

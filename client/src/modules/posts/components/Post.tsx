@@ -16,6 +16,8 @@ import { Link } from "react-router-dom";
 
 import Votes from "@/modules/votes/components/Votes";
 import useVote from "@/modules/votes/hooks/useVote";
+import { useSocket } from "@/modules/socket/context/SocketContext";
+import { useAuthStore } from "@/modules/auth/store/userStore";
 
 const MAX_DESCRIPTION_LENGTH = 90;
 
@@ -27,9 +29,20 @@ const Post = ({ post }: PostProps) => {
   const desc = post.description;
   const adjustedDesc = desc.length >= MAX_DESCRIPTION_LENGTH ? `${desc.substring(0, MAX_DESCRIPTION_LENGTH)}...` : desc;
 
+  const { socket } = useSocket();
+  const user = useAuthStore().getUser();
+
   const { usePostVoteQuery, useCreatePostVoteMutation } = useVote();
   const { data, isPending } = usePostVoteQuery(post.id);
   const mutation = useCreatePostVoteMutation(post.id);
+
+  const handleJoinRequest = () => {
+    socket.emit("joinRequest", {
+      requestUserId: user?.id,
+      postCreatorId: post.user.id,
+      postId: post.id,
+    });
+  };
 
   return (
     <>
@@ -53,7 +66,10 @@ const Post = ({ post }: PostProps) => {
             <CardDescription className="small-regular">{adjustedDesc}</CardDescription>
           </Link>
           <CardAction>
-            <Button className="body-semibold h-6 w-16 cursor-pointer rounded-lg bg-[#99dfc4] text-[#2d634e] hover:bg-[#acf0d6]">
+            <Button
+              onClick={handleJoinRequest}
+              className="body-semibold h-6 w-16 cursor-pointer rounded-lg bg-[#99dfc4] text-[#2d634e] hover:bg-[#acf0d6]"
+            >
               Join
             </Button>
           </CardAction>

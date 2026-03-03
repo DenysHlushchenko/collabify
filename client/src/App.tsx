@@ -14,7 +14,7 @@ import UserProfile from "./modules/profile/pages/UserProfile";
 import PostDetails from "./modules/posts/pages/PostDetails";
 import { useEffect } from "react";
 import { useAuthStore } from "./modules/auth/store/userStore";
-import { Toaster } from "@/modules/shared/components/ui/sonner";
+import { Toaster } from "@/modules/shared/components/ui/Sonner";
 
 function App() {
   const { pathname } = useLocation();

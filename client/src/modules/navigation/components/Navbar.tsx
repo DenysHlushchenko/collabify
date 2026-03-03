@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
 import logo from "@/assets/logo.png";
-import { Button } from "@/modules/shared/components/ui/Button";
-import { BellIcon } from "lucide-react";
 import GlobalSearch from "@/modules/shared/components/GlobalSearch";
 import MobileNavigation from "./MobileNavigation";
 import User from "@/modules/shared/components/User";
 import { useCurrentUser } from "@/modules/profile/hooks/useCurrentUser";
 import { useAuthStore } from "@/modules/auth/store/userStore";
+import Notifications from "@/modules/notification/components/Notifications";
 
 const Navbar = () => {
   const { getUser } = useAuthStore();
@@ -23,15 +22,8 @@ const Navbar = () => {
         <GlobalSearch />
 
         <div className="flex-between gap-5">
-          <Button className="relative cursor-pointer" size="sm">
-            <BellIcon />
-            <span className="flex-center absolute -top-1 -right-2 z-10 h-5 w-5 rounded-full bg-[#F01C1C] px-1 text-xs">
-              4
-            </span>
-          </Button>
-
+          <Notifications />
           <User username={currentUser?.user.username} className="h-8 w-8" />
-
           <MobileNavigation />
         </div>
       </div>
