@@ -1,15 +1,14 @@
 import { PopoverDescription } from "@/modules/shared/components/ui/Popover";
 import type { NotificationType } from "@/modules/shared/types/types";
-import { convertNameToInitial, convertToDateString } from "@/modules/shared/utils/utils";
 import { useSocket } from "@/modules/socket/context/SocketContext";
 import { Check, X } from "lucide-react";
 import { Separator } from "@/modules/shared/components/ui/Separator";
-import { Link } from "react-router-dom";
-import { Avatar, AvatarFallback } from "@/modules/shared/components/ui/Avatar";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteNotification } from "../api/notification";
 import { useAuthStore } from "@/modules/auth/store/userStore";
 import type { Dispatch, SetStateAction } from "react";
+import { convertToDateString } from "@/modules/shared/lib";
+import User from "@/modules/shared/components/User";
 
 interface NotificationProps {
   notification: NotificationType;
@@ -51,11 +50,7 @@ const Notification = ({ notification, setPopupOpen }: NotificationProps) => {
   return (
     <div>
       <div className="flex-start my-2 gap-x-2">
-        <Link to={`/profile/${notification.fromUser.id}`}>
-          <Avatar className="flex-center bg-[#D9D9D9] text-gray-500">
-            <AvatarFallback>{convertNameToInitial(notification.fromUser.username)}</AvatarFallback>
-          </Avatar>
-        </Link>
+        <User username={notification.fromUser.username} userId={notification.fromUser.id} className="" />
         <div className="flex flex-col">
           <PopoverDescription className="small-semibold">{notification.content}</PopoverDescription>
           <PopoverDescription className="text-xs text-gray-500">
