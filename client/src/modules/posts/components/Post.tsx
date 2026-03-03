@@ -1,8 +1,6 @@
-import { Avatar, AvatarFallback } from "@/modules/shared/components/ui/Avatar";
 import { Button } from "@/modules/shared/components/ui/Button";
 import { Separator } from "@/modules/shared/components/ui/Separator";
 import type { PostTagType, PostType } from "@/modules/shared/types/types";
-import { convertNameToInitial, convertToDateString } from "@/modules/shared/utils/utils";
 import {
   Card,
   CardAction,
@@ -18,6 +16,8 @@ import Votes from "@/modules/votes/components/Votes";
 import useVote from "@/modules/votes/hooks/useVote";
 import { useSocket } from "@/modules/socket/context/SocketContext";
 import { useAuthStore } from "@/modules/auth/store/userStore";
+import { convertToDateString } from "@/modules/shared/lib";
+import User from "@/modules/shared/components/User";
 
 const MAX_DESCRIPTION_LENGTH = 90;
 
@@ -50,11 +50,11 @@ const Post = ({ post }: PostProps) => {
         <CardHeader>
           <CardTitle className="small-semibold post-author-color">
             <div className="flex-start gap-x-2">
-              <Link to={`/profile/${post.user.id}`}>
-                <Avatar className="flex-center bg-[#D9D9D9] text-gray-500">
-                  <AvatarFallback>{convertNameToInitial(post.user.username)}</AvatarFallback>
-                </Avatar>
-              </Link>
+              <User
+                userId={post.user.id}
+                username={post.user.username}
+                className="flex-center bg-[#D9D9D9] text-gray-500"
+              />
               <p>c/{post.user.username}</p>
 
               <span className="hidden text-gray-400 sm:block">{convertToDateString(post.created_at)}</span>

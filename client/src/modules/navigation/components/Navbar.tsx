@@ -23,7 +23,7 @@ const Navbar = () => {
 
         <div className="flex-between gap-5">
           <Notifications />
-          <User username={currentUser?.user.username} className="h-8 w-8" />
+          <User username={currentUser?.user.username} userId={currentUser!.user.id} className="h-8 w-8" />
           <MobileNavigation />
         </div>
       </div>

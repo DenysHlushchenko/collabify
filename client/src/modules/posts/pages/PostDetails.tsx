@@ -1,7 +1,5 @@
 import { usePost } from "@/modules/posts/hooks/usePost";
-import { Avatar, AvatarFallback } from "@/modules/shared/components/ui/Avatar";
-import { convertNameToInitial, convertToDateString } from "@/modules/shared/utils/utils";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Error from "@/modules/shared/components/Error";
 import PostTag from "@/modules/posts/components/PostTag";
 import type { PostFormValues, PostTagType } from "@/modules/shared/types/types";
@@ -12,6 +10,8 @@ import { PostDetailsSkeleton } from "../components/PostSkeletons";
 import Comments from "@/modules/comments/components/Comments";
 import Votes from "@/modules/votes/components/Votes";
 import useVote from "@/modules/votes/hooks/useVote";
+import { convertToDateString } from "@/modules/shared/lib";
+import User from "@/modules/shared/components/User";
 
 const PostDetails = () => {
   const { postId } = useParams();
@@ -50,11 +50,11 @@ const PostDetails = () => {
     <>
       <div className="relative rounded-lg border border-[#e6e6e6] p-5">
         <div className="flex-start gap-x-2">
-          <Link to={`/profile/${postDetails?.user.id}`}>
-            <Avatar className="flex-center h-8 w-8 bg-[#D9D9D9] text-gray-500">
-              <AvatarFallback>{convertNameToInitial(postDetails.user.username)}</AvatarFallback>
-            </Avatar>
-          </Link>
+          <User
+            userId={postDetails.user.id}
+            username={postDetails.user.username}
+            className="flex-center h-8 w-8 bg-[#D9D9D9] text-gray-500"
+          />
           <p className="body-medium">c/{postDetails.user.username}</p>
           <span className="body-medium text-gray-400">{convertToDateString(postDetails.created_at)}</span>
           <div className="absolute right-4 bottom-4 ml-auto flex gap-x-2 sm:static">

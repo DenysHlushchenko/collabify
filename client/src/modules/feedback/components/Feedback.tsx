@@ -1,10 +1,9 @@
-import { Avatar, AvatarFallback } from "@/modules/shared/components/ui/Avatar";
 import { Card, CardDescription, CardHeader } from "@/modules/shared/components/ui/Card";
 import { Separator } from "@/modules/shared/components/ui/Separator";
+import User from "@/modules/shared/components/User";
+import { convertToDateString } from "@/modules/shared/lib";
 import type { FeedbackType } from "@/modules/shared/types/types";
-import { convertNameToInitial, convertToDateString } from "@/modules/shared/utils/utils";
 import { Star } from "lucide-react";
-import { Link } from "react-router-dom";
 
 interface FeedbackProps {
   feedback: FeedbackType;
@@ -16,11 +15,11 @@ const Feedback = ({ feedback }: FeedbackProps) => {
       <Card className="border-gray">
         <CardHeader>
           <div className="flex items-center gap-3">
-            <Link to={`/profile/${feedback.sender.id}`}>
-              <Avatar className="flex-center bg-[#D9D9D9] text-gray-500">
-                <AvatarFallback>{convertNameToInitial(feedback.sender.username)}</AvatarFallback>
-              </Avatar>
-            </Link>
+            <User
+              userId={feedback.sender.id}
+              username={feedback.sender.username}
+              className="flex-center bg-[#D9D9D9] text-gray-500"
+            />
 
             <div className="flex flex-col">
               <p className="text-base leading-none font-medium">c/{feedback.sender.username}</p>
