@@ -7,7 +7,7 @@ export class CreateChatDto {
 
   @IsNotEmpty()
   @IsNumber()
-  postId: number;
+  postIds: number[];
 
   @IsNumber()
   chatId?: number;

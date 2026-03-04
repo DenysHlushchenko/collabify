@@ -121,8 +121,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return client.emit('error', 'Invalid user IDs provided.');
     }
 
+    console.log(postId);
+
     // find group chat name by postId and add it to the notification content
     const chat = await this.chatService.findByPostId(postId);
+    console.log(chat);
+
     if (!chat) throw new NotFoundException('Chat does not exist');
 
     const notification = new Notification();

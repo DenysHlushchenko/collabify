@@ -35,7 +35,7 @@ export class ChatService {
   findByPostId(postId: number): Promise<Chat | null> {
     return this.chatRepository.findOne({
       where: {
-        post: { id: postId },
+        posts: [{ id: postId }],
       },
     });
   }
@@ -46,14 +46,16 @@ export class ChatService {
    * @returns a newly created chat.
    */
   async create(createChatDto: CreateChatDto): Promise<Chat> {
-    return await this.chatRepository.save(
+    const newChat = await this.chatRepository.save(
       this.chatRepository.create({
         title: createChatDto.title,
-        post: { id: createChatDto.postId },
+        posts: createChatDto.postIds.map((id) => ({ id })),
         max_members: createChatDto.max_members,
         created_at: new Date(),
       }),
     );
+
+    return newChat;
   }
 
   /**
@@ -80,6 +82,23 @@ export class ChatService {
     }
   }
 
+  async addPostToChat(chatId: number, postId: number): Promise<void> {
+    const alreadyLinked = await this.chatRepository
+      .createQueryBuilder('chat')
+      .innerJoin('chat.posts', 'p')
+      .where('chat.id = :chatId', { chatId })
+      .andWhere('p.id = :postId', { postId })
+      .getCount();
+
+    if (alreadyLinked === 0) {
+      await this.chatRepository
+        .createQueryBuilder()
+        .relation(Chat, 'posts')
+        .of(chatId)
+        .add(postId);
+    }
+  }
+
   /**
    * Retrieves all chats that a user is a member of, along with the owner information. Returns an array of chats with owner information.
    * @param userId is required. It should be the ID of the user whose chats are to be retrieved.
@@ -93,7 +112,7 @@ export class ChatService {
         },
       },
       relations: {
-        post: {
+        posts: {
           user: true,
         },
         members: {
@@ -101,7 +120,7 @@ export class ChatService {
         },
       },
       select: {
-        post: {
+        posts: {
           id: true,
           title: true,
           user: true,
@@ -119,9 +138,10 @@ export class ChatService {
         created_at: 'DESC',
       },
     });
+
     return chats.map((chat) => ({
       ...chat,
-      isOwner: chat.post?.user?.id === userId,
+      isOwner: chat.posts.some((post) => post.user?.id === userId),
     }));
   }
 }
