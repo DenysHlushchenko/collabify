@@ -48,8 +48,8 @@ const Notifications = () => {
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-100 rounded-md border-none bg-white shadow-lg">
-        <PopoverHeader className="bg-gray-100">
-          <PopoverTitle className="px-3 pt-3 pb-2">Pending Invitations</PopoverTitle>
+        <PopoverHeader>
+          <PopoverTitle className="rounded-t-md bg-gray-100 px-3 pt-3 pb-2">Pending Invitations</PopoverTitle>
           {isPending && <Skeleton className="h-full w-full" />}
           {isError && <Error message={error.message} />}
         </PopoverHeader>
