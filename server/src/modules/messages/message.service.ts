@@ -16,12 +16,14 @@ export class MessageService {
    * @param createMessageDto contains message text, chatId, and senderId.
    * @returns the saved Message entity including id, timestamps, sender, and chat.
    */
-  async createMessage(createMessageDto: CreateMessageDto): Promise<Message> {
+  async createMessage(
+    createMessageDto: CreateMessageDto,
+    senderId: number,
+  ): Promise<Message> {
     const message = this.messageRepository.create({
       message: createMessageDto.message,
       chat: { id: createMessageDto.chatId },
-      sender: { id: createMessageDto.senderId },
-      created_at: new Date(),
+      sender: { id: senderId },
     });
 
     const saved = await this.messageRepository.save(message);

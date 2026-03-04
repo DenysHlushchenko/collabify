@@ -11,6 +11,14 @@ import {
 import { Server, Socket } from 'socket.io';
 import { MessageService } from './message.service';
 import { CreateMessageDto } from './dtos/CreateMessage.dto';
+import { User } from '../user/entities/user.entity';
+import jwt from 'jsonwebtoken';
+
+interface AuthenticatedSocket extends Socket {
+  data: {
+    user: User;
+  };
+}
 
 @WebSocketGateway(5001, {
   cors: {
@@ -25,10 +33,35 @@ export class MessageGateway
 
   @WebSocketServer() server: Server;
 
+  //   Verifies JWT token on connection.
+  handleConnection(client: AuthenticatedSocket) {
+    const authHeader = client.handshake.headers.authorization;
+    const token = authHeader?.startsWith('Bearer ')
+      ? authHeader.split(' ')[1]
+      : null;
+
+    if (!token) {
+      client.disconnect();
+      return;
+    }
+
+    try {
+      const payload = jwt.verify(token, String(process.env.JWT_SECRET_KEY));
+      client.data.user = payload as User;
+      console.log(`Connected: ${client.id} (user ${client.data.user.id})`);
+    } catch {
+      client.disconnect();
+    }
+  }
+
+  handleDisconnect(client: AuthenticatedSocket) {
+    console.log(`Disconnected: ${client.id}`);
+  }
+
   // Allows a client to join a specific chat room.
   @SubscribeMessage('joinChat')
   handleJoinChat(
-    @ConnectedSocket() client: Socket,
+    @ConnectedSocket() client: AuthenticatedSocket,
     @MessageBody() payload: { chatId: number },
   ): void {
     const room = `chat_${payload.chatId}`;
@@ -39,7 +72,7 @@ export class MessageGateway
   // Allows a client to leave a specific chat room.
   @SubscribeMessage('leaveChat')
   handleLeaveChat(
-    @ConnectedSocket() client: Socket,
+    @ConnectedSocket() client: AuthenticatedSocket,
     @MessageBody() payload: { chatId: number },
   ): void {
     const room = `chat_${payload.chatId}`;
@@ -47,13 +80,20 @@ export class MessageGateway
     console.log(`Client ${client.id} left room ${room}`);
   }
 
-  // Handles incoming messages from clients.
+  /**
+   * Handles incoming messages from clients.
+   * Sender ID is derived from the authenticated socket, not the payload.
+   */
   @SubscribeMessage('sendMessage')
   async handleSendMessage(
-    @ConnectedSocket() client: Socket,
+    @ConnectedSocket() client: AuthenticatedSocket,
     @MessageBody() payload: CreateMessageDto,
   ): Promise<void> {
-    const savedMessage = await this.messageService.createMessage(payload);
+    const senderId = client.data.user.id;
+    const savedMessage = await this.messageService.createMessage(
+      payload,
+      senderId,
+    );
     this.server
       .to(`chat_${payload.chatId}`)
       .emit('receiveMessage', savedMessage);
@@ -61,13 +101,5 @@ export class MessageGateway
 
   afterInit() {
     console.log('MessageGateway initialized');
-  }
-
-  handleConnection(client: Socket) {
-    console.log(`Connected: ${client.id}`);
-  }
-
-  handleDisconnect(client: Socket) {
-    console.log(`Disconnected: ${client.id}`);
   }
 }

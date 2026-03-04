@@ -6,7 +6,4 @@ export class CreateMessageDto {
 
   @IsNumber()
   chatId: number;
-
-  @IsNumber()
-  senderId: number;
 }
