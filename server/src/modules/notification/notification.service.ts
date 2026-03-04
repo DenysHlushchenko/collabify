@@ -31,6 +31,7 @@ export class NotificationService {
       where: {
         user: { id: userId },
       },
+      relations: ['user'],
     });
   }
 

@@ -165,7 +165,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @SubscribeMessage('joinResponse')
   async handleJoinResponse(
     @MessageBody() joinResponse: JoinResponseType,
-    @ConnectedSocket() responseClient: Socket,
+    @ConnectedSocket() responseClient: AuthenticatedSocket,
   ) {
     const { requestUserId, postCreatorId, postId, response } = joinResponse;
     const requestUser = await this.findUserById(requestUserId);
@@ -192,7 +192,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // handle reject
       // disconnect users from server
       const requestClient = this.sessions.get(requestUserId);
-      this.handleDisconnect(requestClient!);
+      if (requestClient) {
+        requestClient.disconnect(true);
+        this.sessions.delete(requestUserId);
+      }
+
       notification.content = `${postCreator.username} declined your request.`;
     } else {
       return responseClient.emit('error', 'Invalid response.');

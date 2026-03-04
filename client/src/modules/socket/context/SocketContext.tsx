@@ -62,8 +62,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     socket.connect();
 
     return () => {
-      socket.off("connect");
-      socket.off("disconnect");
+      socket.off("notification_join_request");
+      socket.off("notification_join_response");
+      socket.off("error");
+      socket.off("requestDuplicateError");
       socket.disconnect();
     };
   }, [isAuthenticated, queryClient, token]);
