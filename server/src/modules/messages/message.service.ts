@@ -1,0 +1,34 @@
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Message } from './entities/message.entity';
+import { CreateMessageDto } from './dtos/CreateMessage.dto';
+
+@Injectable()
+export class MessageService {
+  constructor(
+    @InjectRepository(Message)
+    private readonly messageRepository: Repository<Message>,
+  ) {}
+
+  /**
+   * Creates and persists a new message. Returns the saved message with sender and chat relations.
+   * @param createMessageDto contains message text, chatId, and senderId.
+   * @returns the saved Message entity including id, timestamps, sender, and chat.
+   */
+  async createMessage(createMessageDto: CreateMessageDto): Promise<Message> {
+    const message = this.messageRepository.create({
+      message: createMessageDto.message,
+      chat: { id: createMessageDto.chatId },
+      sender: { id: createMessageDto.senderId },
+      created_at: new Date(),
+    });
+
+    const saved = await this.messageRepository.save(message);
+
+    return this.messageRepository.findOneOrFail({
+      where: { id: saved.id },
+      relations: ['sender', 'chat'],
+    });
+  }
+}
