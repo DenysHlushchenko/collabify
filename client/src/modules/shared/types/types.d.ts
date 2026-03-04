@@ -120,6 +120,16 @@ export type ChatType = {
   messages: MessagesType[];
 };
 
+export type NotificationType = {
+  id: number;
+  type: string;
+  content: string;
+  created_at: Date;
+  user: UserType;
+  fromUser: UserType;
+  postId: number;
+};
+
 /* used only for form input validation */
 export type PostFormValues = {
   title: string;
@@ -201,7 +211,12 @@ export type PopularTagsResponse = {
   name: string;
   created_at: Date;
   postCount: number;
-}
+};
+
+export type NotificationResponse = {
+  notifications: NotificationType[];
+  notificationCount: number;
+};
 
 export type FilterType = "ASC" | "DESC" | undefined;
 

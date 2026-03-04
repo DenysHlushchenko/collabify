@@ -12,6 +12,7 @@ import { PostTag } from '../tag/entities/post_tag.entity';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { VoteService } from 'src/shared/vote/vote.service';
 import { mockDataSourceProvider } from '../../../test/mocks/data-source.mock';
+import { CommentService } from '../comment/comment.service';
 
 describe('PostService', () => {
   let postService: PostService;
@@ -40,6 +41,12 @@ describe('PostService', () => {
 
   let mockTagService: {
     findOrCreateMany: jest.Mock;
+    delete: jest.Mock;
+  };
+
+  let mockCommentService: {
+    getAllCommentsByPostId: jest.Mock;
+    deleteComment: jest.Mock;
   };
 
   beforeEach(async () => {
@@ -65,8 +72,14 @@ describe('PostService', () => {
       makeUserMemberOfChat: jest.fn(),
     };
 
+    mockCommentService = {
+      getAllCommentsByPostId: jest.fn(),
+      deleteComment: jest.fn(),
+    };
+
     mockTagService = {
       findOrCreateMany: jest.fn(),
+      delete: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -89,6 +102,10 @@ describe('PostService', () => {
         {
           provide: TagService,
           useValue: mockTagService,
+        },
+        {
+          provide: CommentService,
+          useValue: mockCommentService,
         },
       ],
     }).compile();
@@ -470,6 +487,7 @@ describe('PostService', () => {
     const mockPostTagRepo = {
       delete: jest.fn().mockResolvedValue({ affected: 2 }),
       save: jest.fn().mockResolvedValue([]),
+      count: jest.fn(),
     };
 
     beforeEach(() => {
@@ -491,6 +509,8 @@ describe('PostService', () => {
     });
 
     it('should successfully update post when valid DTO is provided', async () => {
+      mockPostTagRepo.count.mockResolvedValueOnce(0).mockResolvedValueOnce(0);
+
       const dto = {
         title: 'Advanced NestJS - Real World Patterns',
         description:
@@ -522,9 +542,14 @@ describe('PostService', () => {
       expect(existingPost.group_size).toBe(dto.groupSize);
 
       expect(mockPostRepository.save).toHaveBeenCalledWith(existingPost);
+
+      expect(mockTagService.delete).toHaveBeenCalledTimes(2);
+      expect(mockTagService.delete).toHaveBeenCalledWith(10);
+      expect(mockTagService.delete).toHaveBeenCalledWith(11);
     });
 
     it('should throw UserDoesNotExistException when user does not exist', async () => {
+      mockPostTagRepo.count.mockResolvedValue(1);
       mockUserSevice.findById.mockResolvedValue(null);
 
       const dto = {
@@ -543,6 +568,7 @@ describe('PostService', () => {
     });
 
     it('should throw NotFoundException when post does not exist', async () => {
+      mockPostTagRepo.count.mockResolvedValue(1);
       jest.spyOn(postService, 'getPostById').mockResolvedValue(null);
 
       const dto = {
@@ -561,6 +587,7 @@ describe('PostService', () => {
     });
 
     it('should allow minimum number of tags (1 tag)', async () => {
+      mockPostTagRepo.count.mockResolvedValue(1);
       const dto = {
         title: 'Minimal tags update',
         description: 'Only one tag allowed',
@@ -580,6 +607,7 @@ describe('PostService', () => {
     });
 
     it('should allow maximum number of tags (3 tags)', async () => {
+      mockPostTagRepo.count.mockResolvedValue(1);
       const dto = {
         title: 'Max tags test',
         description: 'Testing limit',
@@ -600,6 +628,7 @@ describe('PostService', () => {
     });
 
     it('should update fields correctly even when tags are repeated', async () => {
+      mockPostTagRepo.count.mockResolvedValue(1);
       const dto = {
         title: 'Repeated tags',
         description: 'Testing duplicates',
@@ -620,6 +649,7 @@ describe('PostService', () => {
     });
 
     it("should throw ForbiddenException when user tries to update another user's post", async () => {
+      mockPostTagRepo.count.mockResolvedValue(1);
       const dto = {
         title: 'Unauthorized update',
         description: 'Should fail',
@@ -663,6 +693,7 @@ describe('PostService', () => {
 
     const mockPostTagRepo = {
       delete: jest.fn().mockResolvedValue({ affected: 2 }),
+      count: jest.fn(),
     };
 
     beforeEach(() => {
@@ -674,6 +705,9 @@ describe('PostService', () => {
         .mockResolvedValue(existingPost as unknown as Post);
       mockPostRepository.manager.getRepository.mockReturnValue(mockPostTagRepo);
       mockPostRepository.delete.mockResolvedValue({ affected: 1 });
+
+      mockCommentService.getAllCommentsByPostId.mockResolvedValue([]);
+      mockCommentService.deleteComment.mockResolvedValue(undefined);
     });
 
     it('should be defined', () => {
@@ -726,6 +760,43 @@ describe('PostService', () => {
       await postService.deletePost(42, 777);
 
       expect(mockPostTagRepo.delete).toHaveBeenCalledWith({ post: { id: 42 } });
+      expect(mockPostRepository.delete).toHaveBeenCalledWith(42);
+    });
+
+    it('should delete post + post_tags + call delete on each comment when comments exist', async () => {
+      const comments = [
+        { id: 300, sender: { id: 77 } },
+        { id: 301, sender: { id: 88 } },
+      ];
+
+      mockCommentService.getAllCommentsByPostId.mockResolvedValue(comments);
+
+      await postService.deletePost(42, 777);
+
+      expect(mockCommentService.getAllCommentsByPostId).toHaveBeenCalledWith(
+        42,
+      );
+      expect(mockCommentService.deleteComment).toHaveBeenCalledTimes(2);
+      expect(mockCommentService.deleteComment).toHaveBeenNthCalledWith(
+        1,
+        300,
+        77,
+      );
+      expect(mockCommentService.deleteComment).toHaveBeenNthCalledWith(
+        2,
+        301,
+        88,
+      );
+      expect(mockPostTagRepo.delete).toHaveBeenCalledWith({ post: { id: 42 } });
+      expect(mockPostRepository.delete).toHaveBeenCalledWith(42);
+    });
+
+    it('should not call deleteComment when there are no comments', async () => {
+      mockCommentService.getAllCommentsByPostId.mockResolvedValue([]);
+
+      await postService.deletePost(42, 777);
+
+      expect(mockCommentService.deleteComment).not.toHaveBeenCalled();
       expect(mockPostRepository.delete).toHaveBeenCalledWith(42);
     });
   });

@@ -19,8 +19,15 @@ export class Notification {
   @Column()
   content: string;
 
+  @Column()
+  postId: number;
+
   @CreateDateColumn()
   created_at: Date;
+
+  @ManyToOne(() => User, { nullable: true })
+  @JoinColumn({ name: 'from_user_id' })
+  fromUser: User | null;
 
   @ManyToOne(() => User, (user) => user.notifications)
   @JoinColumn({ name: 'user_id' })
