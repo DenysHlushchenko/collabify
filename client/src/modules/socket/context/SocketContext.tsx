@@ -35,12 +35,20 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     /**
      * Socket responses from the server
      */
+
+    // post creator receives the join request
     socket.on("notification_join_request", () => {
       queryClient.invalidateQueries({ queryKey: ["notifications", token] });
     });
 
-    socket.on("notification_join_response", () => {
+    socket.on("join_request_created", (data) => {
+      queryClient.invalidateQueries({ queryKey: ["notification-status", token, data.postId] });
+    });
+
+    // request join user receives the join response
+    socket.on("notification_join_response", (data) => {
       queryClient.invalidateQueries({ queryKey: ["notifications", token] });
+      queryClient.invalidateQueries({ queryKey: ["notification-status", token, data.notification.postId] });
     });
 
     /**

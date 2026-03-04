@@ -10,6 +10,11 @@ export const getAllNotificationsByUserId = async (userId: number): Promise<Notif
   };
 };
 
+export const isPostJoinRequestForCurrentPostByUserId = async (userId: number, postId: number): Promise<boolean> => {
+  const res = await request.get(`/notifications/posts/${postId}/users/${userId}`);
+  return res.data;
+};
+
 export const deleteNotification = async (id: number): Promise<void> => {
   await request.delete(`/notifications/${id}`);
 };

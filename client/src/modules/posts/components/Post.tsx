@@ -18,7 +18,8 @@ import { useSocket } from "@/modules/socket/context/SocketContext";
 import { useAuthStore } from "@/modules/auth/store/userStore";
 import { convertToDateString } from "@/modules/shared/lib";
 import User from "@/modules/shared/components/User";
-import { useNotificationStore } from "@/modules/notification/store/notificationStore";
+import { useQuery } from "@tanstack/react-query";
+import { isPostJoinRequestForCurrentPostByUserId } from "@/modules/notification/api/notification";
 
 const MAX_DESCRIPTION_LENGTH = 90;
 
@@ -32,16 +33,18 @@ const Post = ({ post }: PostProps) => {
 
   const { socket } = useSocket();
   const currentUser = useAuthStore().getUser();
-  const isPostOwner = post.user.id === currentUser?.id;
-
-  const { pendingJoinRequests, addPendingJoin } = useNotificationStore();
-
-  const hasSentRequest = !!pendingJoinRequests[post.id];
-  const isDisabled = isPostOwner || hasSentRequest;
+  const token = useAuthStore().token;
+  const userId = currentUser?.id;
+  const isPostOwner = post.user.id === userId;
 
   const { usePostVoteQuery, useCreatePostVoteMutation } = useVote();
   const { data, isPending } = usePostVoteQuery(post.id);
   const mutation = useCreatePostVoteMutation(post.id);
+
+  const { data: notificationStatus } = useQuery({
+    queryKey: ["notification-status", token, post.id],
+    queryFn: () => isPostJoinRequestForCurrentPostByUserId(userId!, post.id),
+  });
 
   const handleJoinRequest = () => {
     socket.emit("joinRequest", {
@@ -49,8 +52,6 @@ const Post = ({ post }: PostProps) => {
       postCreatorId: post.user.id,
       postId: post.id,
     });
-
-    addPendingJoin(post.id);
   };
 
   return (
@@ -77,10 +78,10 @@ const Post = ({ post }: PostProps) => {
           <CardAction>
             <Button
               onClick={handleJoinRequest}
-              disabled={isDisabled}
+              disabled={isPostOwner || notificationStatus}
               className="body-semibold h-6 w-16 cursor-pointer rounded-lg bg-[#99dfc4] text-[#2d634e] hover:bg-[#acf0d6]"
             >
-              {hasSentRequest ? "Sent" : "Join"}
+              {"Join"}
             </Button>
           </CardAction>
         </CardHeader>

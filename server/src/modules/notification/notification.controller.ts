@@ -22,6 +22,17 @@ export class NotificationController {
     return await this.notificationService.getUserNotificationsAndCount(userId);
   }
 
+  @Get('/posts/:postId/users/:userId')
+  async getPostJoinRequestForCurrentPostByUserId(
+    @Param('postId', ParseIntPipe) postId: number,
+    @Param('userId', ParseIntPipe) userId: number,
+  ) {
+    return await this.notificationService.isPostJoinRequestForCurrentPostByUserId(
+      userId,
+      postId,
+    );
+  }
+
   @Delete(':id')
   async deleteNotification(
     @Param('id', ParseIntPipe) id: number,

@@ -6,22 +6,17 @@ import { Separator } from "@/modules/shared/components/ui/Separator";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteNotification } from "../api/notification";
 import { useAuthStore } from "@/modules/auth/store/userStore";
-import type { Dispatch, SetStateAction } from "react";
 import { convertToDateString } from "@/modules/shared/lib";
 import User from "@/modules/shared/components/User";
-import { useNotificationStore } from "../store/notificationStore";
 
 interface NotificationProps {
   notification: NotificationType;
-  setPopupOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const Notification = ({ notification, setPopupOpen }: NotificationProps) => {
+const Notification = ({ notification }: NotificationProps) => {
   const { socket } = useSocket();
   const token = useAuthStore().token;
   const queryClient = useQueryClient();
-
-  const { removeJoinRequest } = useNotificationStore();
 
   const isJoinRequest = notification.type === "request";
 
@@ -42,13 +37,10 @@ const Notification = ({ notification, setPopupOpen }: NotificationProps) => {
     });
 
     await mutation.mutateAsync(notification.id);
-    setPopupOpen(false);
   };
 
   const handleRemoveResponseNotification = async () => {
     await mutation.mutateAsync(notification.id);
-    setPopupOpen(false);
-    removeJoinRequest(notification.postId);
   };
 
   return (

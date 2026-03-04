@@ -148,6 +148,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     await this.notificationService.create(notification);
 
+    // sending back to the request join user the message that join request notification was created
+    // passing postId to invalidate API call on the client side
+    client.emit('join_request_created', { postId });
+
     const postCreatorSocket = this.sessions.get(postCreatorId);
     if (postCreatorSocket) {
       this.server
@@ -190,13 +194,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       await this.chatService.makeUserMemberOfChat(requestUserId, chat.id);
     } else if (response === JoinResponse.REJECT) {
       // handle reject
-      // disconnect users from server
-      const requestClient = this.sessions.get(requestUserId);
-      if (requestClient) {
-        requestClient.disconnect(true);
-        this.sessions.delete(requestUserId);
-      }
-
       notification.content = `${postCreator.username} declined your request.`;
     } else {
       return responseClient.emit('error', 'Invalid response.');

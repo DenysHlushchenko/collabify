@@ -47,7 +47,7 @@ const Notifications = () => {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-100 rounded-sm border-none bg-white shadow-lg">
+      <PopoverContent className="w-100 rounded-md border-none bg-white shadow-lg">
         <PopoverHeader className="bg-gray-100">
           <PopoverTitle className="px-3 pt-3 pb-2">Pending Invitations</PopoverTitle>
           {isPending && <Skeleton className="h-full w-full" />}
@@ -56,7 +56,7 @@ const Notifications = () => {
         <div className="px-2.5 pt-2 pb-3">
           {data?.notifications.length !== 0 ? (
             data?.notifications.map((notification: NotificationType) => (
-              <Notification setPopupOpen={setPopupOpen} key={notification.id} notification={notification} />
+              <Notification key={notification.id} notification={notification} />
             ))
           ) : (
             <p className="small-semibold">No notifications yet!</p>

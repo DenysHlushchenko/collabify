@@ -124,7 +124,6 @@ export type NotificationType = {
   id: number;
   type: string;
   content: string;
-  isRead: boolean;
   created_at: Date;
   user: UserType;
   fromUser: UserType;

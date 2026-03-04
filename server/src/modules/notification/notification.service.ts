@@ -35,6 +35,21 @@ export class NotificationService {
     });
   }
 
+  async isPostJoinRequestForCurrentPostByUserId(
+    userId: number,
+    postId: number,
+  ): Promise<boolean> {
+    const notificationCount = await this.notificationRepository.count({
+      where: {
+        fromUser: { id: userId },
+        postId,
+        type: 'request',
+      },
+    });
+
+    return notificationCount === 1;
+  }
+
   /**
    * Creates a new notification, saving join request user and post author IDs.
    * @param notification
