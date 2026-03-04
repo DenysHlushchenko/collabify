@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect } from "react";
 import { socket } from "../socket";
 import type { Socket } from "socket.io-client";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 interface SocketContextType {
   socket: Socket;
@@ -31,6 +32,9 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
+    /**
+     * Socket responses from the server
+     */
     socket.on("notification_join_request", () => {
       queryClient.invalidateQueries({ queryKey: ["notifications", token] });
     });
@@ -39,8 +43,16 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       queryClient.invalidateQueries({ queryKey: ["notifications", token] });
     });
 
-    socket.on("error", (data) => {
-      console.log("Error from the socket: " + data);
+    /**
+     * Socket errors from the server
+     */
+    socket.on("error", (error) => {
+      console.log("Error from the socket: " + error);
+    });
+
+    // if request user presses the "join" button twice, it receives an error
+    socket.on("requestDuplicateError", (error) => {
+      toast(error);
     });
 
     socket.io.opts.extraHeaders = {

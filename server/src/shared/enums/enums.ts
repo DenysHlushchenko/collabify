@@ -25,3 +25,8 @@ export enum RoleType {
   LEARNER = 'learner',
   ORGANIZER = 'organizer',
 }
+
+export enum NotificationStatusType {
+  PENDING = 'pending',
+  CLOSED = 'closed',
+}

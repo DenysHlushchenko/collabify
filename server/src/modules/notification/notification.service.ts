@@ -18,10 +18,18 @@ export class NotificationService {
    * @param id
    * @returns either an existing notification or null.
    */
-  private async findById(id: number): Promise<Notification | null> {
+  async findById(id: number): Promise<Notification | null> {
     return await this.notificationRepository.findOne({
       where: {
         id,
+      },
+    });
+  }
+
+  async findByUserId(userId: number): Promise<Notification | null> {
+    return await this.notificationRepository.findOne({
+      where: {
+        user: { id: userId },
       },
     });
   }

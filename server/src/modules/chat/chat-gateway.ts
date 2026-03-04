@@ -121,6 +121,19 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       return client.emit('error', 'Invalid user IDs provided.');
     }
 
+    const existingNotification =
+      await this.notificationService.findByUserId(requestUserId);
+
+    // checking if requestUser sent the request twice
+    if (existingNotification) {
+      if (requestUserId === existingNotification.fromUser?.id) {
+        return client.emit(
+          'requestDuplicateError',
+          'You cannot send the request twice!',
+        );
+      }
+    }
+
     // find group chat name by postId and add it to the notification content
     const chat = await this.chatService.findByPostId(postId);
     if (!chat) throw new NotFoundException('Chat does not exist');

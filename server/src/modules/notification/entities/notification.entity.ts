@@ -22,9 +22,6 @@ export class Notification {
   @Column()
   postId: number;
 
-  @Column({ default: false })
-  isRead: boolean;
-
   @CreateDateColumn()
   created_at: Date;
 

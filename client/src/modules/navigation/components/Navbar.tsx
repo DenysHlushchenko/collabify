@@ -11,6 +11,7 @@ const Navbar = () => {
   const { getUser } = useAuthStore();
   const userId = getUser()?.id;
   const { data: currentUser } = useCurrentUser(userId!);
+
   return (
     <nav className="background-blue fixed top-0 right-0 left-0 z-50 flex justify-center gap-5 p-4 text-white shadow-sm sm:p-2">
       <div className="flex w-full max-w-7xl items-center justify-between gap-5">
@@ -23,7 +24,14 @@ const Navbar = () => {
 
         <div className="flex-between gap-5">
           <Notifications />
-          <User username={currentUser?.user.username} userId={currentUser!.user.id} className="h-8 w-8" />
+          {currentUser && (
+            <User
+              username={currentUser.user.username}
+              userId={currentUser.user.id}
+              className="h-8 w-8"
+              fallbackClassName="bg-[#6395CD] text-white"
+            />
+          )}
           <MobileNavigation />
         </div>
       </div>

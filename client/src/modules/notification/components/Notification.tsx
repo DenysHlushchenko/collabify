@@ -9,6 +9,7 @@ import { useAuthStore } from "@/modules/auth/store/userStore";
 import type { Dispatch, SetStateAction } from "react";
 import { convertToDateString } from "@/modules/shared/lib";
 import User from "@/modules/shared/components/User";
+import { useNotificationStore } from "../store/notificationStore";
 
 interface NotificationProps {
   notification: NotificationType;
@@ -19,6 +20,8 @@ const Notification = ({ notification, setPopupOpen }: NotificationProps) => {
   const { socket } = useSocket();
   const token = useAuthStore().token;
   const queryClient = useQueryClient();
+
+  const { removeJoinRequest } = useNotificationStore();
 
   const isJoinRequest = notification.type === "request";
 
@@ -45,12 +48,17 @@ const Notification = ({ notification, setPopupOpen }: NotificationProps) => {
   const handleRemoveResponseNotification = async () => {
     await mutation.mutateAsync(notification.id);
     setPopupOpen(false);
+    removeJoinRequest(notification.postId);
   };
 
   return (
     <div>
       <div className="flex-start my-2 gap-x-2">
-        <User username={notification.fromUser.username} userId={notification.fromUser.id} className="" />
+        <User
+          username={notification.fromUser.username}
+          userId={notification.fromUser.id}
+          className="h-8 w-8 bg-[#D9D9D9] font-bold text-gray-500"
+        />
         <div className="flex flex-col">
           <PopoverDescription className="small-semibold">{notification.content}</PopoverDescription>
           <PopoverDescription className="text-xs text-gray-500">

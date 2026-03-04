@@ -18,6 +18,7 @@ import { useSocket } from "@/modules/socket/context/SocketContext";
 import { useAuthStore } from "@/modules/auth/store/userStore";
 import { convertToDateString } from "@/modules/shared/lib";
 import User from "@/modules/shared/components/User";
+import { useNotificationStore } from "@/modules/notification/store/notificationStore";
 
 const MAX_DESCRIPTION_LENGTH = 90;
 
@@ -30,7 +31,13 @@ const Post = ({ post }: PostProps) => {
   const adjustedDesc = desc.length >= MAX_DESCRIPTION_LENGTH ? `${desc.substring(0, MAX_DESCRIPTION_LENGTH)}...` : desc;
 
   const { socket } = useSocket();
-  const user = useAuthStore().getUser();
+  const currentUser = useAuthStore().getUser();
+  const isPostOwner = post.user.id === currentUser?.id;
+
+  const { pendingJoinRequests, addPendingJoin } = useNotificationStore();
+
+  const hasSentRequest = !!pendingJoinRequests[post.id];
+  const isDisabled = isPostOwner || hasSentRequest;
 
   const { usePostVoteQuery, useCreatePostVoteMutation } = useVote();
   const { data, isPending } = usePostVoteQuery(post.id);
@@ -38,10 +45,12 @@ const Post = ({ post }: PostProps) => {
 
   const handleJoinRequest = () => {
     socket.emit("joinRequest", {
-      requestUserId: user?.id,
+      requestUserId: currentUser?.id,
       postCreatorId: post.user.id,
       postId: post.id,
     });
+
+    addPendingJoin(post.id);
   };
 
   return (
@@ -68,9 +77,10 @@ const Post = ({ post }: PostProps) => {
           <CardAction>
             <Button
               onClick={handleJoinRequest}
+              disabled={isDisabled}
               className="body-semibold h-6 w-16 cursor-pointer rounded-lg bg-[#99dfc4] text-[#2d634e] hover:bg-[#acf0d6]"
             >
-              Join
+              {hasSentRequest ? "Sent" : "Join"}
             </Button>
           </CardAction>
         </CardHeader>
