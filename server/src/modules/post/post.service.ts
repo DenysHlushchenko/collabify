@@ -1,5 +1,7 @@
 import {
   ForbiddenException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -29,6 +31,8 @@ export class PostService implements Voteable {
     private readonly chatService: ChatService,
     private readonly tagService: TagService,
     private readonly voteService: VoteService,
+
+    @Inject(forwardRef(() => CommentService))
     private readonly commentService: CommentService,
   ) {}
 
