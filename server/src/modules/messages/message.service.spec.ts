@@ -4,6 +4,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { NotFoundException } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { Message } from './entities/message.entity';
+import { MessageReaction } from './entities/message_reaction.entity';
 import { ChatService } from '../chat/chat.service';
 import { Repository } from 'typeorm';
 import { User } from '../user/entities/user.entity';
@@ -22,6 +23,15 @@ describe('MessageService → getMessagesByChatId', () => {
           provide: getRepositoryToken(Message),
           useValue: {
             find: jest.fn(),
+          },
+        },
+        {
+          provide: getRepositoryToken(MessageReaction),
+          useValue: {
+            findOne: jest.fn(),
+            create: jest.fn(),
+            save: jest.fn(),
+            remove: jest.fn(),
           },
         },
         {
@@ -77,7 +87,7 @@ describe('MessageService → getMessagesByChatId', () => {
     expect(chatService.findById).toHaveBeenCalledWith(chatId);
     expect(messageRepo.find).toHaveBeenCalledWith({
       where: { chat: { id: chatId } },
-      relations: ['sender'],
+      relations: ['sender', 'reactions', 'reactions.user'],
       order: { created_at: 'ASC' },
     });
     expect(result).toEqual(mockMessages);
@@ -95,7 +105,7 @@ describe('MessageService → getMessagesByChatId', () => {
     expect(chatService.findById).toHaveBeenCalledWith(chatId);
     expect(messageRepo.find).toHaveBeenCalledWith({
       where: { chat: { id: chatId } },
-      relations: ['sender'],
+      relations: ['sender', 'reactions', 'reactions.user'],
       order: { created_at: 'ASC' },
     });
     expect(result).toEqual([]);

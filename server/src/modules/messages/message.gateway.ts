@@ -108,6 +108,27 @@ export class MessageGateway
       .emit('receiveMessage', savedMessage);
   }
 
+  /**
+   * Handles reactions on messages.
+   * If reaction is empty, the user's reaction is removed.
+   */
+  @SubscribeMessage('reactToMessage')
+  async handleReactToMessage(
+    @ConnectedSocket() client: AuthenticatedSocket,
+    @MessageBody()
+    payload: { messageId: number; chatId: number; reaction: string },
+  ): Promise<void> {
+    const userId = client.data.user.id;
+    const updatedMessage = await this.messageService.addReactionToMessage(
+      payload.messageId,
+      userId,
+      payload.reaction,
+    );
+    this.server
+      .to(`chat_${payload.chatId}`)
+      .emit('messageReactionUpdated', updatedMessage);
+  }
+
   afterInit() {
     console.log('MessageGateway initialized');
   }
