@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 
 const MessageForm = () => {
   const { chatId } = useParams();
+  const id = Number(chatId);
   const { socket } = useSocket();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -15,7 +16,7 @@ const MessageForm = () => {
 
     socket.emit("sendMessage", {
       message: inputRef.current?.value,
-      chatId,
+      chatId: id,
     });
 
     if (inputRef.current) {
