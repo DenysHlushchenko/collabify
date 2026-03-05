@@ -24,6 +24,7 @@ export const useSocket = () => {
 export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated());
   const token = useAuthStore((state) => state.token);
+  const currentUser = useAuthStore().getUser();
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -52,6 +53,15 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     });
 
     /**
+     * Socket chat message responses from the server
+     */
+    socket.on("receiveMessage", (data) => {
+      const chatId = data.savedMessage.chat.id;
+      queryClient.invalidateQueries({ queryKey: ["messages", chatId] });
+      queryClient.invalidateQueries({ queryKey: ["chats", currentUser?.id] });
+    });
+
+    /**
      * Socket errors from the server
      */
     socket.on("error", (error) => {
@@ -72,11 +82,13 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       socket.off("notification_join_request");
       socket.off("notification_join_response");
+      socket.off("join_request_created");
+      socket.off("receiveMessage");
       socket.off("error");
       socket.off("requestDuplicateError");
       socket.disconnect();
     };
-  }, [isAuthenticated, queryClient, token]);
+  }, [currentUser?.id, isAuthenticated, queryClient, token]);
 
   return (
     <SocketContext.Provider

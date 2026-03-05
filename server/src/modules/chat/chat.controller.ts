@@ -8,11 +8,19 @@ import {
 import { AuthGuard } from '../user/auth/auth.guard';
 import { ChatService } from './chat.service';
 import { ChatWithOwner } from 'src/shared/types';
+import { Chat } from './entities/chat.entity';
 
 @UseGuards(AuthGuard)
 @Controller('chats')
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
+
+  @Get(':id')
+  async getChatById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Chat | null> {
+    return await this.chatService.findById(id);
+  }
 
   @Get('users/:userId')
   async getChatsByUserId(
