@@ -3,8 +3,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -25,12 +25,13 @@ export class Chat {
   @CreateDateColumn()
   created_at: Date;
 
-  @ManyToOne(() => Post, (post) => post.chats, {
-    nullable: true,
-    onDelete: 'SET NULL',
+  @ManyToMany(() => Post, (post) => post.chats, {
+    onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'post_id' })
-  post: Post | null;
+  @JoinTable({
+    name: 'chat_posts',
+  })
+  posts: Post[];
 
   @OneToMany(() => ChatMember, (chatMember) => chatMember.chat)
   members: ChatMember[];
