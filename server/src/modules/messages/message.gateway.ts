@@ -105,7 +105,7 @@ export class MessageGateway
     );
     this.server
       .to(`chat_${payload.chatId}`)
-      .emit('receiveMessage', savedMessage);
+      .emit('receiveMessage', { savedMessage });
   }
 
   /**

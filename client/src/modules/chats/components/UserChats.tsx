@@ -1,31 +1,27 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+import { useAuthStore } from "@/modules/auth/store/userStore";
 import ChatItem from "./ChatItem";
-
-const userChats = [
-  {
-    id: 1,
-    title: "Chat Title 1",
-  },
-  {
-    id: 2,
-    title: "Chat Title 2",
-  },
-  {
-    id: 3,
-    title: "Chat Title 3",
-  },
-  {
-    id: 4,
-    title: "Chat Title 4",
-  },
-];
+import { useChatsQuery } from "../hooks/useChat";
+import Error from "@/modules/shared/components/Error";
 
 const UserChats = () => {
+  const currentUser = useAuthStore().getUser();
+  if (!currentUser) return;
+
+  const { data: chats, isPending, isError, error } = useChatsQuery(currentUser.id);
+
+  if (isPending) return <div>Loading...</div>;
+  if (isError) return <Error message={error.message} />;
+
   return (
-    <ul role="list" className="flex flex-col items-center space-y-4">
-      {userChats.map((chat) => (
-        <ChatItem key={chat.id} chat={chat} />
-      ))}
-    </ul>
+    <>
+      <h3 className="h3-semibold text-center">Chats</h3>
+      <ul role="list" className="flex flex-col items-center space-y-4">
+        {chats?.map((chat) => (
+          <ChatItem key={chat.id} chat={chat} />
+        ))}
+      </ul>
+    </>
   );
 };
 
