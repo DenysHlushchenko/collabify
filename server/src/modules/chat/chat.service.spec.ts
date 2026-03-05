@@ -69,11 +69,13 @@ describe('ChatService → getAllChatsByUserId', () => {
         title: 'Trip to mountains',
         created_at: new Date('2025-03-10'),
         max_members: 4,
-        post: {
-          id: 15,
-          title: 'Looking for hiking buddies',
-          user: mockPostOwner,
-        },
+        posts: [
+          {
+            id: 15,
+            title: 'Looking for hiking buddies',
+            user: mockPostOwner,
+          },
+        ],
         members: [
           { id: 300, joined_at: new Date(), user: mockUser },
           {
@@ -89,11 +91,13 @@ describe('ChatService → getAllChatsByUserId', () => {
         title: 'Board games evening',
         created_at: new Date('2025-04-02'),
         max_members: 6,
-        post: {
-          id: 16,
-          title: 'Weekly board game meetup',
-          user: mockUser,
-        },
+        posts: [
+          {
+            id: 16,
+            title: 'Weekly board game meetup',
+            user: mockUser,
+          },
+        ],
         members: [
           { id: 302, joined_at: new Date(), user: mockUser },
           {
@@ -118,7 +122,7 @@ describe('ChatService → getAllChatsByUserId', () => {
           },
         },
         relations: {
-          post: {
+          posts: {
             user: true,
           },
           members: {
@@ -126,7 +130,7 @@ describe('ChatService → getAllChatsByUserId', () => {
           },
         },
         select: {
-          post: {
+          posts: {
             id: true,
             title: true,
             user: true,
@@ -151,7 +155,8 @@ describe('ChatService → getAllChatsByUserId', () => {
       expect(result[1].isOwner).toBe(true);
 
       const firstResult = result[0] as any;
-      expect(firstResult.post.user).not.toHaveProperty('email');
+
+      expect(firstResult.posts[0].user).not.toHaveProperty('email');
       expect(firstResult.members[0].user).not.toHaveProperty('email');
       expect(firstResult.members[0].user).not.toHaveProperty('password');
     });
@@ -172,11 +177,13 @@ describe('ChatService → getAllChatsByUserId', () => {
           title: 'Ghost chat?',
           created_at: new Date(),
           max_members: 2,
-          post: {
-            id: 30,
-            title: 'Test',
-            user: { id: userId, username: 'owner' },
-          },
+          posts: [
+            {
+              id: 30,
+              title: 'Test',
+              user: { id: userId, username: 'owner' },
+            },
+          ],
           members: [],
           messages: [],
         },

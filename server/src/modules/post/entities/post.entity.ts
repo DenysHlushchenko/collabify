@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -55,6 +56,6 @@ export class Post {
   })
   comments: Comment[];
 
-  @OneToMany(() => Chat, (chat) => chat.post)
+  @ManyToMany(() => Chat, (chat) => chat.posts)
   chats: Chat[];
 }

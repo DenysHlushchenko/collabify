@@ -86,9 +86,11 @@ export class PostService implements Voteable {
     if (chatId) {
       chat = await this.chatService.findById(chatId);
       if (!chat) throw new Error('Chat not found');
+
+      await this.chatService.addPostToChat(chat.id, savedPost.id);
     } else {
       chat = await this.chatService.create({
-        postId: savedPost.id,
+        postIds: [savedPost.id],
         title: chatTitle,
         max_members: groupSize,
       });

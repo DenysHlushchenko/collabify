@@ -167,7 +167,7 @@ describe('PostService', () => {
       expect(mockPostRepository.save).toHaveBeenCalledWith(createdPost);
 
       expect(mockChatService.create).toHaveBeenCalledWith({
-        postId: createdPost.id,
+        postIds: [createdPost.id],
         title: dto.chatTitle,
         max_members: dto.groupSize,
       });
