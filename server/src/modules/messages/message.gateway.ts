@@ -13,6 +13,8 @@ import { MessageService } from './message.service';
 import { CreateMessageDto } from './dtos/CreateMessage.dto';
 import { User } from '../user/entities/user.entity';
 import jwt from 'jsonwebtoken';
+import { ChatService } from '../chat/chat.service';
+import { NotFoundException } from '@nestjs/common';
 
 interface AuthenticatedSocket extends Socket {
   data: {
@@ -29,7 +31,10 @@ interface AuthenticatedSocket extends Socket {
 export class MessageGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
-  constructor(private readonly messageService: MessageService) {}
+  constructor(
+    private readonly messageService: MessageService,
+    private readonly chatService: ChatService,
+  ) {}
 
   @WebSocketServer() server: Server;
 
@@ -90,6 +95,10 @@ export class MessageGateway
     @MessageBody() payload: CreateMessageDto,
   ): Promise<void> {
     const senderId = client.data.user.id;
+    const chat = await this.chatService.findById(payload.chatId);
+    if (!chat) {
+      throw new NotFoundException('Chat not found');
+    }
     const savedMessage = await this.messageService.createMessage(
       payload,
       senderId,

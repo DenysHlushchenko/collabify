@@ -13,7 +13,7 @@ export class MessageService {
 
   /**
    * Creates and persists a new message. Returns the saved message with sender and chat relations.
-   * @param createMessageDto contains message text, chatId, and senderId.
+   * @param createMessageDto - DTO containing the message content and chat ID.
    * @returns the saved Message entity including id, timestamps, sender, and chat.
    */
   async createMessage(
