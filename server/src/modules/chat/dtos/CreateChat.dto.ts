@@ -1,12 +1,20 @@
-import { IsNotEmpty, IsNumber, IsOptional, MaxLength } from 'class-validator';
+import {
+  ArrayMinSize,
+  IsArray,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  MaxLength,
+} from 'class-validator';
 
 export class CreateChatDto {
   @IsOptional()
   @MaxLength(50)
   title?: string;
 
-  @IsNotEmpty()
-  @IsNumber()
+  @IsArray()
+  @ArrayMinSize(1)
+  @IsNotEmpty({ each: true })
   postIds: number[];
 
   @IsNumber()
