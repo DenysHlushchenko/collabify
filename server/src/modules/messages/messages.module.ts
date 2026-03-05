@@ -7,7 +7,7 @@ import { MessageService } from './message.service';
 import { ChatModule } from '../chat/chat.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Message, MessageReaction, ChatModule])],
+  imports: [TypeOrmModule.forFeature([Message, MessageReaction]), ChatModule],
   providers: [MessageGateway, MessageService],
   exports: [TypeOrmModule, MessageService],
 })
