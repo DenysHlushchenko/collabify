@@ -15,7 +15,7 @@ export class ChatService {
   ) {}
 
   /**
-   * Finds an existing chat that matches provided ID. Returns null if no matching chat is found.
+   * Finds an existing chat that matches provided chat and user IDs. Returns null if no matching chat is found.
    * @param id is required. It should be the ID of the chat to be found.
    * @returns an existing chat that matches provided ID, otherwise, returns null.
    */
@@ -23,6 +23,32 @@ export class ChatService {
     return this.chatRepository.findOne({
       where: {
         id,
+      },
+      relations: {
+        posts: {
+          user: true,
+        },
+        members: {
+          user: true,
+        },
+      },
+      select: {
+        posts: {
+          id: true,
+          title: true,
+          user: true,
+        },
+        members: {
+          id: true,
+          joined_at: true,
+          user: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+      order: {
+        created_at: 'DESC',
       },
     });
   }
@@ -33,11 +59,10 @@ export class ChatService {
    * @returns an existing chat that matches provided post ID, otherwise, returns null.
    */
   findByPostId(postId: number): Promise<Chat | null> {
-    return this.chatRepository.findOne({
-      where: {
-        posts: [{ id: postId }],
-      },
-    });
+    return this.chatRepository
+      .createQueryBuilder('chat')
+      .innerJoin('chat.posts', 'post', 'post.id = :postId', { postId })
+      .getOne();
   }
 
   /**

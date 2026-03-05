@@ -11,6 +11,7 @@ interface ChatItemProps {
 const ChatItem = ({ chat }: ChatItemProps) => {
   const { chatId } = useParams();
   const isActive = chat.id === Number(chatId);
+
   return (
     <Link
       to={`/chats/${chat.id}`}
