@@ -23,6 +23,8 @@ $ docker compose --env-file .env.docker up --build -d database
 
 Run the application in `/server` directory:
 
+#
+
 ```bash
 # Development mode
 $ npm run start:dev
