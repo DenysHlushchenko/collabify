@@ -14,10 +14,10 @@ import { VoteModule } from 'src/shared/vote/vote.module';
   imports: [
     TypeOrmModule.forFeature([Post, PostVote]),
     UserModule,
-    ChatModule,
     TagModule,
-    forwardRef(() => CommentModule),
     VoteModule,
+    forwardRef(() => CommentModule),
+    forwardRef(() => ChatModule),
   ],
   controllers: [PostController],
   providers: [PostService],

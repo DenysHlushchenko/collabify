@@ -24,6 +24,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import type { EditPostFormValues, PostFormValues, PostType } from "@/modules/shared/types/types";
 import { Textarea } from "@/modules/shared/components/ui/Textarea";
 import PostTag from "../PostTag";
+import { PencilLine } from "lucide-react";
 
 interface PostFormProps {
   type: "create" | "edit";
@@ -122,8 +123,8 @@ const PostForm = ({ type, postDetails, submitPost, isSubmitting }: PostFormProps
         ) : (
           type === "edit" &&
           user?.id === postDetails?.user.id && (
-            <Button className="small-medium flex h-7 w-15 cursor-pointer rounded-md bg-[#e8edf3] text-center text-black hover:bg-[#f2f6fa]">
-              Edit
+            <Button className="small-medium flex cursor-pointer rounded-md bg-[#e8edf3] text-center text-black hover:bg-[#f2f6fa]">
+              <PencilLine />
             </Button>
           )
         )}

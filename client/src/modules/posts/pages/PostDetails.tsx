@@ -5,7 +5,7 @@ import PostTag from "@/modules/posts/components/PostTag";
 import type { PostFormValues, PostTagType } from "@/modules/shared/types/types";
 import PostForm from "@/modules/posts/components/dialogs/PostForm";
 import { useAuthStore } from "@/modules/auth/store/userStore";
-import PostDeleteDialog from "@/modules/posts/components/dialogs/PostDeleteDialog";
+import DeleteDialog from "@/modules/shared/components/DeleteDialog";
 import { PostDetailsSkeleton } from "../components/PostSkeletons";
 import Comments from "@/modules/comments/components/Comments";
 import Votes from "@/modules/votes/components/Votes";
@@ -59,9 +59,7 @@ const PostDetails = () => {
           <span className="body-medium text-gray-400">{convertToDateString(postDetails.created_at)}</span>
           <div className="absolute right-4 bottom-4 ml-auto flex gap-x-2 sm:static">
             <PostForm type="edit" submitPost={submitPost} postDetails={postDetails} />
-            {postDetails && loggedInUser?.id === postDetails.user.id && (
-              <PostDeleteDialog handleDelete={handleDelete} />
-            )}
+            {postDetails && loggedInUser?.id === postDetails.user.id && <DeleteDialog handleDelete={handleDelete} />}
           </div>
         </div>
 

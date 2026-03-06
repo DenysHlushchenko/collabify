@@ -10,3 +10,7 @@ export const getChatById = async (chatId: number): Promise<ChatType> => {
   const res = await request.get(`/chats/${chatId}`);
   return res.data;
 };
+
+export const deleteChat = async (chatId: number, userId: number): Promise<void> => {
+  await request.delete(`/chats/${chatId}/users/${userId}`);
+};

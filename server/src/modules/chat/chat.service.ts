@@ -1,10 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chat } from './entities/chat.entity';
 import { Repository } from 'typeorm';
 import { CreateChatDto } from './dtos/CreateChat.dto';
 import { ChatMember } from './entities/chat_members.entity';
 import { ChatWithOwner } from 'src/shared/types';
+import { PostService } from '../post/post.service';
 
 @Injectable()
 export class ChatService {
@@ -12,12 +19,15 @@ export class ChatService {
     @InjectRepository(Chat) private readonly chatRepository: Repository<Chat>,
     @InjectRepository(ChatMember)
     private readonly chatMemberRepository: Repository<ChatMember>,
+
+    @Inject(forwardRef(() => PostService))
+    private readonly postService: PostService,
   ) {}
 
   /**
    * Finds an existing chat that matches provided chat and user IDs. Returns null if no matching chat is found.
    * @param id is required. It should be the ID of the chat to be found.
-   * @returns an existing chat that matches provided ID, otherwise, returns null.
+   * @returns an existing chat that matches provided IDs, otherwise, returns null.
    */
   findById(id: number): Promise<Chat | null> {
     return this.chatRepository.findOne({
@@ -122,6 +132,48 @@ export class ChatService {
         .of(chatId)
         .add(postId);
     }
+  }
+
+  /**
+   * Deletes an existing chat by provided chat and owner IDs. It also removes all chat members, posts, comments and tags associated with the current chat.
+   * @param chatId is required. It is used to find an existing chat in the database.
+   * @param ownerId is required to look up for an actual owner of the current chat.
+   */
+  async deleteChat(chatId: number, ownerId: number): Promise<void> {
+    const existingChat = await this.findById(chatId);
+    if (!existingChat) {
+      throw new NotFoundException(`Chat with ${chatId} was not found`);
+    }
+
+    const isOwner = existingChat.posts.some((post) => post.user.id === ownerId);
+    if (!isOwner) {
+      throw new ForbiddenException('You are not the owner of this chat!');
+    }
+
+    // removing all posts related to the chat
+    for (const post of existingChat.posts) {
+      await this.chatRepository
+        .createQueryBuilder()
+        .relation(Chat, 'posts')
+        .of(chatId)
+        .remove(post.id);
+
+      await this.postService.deletePost(post.id, post.user.id);
+    }
+
+    // deleting all chat members
+    const memberIds = existingChat.members.map((m) => m.id);
+    if (memberIds.length > 0) {
+      await this.chatMemberRepository
+        .createQueryBuilder()
+        .delete()
+        .from(ChatMember)
+        .where('chat_id = :chatId', { chatId })
+        .execute();
+    }
+
+    await this.chatMemberRepository.delete({ chat: { id: chatId } });
+    await this.chatRepository.delete(chatId);
   }
 
   /**
