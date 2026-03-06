@@ -3,14 +3,31 @@ import User from "@/modules/shared/components/User";
 import { convertToDateString } from "@/modules/shared/lib";
 import { cn } from "@/modules/shared/lib/utils";
 import type { MessagesType } from "@/modules/shared/types/types";
+import { useRef, useState } from "react";
+import { SmilePlus } from "lucide-react";
+import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
+import { useMessageReaction } from "../hooks/useMessageReaction";
+import { useParams } from "react-router-dom";
+import { Button } from "@/modules/shared/components/ui/Button";
 
 interface MessageBoxProps {
   data: MessagesType;
 }
 
 const MessageBox = ({ data }: MessageBoxProps) => {
+  const [showReactionPicker, setShowReactionPicker] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const pickerRef = useRef<HTMLDivElement>(null);
+
+  const { chatId } = useParams();
+  const { react } = useMessageReaction(Number(chatId));
   const user = useAuthStore().getUser();
   const isOwn = user?.id === data.sender.id;
+
+  const handleEmojiClick = (emojiData: EmojiClickData) => {
+    react(data.id, emojiData.emoji);
+    setShowReactionPicker(false);
+  };
 
   const container = cn("flex gap-3 p-4", isOwn && "justify-end");
   const avatar = cn(isOwn && "order-2");
@@ -18,6 +35,17 @@ const MessageBox = ({ data }: MessageBoxProps) => {
   const message = cn(
     "text-sm py-2 px-3 w-fit overflow-hidden rounded-lg",
     isOwn ? "bg-sky-500 text-white" : "bg-gray-100"
+  );
+
+  // Group reactions by emoji
+  const reactionGroups = (data.reactions ?? []).reduce<Record<string, { count: number; usernames: string[] }>>(
+    (acc, r) => {
+      if (!acc[r.reaction]) acc[r.reaction] = { count: 0, usernames: [] };
+      acc[r.reaction].count++;
+      acc[r.reaction].usernames.push(r.user.username);
+      return acc;
+    },
+    {}
   );
 
   return (
@@ -35,9 +63,68 @@ const MessageBox = ({ data }: MessageBoxProps) => {
           <div className="text-sm text-gray-500">{data.sender.username}</div>
           <div className="text-xs text-gray-400">{convertToDateString(data.created_at)}</div>
         </div>
-        <div className={message}>
-          <p>{data.message}</p>
+
+        <div
+          className="relative flex items-center gap-1"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => {
+            setIsHovered(false);
+            setShowReactionPicker(false);
+          }}
+        >
+          {isOwn && (
+            <button
+              onClick={() => setShowReactionPicker((prev) => !prev)}
+              className={cn(
+                "cursor-pointer rounded-full p-1 text-gray-400 transition hover:bg-gray-200 hover:text-gray-600",
+                isHovered ? "opacity-100" : "opacity-0"
+              )}
+            >
+              <SmilePlus size={16} aria-label="Reactions popup" />
+            </button>
+          )}
+
+          <div className={message}>
+            <p>{data.message}</p>
+          </div>
+
+          {!isOwn && (
+            <button
+              onClick={() => setShowReactionPicker((prev) => !prev)}
+              className={cn(
+                "cursor-pointer rounded-full p-1 text-gray-400 transition hover:bg-gray-200 hover:text-gray-600",
+                isHovered ? "opacity-100" : "opacity-0"
+              )}
+            >
+              <SmilePlus size={16} />
+            </button>
+          )}
+
+          {showReactionPicker && (
+            <div ref={pickerRef} className={cn("absolute top-8 z-50", isOwn ? "right-0" : "left-0")}>
+              <EmojiPicker onEmojiClick={handleEmojiClick} height={350} width={300} />
+            </div>
+          )}
         </div>
+
+        {Object.keys(reactionGroups).length > 0 && (
+          <div className={cn("flex flex-wrap gap-1", isOwn && "justify-end")}>
+            {Object.entries(reactionGroups).map(([emoji, { count, usernames }]) => {
+              const hasReacted = (data.reactions ?? []).some((r) => r.reaction === emoji && r.user.id === user?.id);
+              return (
+                <Button
+                  key={emoji}
+                  onClick={() => react(data.id, hasReacted ? "" : emoji)}
+                  title={usernames.join(", ")}
+                  className="flex cursor-pointer items-center gap-0.5 rounded-full border border-gray-200 bg-white px-1.5 py-0.5 text-xs transition hover:bg-gray-100"
+                >
+                  <span>{emoji}</span>
+                  {count > 1 && <span className="text-gray-500">{count}</span>}
+                </Button>
+              );
+            })}
+          </div>
+        )}
       </div>
     </div>
   );
