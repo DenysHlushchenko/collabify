@@ -1,7 +1,10 @@
 import type { ChatType } from "@/modules/shared/types/types";
 import { ChevronLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Error from "@/modules/shared/components/Error";
+import DeleteDialog from "@/modules/shared/components/DeleteDialog";
+import { useAuthStore } from "@/modules/auth/store/userStore";
+import { useDeleteChatMutation } from "../hooks/useChat";
 
 interface ChatHeaderProps {
   chat: ChatType;
@@ -11,6 +14,16 @@ interface ChatHeaderProps {
 
 const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
   const membersLabel = chat.members.length > 1 ? "members" : "member";
+
+  const currentUser = useAuthStore().getUser();
+  const navigate = useNavigate();
+
+  const mutation = useDeleteChatMutation(chat.id, currentUser!.id);
+
+  const handleDelete = async () => {
+    mutation.mutate();
+    navigate("/chats");
+  };
 
   return (
     <div className="mb-8 flex w-full items-center justify-between bg-white px-4 py-3 shadow-sm sm:px-4 lg:px-6">
@@ -32,6 +45,8 @@ const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
           {error && <Error message={error} />}
         </div>
       </div>
+
+      <DeleteDialog handleDelete={handleDelete} />
     </div>
   );
 };
