@@ -92,6 +92,13 @@ export type CommentType = {
   sender: UserType;
 };
 
+export type MessageReactionType = {
+  id: number;
+  reaction: string;
+  created_at: Date;
+  user: UserType;
+};
+
 export type MessagesType = {
   id: number;
   message: string;
@@ -99,7 +106,7 @@ export type MessagesType = {
   updated_at: Date;
   chat: ChatType;
   sender: UserType;
-  // later we will add MessageReactionType[]
+  reactions: MessageReactionType[];
 };
 
 export type ChatMemberType = {

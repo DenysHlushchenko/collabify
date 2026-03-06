@@ -119,14 +119,14 @@ export class MessageGateway
     payload: { messageId: number; chatId: number; reaction: string },
   ): Promise<void> {
     const userId = client.data.user.id;
-    const updatedMessage = await this.messageService.addReactionToMessage(
+    await this.messageService.addReactionToMessage(
       payload.messageId,
       userId,
       payload.reaction,
     );
     this.server
       .to(`chat_${payload.chatId}`)
-      .emit('messageReactionUpdated', updatedMessage);
+      .emit('messageReactionUpdated', { chatId: payload.chatId });
   }
 
   afterInit() {

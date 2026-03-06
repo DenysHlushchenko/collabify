@@ -38,7 +38,7 @@ function App() {
       <div className="mx-auto flex w-full max-w-7xl">
         <LeftsideBar />
 
-        <section className="flex flex-1 flex-col overflow-y-auto px-6 pt-20 pb-6 max-md:pb-14 sm:px-10">
+        <section className="flex flex-1 flex-col overflow-y-auto px-6 pt-20 pb-6 max-md:pb-14 sm:px-6">
           <div className="mx-auto w-full max-w-5xl">
             <Outlet />
             <Toaster />
