@@ -59,11 +59,10 @@ export class MessageService {
   }
 
   /**
-   * Adds, updates, or removes a reaction to a message based on the provided reaction string.
-   * @param messageId - The ID of the message to which the reaction is being added, updated, or removed.
+   * Adds or updates a reaction for a message by a user. If the reaction is an empty string, it removes the user's reaction.
+   * @param messageId - The ID of the message to react to.
    * @param userId - The ID of the user reacting to the message.
-   * @param reaction - If empty, the reaction is removed. If non-empty, it is added or updated for the user.
-   * @returns the updated Message entity with sender and reactions relations after the reaction change is applied.
+   * @param reaction - The reaction emoji. If empty, the user's reaction will be removed.
    */
   async addReactionToMessage(
     messageId: number,
@@ -78,35 +77,20 @@ export class MessageService {
       throw new NotFoundException(`Message with ID ${messageId} not found`);
     }
 
-    const existingReaction = await this.reactionRepository.findOne({
-      where: {
-        message: { id: messageId },
-        user: { id: userId },
-      },
-    });
-
     if (!reaction) {
-      // If reaction is empty, remove existing reaction if it exists
-      if (existingReaction) {
-        await this.reactionRepository.remove(existingReaction);
-      }
-    } else if (existingReaction) {
-      // Update existing reaction
-      existingReaction.reaction = reaction;
-      await this.reactionRepository.save(existingReaction);
-    } else {
-      // Create new reaction
-      const newReaction = this.reactionRepository.create({
-        reaction,
+      await this.reactionRepository.delete({
         message: { id: messageId },
         user: { id: userId },
       });
-      await this.reactionRepository.save(newReaction);
+    } else {
+      await this.reactionRepository.upsert(
+        {
+          reaction,
+          message: { id: messageId },
+          user: { id: userId },
+        },
+        ['message', 'user'],
+      );
     }
-
-    await this.messageRepository.findOne({
-      where: { id: messageId },
-      relations: ['sender', 'reactions', 'reactions.user'],
-    });
   }
 }

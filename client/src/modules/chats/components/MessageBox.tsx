@@ -80,7 +80,7 @@ const MessageBox = ({ data }: MessageBoxProps) => {
                 isHovered ? "opacity-100" : "opacity-0"
               )}
             >
-              <SmilePlus size={16} />
+              <SmilePlus size={16} aria-label="Reactions popup" />
             </button>
           )}
 
@@ -109,17 +109,20 @@ const MessageBox = ({ data }: MessageBoxProps) => {
 
         {Object.keys(reactionGroups).length > 0 && (
           <div className={cn("flex flex-wrap gap-1", isOwn && "justify-end")}>
-            {Object.entries(reactionGroups).map(([emoji, { count, usernames }]) => (
-              <Button
-                key={emoji}
-                onClick={() => react(data.id, emoji)}
-                title={usernames.join(", ")}
-                className="flex cursor-pointer items-center gap-0.5 rounded-full border border-gray-200 bg-white px-1.5 py-0.5 text-xs transition hover:bg-gray-100"
-              >
-                <span>{emoji}</span>
-                {count > 1 && <span className="text-gray-500">{count}</span>}
-              </Button>
-            ))}
+            {Object.entries(reactionGroups).map(([emoji, { count, usernames }]) => {
+              const hasReacted = (data.reactions ?? []).some((r) => r.reaction === emoji && r.user.id === user?.id);
+              return (
+                <Button
+                  key={emoji}
+                  onClick={() => react(data.id, hasReacted ? "" : emoji)}
+                  title={usernames.join(", ")}
+                  className="flex cursor-pointer items-center gap-0.5 rounded-full border border-gray-200 bg-white px-1.5 py-0.5 text-xs transition hover:bg-gray-100"
+                >
+                  <span>{emoji}</span>
+                  {count > 1 && <span className="text-gray-500">{count}</span>}
+                </Button>
+              );
+            })}
           </div>
         )}
       </div>

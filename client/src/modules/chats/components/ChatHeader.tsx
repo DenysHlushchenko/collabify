@@ -24,7 +24,7 @@ const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
           <AvatarGroup users={chat.members} />
         ) : (
           <User
-            userId={chat.members[0].id}
+            userId={chat.members[0].user.id}
             username={chat.members[0].user.username}
             className="flex-center h-8 w-8 bg-[#D9D9D9] text-gray-500"
           />
