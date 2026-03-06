@@ -61,6 +61,11 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       queryClient.invalidateQueries({ queryKey: ["chats", currentUser?.id] });
     });
 
+    // when a message reaction is added, the server emits an event to update the message reactions for all clients in the chat
+    socket.on("messageReactionUpdated", (data: { chatId: number }) => {
+      queryClient.invalidateQueries({ queryKey: ["messages", data.chatId] });
+    });
+
     /**
      * Socket errors from the server
      */
@@ -84,6 +89,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       socket.off("notification_join_response");
       socket.off("join_request_created");
       socket.off("receiveMessage");
+      socket.off("messageReactionUpdated");
       socket.off("error");
       socket.off("requestDuplicateError");
       socket.disconnect();
