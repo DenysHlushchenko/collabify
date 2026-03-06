@@ -36,15 +36,15 @@ const GlobalSearch = () => {
     setSearch(e.target.value);
   };
   return (
-    <div className="relative w-full max-w-150 max-lg:hidden">
-      <div className="relative flex min-h-9 grow items-center gap-1 rounded-xl bg-[#487EBD] px-4">
-        <Search width={20} height={20} className="cursor-pointer" />
+    <div className="relative w-full lg:max-w-150">
+      <div className="relative flex min-h-8 grow items-center gap-1 rounded-lg bg-[#487EBD] px-2 sm:min-h-9 sm:gap-1.5 sm:rounded-xl sm:px-4">
+        <Search className="size-4 shrink-0 cursor-pointer sm:size-5" />
         <Input
           value={search}
           onChange={handleChangeInput}
           type="text"
-          placeholder="Search for topic..."
-          className="paragraph-regular no-focus border-none bg-transparent shadow-none outline-none"
+          placeholder="Topic..."
+          className="no-focus border-none bg-transparent text-xs shadow-none outline-none sm:text-sm"
         />
       </div>
     </div>
