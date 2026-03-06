@@ -16,7 +16,7 @@ const MobileNavigation = () => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Menu size={32} className="cursor-pointer sm:hidden" />
+        <Menu size={32} role="button" aria-label="Open navigation menu" className="cursor-pointer sm:hidden" />
       </SheetTrigger>
       <SheetContent side="left" className="border-none bg-white p-6">
         <SheetTitle className="hidden">Navigation</SheetTitle>

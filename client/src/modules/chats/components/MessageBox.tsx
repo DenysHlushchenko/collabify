@@ -75,12 +75,13 @@ const MessageBox = ({ data }: MessageBoxProps) => {
           {isOwn && (
             <button
               onClick={() => setShowReactionPicker((prev) => !prev)}
+              aria-label="Add reaction"
               className={cn(
                 "cursor-pointer rounded-full p-1 text-gray-400 transition hover:bg-gray-200 hover:text-gray-600",
                 isHovered ? "opacity-100" : "opacity-0"
               )}
             >
-              <SmilePlus size={16} aria-label="Reactions popup" />
+              <SmilePlus size={16} />
             </button>
           )}
 
@@ -91,6 +92,7 @@ const MessageBox = ({ data }: MessageBoxProps) => {
           {!isOwn && (
             <button
               onClick={() => setShowReactionPicker((prev) => !prev)}
+              aria-label="Add reaction"
               className={cn(
                 "cursor-pointer rounded-full p-1 text-gray-400 transition hover:bg-gray-200 hover:text-gray-600",
                 isHovered ? "opacity-100" : "opacity-0"
@@ -116,6 +118,7 @@ const MessageBox = ({ data }: MessageBoxProps) => {
                   key={emoji}
                   onClick={() => react(data.id, hasReacted ? "" : emoji)}
                   title={usernames.join(", ")}
+                  aria-label={`React with ${emoji}`}
                   className="flex cursor-pointer items-center gap-0.5 rounded-full border border-gray-200 bg-white px-1.5 py-0.5 text-xs transition hover:bg-gray-100"
                 >
                   <span>{emoji}</span>

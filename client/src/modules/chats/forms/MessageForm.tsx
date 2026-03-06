@@ -32,11 +32,16 @@ const MessageForm = () => {
             ref={inputRef}
             type="text"
             required
+            aria-label="Message input"
             placeholder="Write a message"
             className="w-full rounded-full border-none bg-neutral-100 px-4 py-2 font-light text-black"
           />
         </div>
-        <Button type="submit" className="cursor-pointer rounded-full bg-sky-500 transition hover:bg-sky-600">
+        <Button
+          type="submit"
+          aria-label="Send message"
+          className="cursor-pointer rounded-full bg-sky-500 transition hover:bg-sky-600"
+        >
           <SendHorizontal size={18} className="text-white" />
         </Button>
       </form>

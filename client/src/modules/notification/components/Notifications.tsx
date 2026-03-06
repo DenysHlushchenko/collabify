@@ -34,7 +34,7 @@ const Notifications = () => {
   return (
     <Popover open={popupOpen} onOpenChange={setPopupOpen}>
       <PopoverTrigger asChild>
-        <Button className="relative cursor-pointer" size="sm">
+        <Button className="relative cursor-pointer" size="sm" aria-label="View notifications">
           {data?.notificationCount ? (
             <>
               <BellIcon className="fill-white" />

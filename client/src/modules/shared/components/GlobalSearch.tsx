@@ -43,6 +43,7 @@ const GlobalSearch = () => {
           value={search}
           onChange={handleChangeInput}
           type="text"
+          aria-label="Search for topic"
           placeholder="Topic..."
           className="no-focus border-none bg-transparent text-xs shadow-none outline-none sm:text-sm"
         />

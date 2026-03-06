@@ -61,14 +61,28 @@ const Notification = ({ notification }: NotificationProps) => {
           <div className="flex-center ml-auto gap-x-1">
             <Check
               size={15}
+              role="button"
+              aria-label="Approve join request"
               onClick={() => handleJoinRequest("approve")}
               className="cursor-pointer hover:text-gray-400"
             />
-            <X size={15} onClick={() => handleJoinRequest("reject")} className="cursor-pointer hover:text-gray-400" />
+            <X
+              size={15}
+              role="button"
+              aria-label="Reject join request"
+              onClick={() => handleJoinRequest("reject")}
+              className="cursor-pointer hover:text-gray-400"
+            />
           </div>
         ) : (
           <div className="flex-center ml-auto gap-x-1">
-            <X size={15} onClick={handleRemoveResponseNotification} className="cursor-pointer hover:text-gray-400" />
+            <X
+              size={15}
+              role="button"
+              aria-label="Dismiss notification"
+              onClick={handleRemoveResponseNotification}
+              className="cursor-pointer hover:text-gray-400"
+            />
           </div>
         )}
       </div>
