@@ -12,8 +12,8 @@ import { VoteModule } from 'src/shared/vote/vote.module';
   imports: [
     TypeOrmModule.forFeature([Comment, CommentVote]),
     UserModule,
-    forwardRef(() => PostModule),
     VoteModule,
+    forwardRef(() => PostModule),
   ],
   controllers: [CommentController],
   providers: [CommentService],

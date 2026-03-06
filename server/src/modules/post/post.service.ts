@@ -309,7 +309,7 @@ export class PostService implements Voteable {
   private async cleanUnusedTags(tagIds: number[]) {
     for (const tagId of tagIds) {
       const useCount = await this.getPostTagRepository().count({
-        where: { tag: { id: tagId } },
+        where: { tagId },
       });
 
       if (useCount === 0) {

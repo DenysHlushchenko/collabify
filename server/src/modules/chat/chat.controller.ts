@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -27,5 +28,13 @@ export class ChatController {
     @Param('userId', ParseIntPipe) userId: number,
   ): Promise<ChatWithOwner[]> {
     return await this.chatService.getAllChatsByUserId(userId);
+  }
+
+  @Delete(':id/users/:userId')
+  async deleteChat(
+    @Param('id', ParseIntPipe) chatId: number,
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<void> {
+    return await this.chatService.deleteChat(chatId, userId);
   }
 }
