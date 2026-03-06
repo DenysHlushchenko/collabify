@@ -16,6 +16,7 @@ const UserChats = () => {
   return (
     <>
       <h3 className="h3-semibold text-center">Chats</h3>
+      {chats?.length === 0 && <p className="text-center text-xs">No chats yet.</p>}
       <ul role="list" className="flex flex-col items-center space-y-4">
         {chats?.map((chat) => (
           <ChatItem key={chat.id} chat={chat} />
