@@ -12,10 +12,10 @@ export const useChatsQuery = (userId?: number, edit?: boolean) => {
   });
 };
 
-export const useChatQuery = (chatId: number) => {
+export const useChatQuery = (chatId: number, userId: number) => {
   return useQuery({
     queryKey: ["chat", chatId],
-    queryFn: () => getChatById(chatId),
+    queryFn: () => getChatById(chatId, userId),
     staleTime: 1000 * 10,
     retry: 2,
   });

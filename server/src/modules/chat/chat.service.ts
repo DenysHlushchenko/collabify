@@ -63,6 +63,42 @@ export class ChatService {
     });
   }
 
+  async findByUserId(chatId: number, userId: number): Promise<ChatWithOwner> {
+    const chat = await this.chatRepository.findOneOrFail({
+      where: {
+        id: chatId,
+      },
+      relations: {
+        posts: {
+          user: true,
+        },
+        members: {
+          user: true,
+        },
+      },
+      select: {
+        posts: {
+          id: true,
+          title: true,
+          user: true,
+        },
+        members: {
+          id: true,
+          joined_at: true,
+          user: {
+            id: true,
+            username: true,
+          },
+        },
+      },
+    });
+
+    return {
+      ...chat,
+      isOwner: chat.posts.some((post) => post.user.id === userId),
+    };
+  }
+
   /**
    * Finds an existing chat that matches provided post ID. Returns null if no matching chat is found.
    * @param id is required. It should be the post ID of the chat to be found.

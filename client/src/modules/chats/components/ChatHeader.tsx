@@ -57,7 +57,7 @@ const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
         </div>
       </div>
 
-      <DeleteDialog handleDelete={handleDelete} />
+      {chat.isOwner && <DeleteDialog handleDelete={handleDelete} />}
     </div>
   );
 };
