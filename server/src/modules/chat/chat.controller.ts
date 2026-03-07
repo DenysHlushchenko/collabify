@@ -15,11 +15,11 @@ import { Chat } from './entities/chat.entity';
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
-  @Get(':id')
-  async getChatById(
-    @Param('id', ParseIntPipe) id: number,
+  @Get('posts/:postId')
+  async getChatByPostId(
+    @Param('postId', ParseIntPipe) postId: number,
   ): Promise<Chat | null> {
-    return await this.chatService.findById(id);
+    return await this.chatService.findByPostId(postId);
   }
 
   @Get('users/:userId')
@@ -27,5 +27,12 @@ export class ChatController {
     @Param('userId', ParseIntPipe) userId: number,
   ): Promise<ChatWithOwner[]> {
     return await this.chatService.getAllChatsByUserId(userId);
+  }
+
+  @Get(':id')
+  async getChatById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<Chat | null> {
+    return await this.chatService.findById(id);
   }
 }
