@@ -10,3 +10,8 @@ export const getChatById = async (chatId: number): Promise<ChatType> => {
   const res = await request.get(`/chats/${chatId}`);
   return res.data;
 };
+
+export const getChatByPostId = async (postId: number): Promise<ChatType | null> => {
+  const res = await request.get(`/chats/posts/${postId}`);
+  return res.data;
+};

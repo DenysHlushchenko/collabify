@@ -19,6 +19,7 @@ export function RatingInput({ value, onChange, max = 5, size = 24 }: RatingInput
           <button
             key={i}
             type="button"
+            aria-label={`Rate ${starValue} star${starValue > 1 ? "s" : ""}`}
             onClick={() => onChange(starValue)}
             className={cn(
               "transition-colors focus:outline-none",

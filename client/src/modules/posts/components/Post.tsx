@@ -20,6 +20,7 @@ import { convertToDateString } from "@/modules/shared/lib";
 import User from "@/modules/shared/components/User";
 import { useQuery } from "@tanstack/react-query";
 import { isPostJoinRequestForCurrentPostByUserId } from "@/modules/notification/api/notification";
+import { getChatByPostId } from "@/modules/chats/api/chat";
 
 const MAX_DESCRIPTION_LENGTH = 90;
 
@@ -45,6 +46,14 @@ const Post = ({ post }: PostProps) => {
     queryKey: ["notification-status", token, post.id],
     queryFn: () => isPostJoinRequestForCurrentPostByUserId(userId!, post.id),
   });
+
+  const { data: chat } = useQuery({
+    queryKey: ["chat-by-post", post.id],
+    queryFn: () => getChatByPostId(post.id),
+  });
+
+  const isChatMember = chat?.members?.some((member) => member.user.id === userId) ?? false;
+  const isChatFull = chat ? chat.members.length >= chat.max_members : false;
 
   const handleJoinRequest = () => {
     socket.emit("joinRequest", {
@@ -78,10 +87,10 @@ const Post = ({ post }: PostProps) => {
           <CardAction>
             <Button
               onClick={handleJoinRequest}
-              disabled={isPostOwner || notificationStatus}
+              disabled={isPostOwner || notificationStatus || isChatMember || isChatFull}
               className="body-semibold h-6 w-16 cursor-pointer rounded-lg bg-[#99dfc4] text-[#2d634e] hover:bg-[#acf0d6]"
             >
-              {"Join"}
+              Join
             </Button>
           </CardAction>
         </CardHeader>
