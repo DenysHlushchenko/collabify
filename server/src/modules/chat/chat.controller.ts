@@ -1,5 +1,6 @@
 import {
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -22,6 +23,14 @@ export class ChatController {
     return await this.chatService.findByPostId(postId);
   }
 
+  @Get(':id/users/:userId')
+  async getChatByUserId(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<ChatWithOwner> {
+    return await this.chatService.findByUserId(id, userId);
+  }
+
   @Get('users/:userId')
   async getChatsByUserId(
     @Param('userId', ParseIntPipe) userId: number,
@@ -29,10 +38,11 @@ export class ChatController {
     return await this.chatService.getAllChatsByUserId(userId);
   }
 
-  @Get(':id')
-  async getChatById(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<Chat | null> {
-    return await this.chatService.findById(id);
+  @Delete(':id/users/:userId')
+  async deleteChat(
+    @Param('id', ParseIntPipe) chatId: number,
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<void> {
+    return await this.chatService.deleteChat(chatId, userId);
   }
 }

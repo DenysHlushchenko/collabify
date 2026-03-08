@@ -122,7 +122,7 @@ export type ChatType = {
   max_members: number;
   isOwner: boolean;
   created_at: Date;
-  post: PostType;
+  posts: PostType[];
   members: ChatMemberType[];
   messages: MessagesType[];
 };

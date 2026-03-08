@@ -41,12 +41,16 @@ export class VoteService {
       throw new NotFoundException('Entity must have an ID');
     }
 
-    const voteCounts = await entityRepository.findOneOrFail({
+    const voteCounts = await entityRepository.findOne({
       where: {
         id: entityId,
       },
       select: ['upvotesCount', 'downvotesCount'],
     });
+
+    if (!voteCounts) {
+      throw new NotFoundException('Entity and votes were not found');
+    }
 
     let userVote: 'like' | 'dislike' | null = null;
 

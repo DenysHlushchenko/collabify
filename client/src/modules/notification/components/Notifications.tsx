@@ -47,7 +47,7 @@ const Notifications = () => {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="h-60 w-100 rounded-md border-none bg-white shadow-lg">
+      <PopoverContent className="no-scrollbar max-h-60 w-100 overflow-y-scroll rounded-md border-none bg-white shadow-lg">
         <PopoverHeader>
           <PopoverTitle className="rounded-t-md bg-gray-100 px-3 pt-3 pb-2">Pending Invitations</PopoverTitle>
           {isPending && <Skeleton className="h-full w-full" />}
