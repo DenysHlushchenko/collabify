@@ -30,7 +30,11 @@ const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
   return (
     <div className="mb-8 flex w-full items-center justify-between bg-white px-4 py-3 shadow-sm sm:px-4 lg:px-6">
       <div className="flex items-center gap-3">
-        <Link to="/chats" className="block cursor-pointer text-sky-500 transition hover:text-sky-500 lg:hidden">
+        <Link
+          to="/chats"
+          aria-label="Back to chats"
+          className="block cursor-pointer text-sky-500 transition hover:text-sky-500 lg:hidden"
+        >
           <ChevronLeft size={32} />
         </Link>
         {chat.members.length > 1 ? (

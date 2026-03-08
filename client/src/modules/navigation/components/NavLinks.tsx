@@ -26,7 +26,7 @@ const NavLinks = ({ isMobileNav }: NavLinksProps) => {
         if (item.name === "Profile") {
           link = `/profile/${getUser()?.id}`;
         }
-        const isActive = (pathname.includes(item.link) && item.link.length > 1) || pathname === item.link;
+        const isActive = (pathname.includes(link) && link.length > 1) || pathname === link;
         const LinkComponent = (
           <Link
             to={link}

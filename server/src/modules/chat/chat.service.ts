@@ -108,6 +108,8 @@ export class ChatService {
     return this.chatRepository
       .createQueryBuilder('chat')
       .innerJoin('chat.posts', 'post', 'post.id = :postId', { postId })
+      .leftJoinAndSelect('chat.members', 'member')
+      .leftJoinAndSelect('member.user', 'user')
       .getOne();
   }
 
