@@ -1,5 +1,5 @@
 import type { ChatType } from "@/modules/shared/types/types";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Crown } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Error from "@/modules/shared/components/Error";
 import DeleteDialog from "@/modules/shared/components/dialogs/DeleteDialog";
@@ -81,6 +81,11 @@ const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
                     className={"flex-center small-medium size-full h-6 w-6 bg-[#D9D9D9] text-gray-500"}
                   />
                   <p className="text-xs text-gray-500">{member.user.username}</p>
+                  {chat.posts.some((post) => post.user.id === member.user.id) && (
+                    <span className="ml-auto text-xs text-gray-400">
+                      <Crown size={18} className="fill-amber-400 text-amber-400" />
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>
