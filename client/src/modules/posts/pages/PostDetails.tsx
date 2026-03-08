@@ -59,7 +59,13 @@ const PostDetails = () => {
           <span className="body-medium text-gray-400">{convertToDateString(postDetails.created_at)}</span>
           <div className="absolute right-4 bottom-4 ml-auto flex gap-x-2 sm:static">
             <PostForm type="edit" submitPost={submitPost} postDetails={postDetails} />
-            {postDetails && loggedInUser?.id === postDetails.user.id && <DeleteDialog handleDelete={handleDelete} />}
+            {postDetails && loggedInUser?.id === postDetails.user.id && (
+              <DeleteDialog
+                title="Are you sure you want to delete this post?"
+                description="You won't be able to see this post again."
+                handleDelete={handleDelete}
+              />
+            )}
           </div>
         </div>
 

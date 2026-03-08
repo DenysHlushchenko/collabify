@@ -12,9 +12,11 @@ import { useState } from "react";
 
 interface Props {
   handleDelete: () => void;
+  title: string;
+  description: string;
 }
 
-const DeleteDialog = ({ handleDelete }: Props) => {
+const DeleteDialog = ({ handleDelete, title, description }: Props) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   return (
     <Dialog
@@ -33,8 +35,8 @@ const DeleteDialog = ({ handleDelete }: Props) => {
       </DialogTrigger>
       <DialogContent showCloseButton={false} className="border-none bg-white">
         <DialogHeader>
-          <DialogTitle>Are you sure you want to delete this post?</DialogTitle>
-          <DialogDescription>You won't be able to see it again.</DialogDescription>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
         <div className="flex-start ml-auto gap-x-3">

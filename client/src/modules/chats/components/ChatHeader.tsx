@@ -86,7 +86,13 @@ const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
             </ul>
           </PopoverContent>
         </Popover>
-        {chat.isOwner && <DeleteDialog handleDelete={handleDelete} />}
+        {chat.isOwner && (
+          <DeleteDialog
+            title="Are you sure you want to delete this chat?"
+            description="By deleting it, you will also delete all related posts!"
+            handleDelete={handleDelete}
+          />
+        )}
       </div>
     </div>
   );
