@@ -64,7 +64,7 @@ export class ChatService {
   }
 
   async findByUserId(chatId: number, userId: number): Promise<ChatWithOwner> {
-    const chat = await this.chatRepository.findOneOrFail({
+    const chat = await this.chatRepository.findOne({
       where: {
         id: chatId,
       },
@@ -80,7 +80,9 @@ export class ChatService {
         posts: {
           id: true,
           title: true,
-          user: true,
+          user: {
+            id: true,
+          },
         },
         members: {
           id: true,
@@ -92,6 +94,10 @@ export class ChatService {
         },
       },
     });
+
+    if (!chat) {
+      throw new NotFoundException(`Chat with ${chatId} was not found`);
+    }
 
     return {
       ...chat,
