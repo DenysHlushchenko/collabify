@@ -37,6 +37,7 @@ describe('PostService', () => {
     findById: jest.Mock;
     create: jest.Mock;
     makeUserMemberOfChat: jest.Mock;
+    removePostFromChat: jest.Mock;
   };
 
   let mockTagService: {
@@ -70,6 +71,7 @@ describe('PostService', () => {
       findById: jest.fn(),
       create: jest.fn(),
       makeUserMemberOfChat: jest.fn(),
+      removePostFromChat: jest.fn(),
     };
 
     mockCommentService = {
@@ -687,6 +689,7 @@ describe('PostService', () => {
         { id: 2, tag: { id: 11, name: 'backend' } },
       ],
       comments: [],
+      chats: [],
       created_at: new Date('2026-02-05'),
       updated_at: new Date('2026-02-15'),
     };
