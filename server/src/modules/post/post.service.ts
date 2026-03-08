@@ -179,7 +179,7 @@ export class PostService implements Voteable {
    */
   async getPostById(id: number): Promise<Post | null> {
     return await this.postRepository.findOneOrFail({
-      relations: ['user', 'postTags', 'postTags.tag', 'comments'],
+      relations: ['user', 'postTags', 'postTags.tag', 'comments', 'chats'],
       where: {
         id,
       },
@@ -275,6 +275,10 @@ export class PostService implements Voteable {
       }
     }
 
+    for (const chat of post.chats) {
+      await this.chatService.removePostFromChat(chat.id, postId);
+    }
+
     await this.postRepository.delete(postId);
 
     // after deleting post, check if tags are unused
@@ -309,7 +313,7 @@ export class PostService implements Voteable {
   private async cleanUnusedTags(tagIds: number[]) {
     for (const tagId of tagIds) {
       const useCount = await this.getPostTagRepository().count({
-        where: { tag: { id: tagId } },
+        where: { tagId },
       });
 
       if (useCount === 0) {

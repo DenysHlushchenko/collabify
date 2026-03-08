@@ -90,7 +90,7 @@ const Post = ({ post }: PostProps) => {
               disabled={isPostOwner || notificationStatus || isChatMember || isChatFull}
               className="body-semibold h-6 w-16 cursor-pointer rounded-lg bg-[#99dfc4] text-[#2d634e] hover:bg-[#acf0d6]"
             >
-              Join
+              {isChatMember ? "Joined" : "Join"}
             </Button>
           </CardAction>
         </CardHeader>

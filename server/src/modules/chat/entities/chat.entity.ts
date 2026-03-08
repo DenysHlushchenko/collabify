@@ -36,6 +36,8 @@ export class Chat {
   @OneToMany(() => ChatMember, (chatMember) => chatMember.chat)
   members: ChatMember[];
 
-  @OneToMany(() => Message, (message) => message.chat)
+  @OneToMany(() => Message, (message) => message.chat, {
+    onDelete: 'CASCADE',
+  })
   messages: Message[];
 }

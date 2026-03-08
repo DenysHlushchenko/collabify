@@ -7,13 +7,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/modules/shared/components/ui/Dialog";
+import { Trash2 } from "lucide-react";
 import { useState } from "react";
 
 interface Props {
   handleDelete: () => void;
+  title: string;
+  description: string;
 }
 
-const PostDeleteDialog = ({ handleDelete }: Props) => {
+const DeleteDialog = ({ handleDelete, title, description }: Props) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   return (
     <Dialog
@@ -25,15 +28,15 @@ const PostDeleteDialog = ({ handleDelete }: Props) => {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="small-medium flex h-7 w-15 cursor-pointer rounded-md border border-[#e8edf3] text-center text-black hover:bg-[#f2f6fa]"
+          className="small-medium flex cursor-pointer rounded-md border border-[#e8edf3] text-center text-black hover:bg-[#f2f6fa]"
         >
-          Delete
+          <Trash2 />
         </Button>
       </DialogTrigger>
       <DialogContent showCloseButton={false} className="border-none bg-white">
         <DialogHeader>
-          <DialogTitle>Are you sure you want to delete this post?</DialogTitle>
-          <DialogDescription>You won't be able to see it again.</DialogDescription>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
         <div className="flex-start ml-auto gap-x-3">
@@ -56,4 +59,4 @@ const PostDeleteDialog = ({ handleDelete }: Props) => {
   );
 };
 
-export default PostDeleteDialog;
+export default DeleteDialog;

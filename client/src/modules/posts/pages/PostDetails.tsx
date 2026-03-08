@@ -5,7 +5,7 @@ import PostTag from "@/modules/posts/components/PostTag";
 import type { PostFormValues, PostTagType } from "@/modules/shared/types/types";
 import PostForm from "@/modules/posts/components/dialogs/PostForm";
 import { useAuthStore } from "@/modules/auth/store/userStore";
-import PostDeleteDialog from "@/modules/posts/components/dialogs/PostDeleteDialog";
+import DeleteDialog from "@/modules/shared/components/dialogs/DeleteDialog";
 import { PostDetailsSkeleton } from "../components/PostSkeletons";
 import Comments from "@/modules/comments/components/Comments";
 import Votes from "@/modules/votes/components/Votes";
@@ -60,7 +60,11 @@ const PostDetails = () => {
           <div className="absolute right-4 bottom-4 ml-auto flex gap-x-2 sm:static">
             <PostForm type="edit" submitPost={submitPost} postDetails={postDetails} />
             {postDetails && loggedInUser?.id === postDetails.user.id && (
-              <PostDeleteDialog handleDelete={handleDelete} />
+              <DeleteDialog
+                title="Are you sure you want to delete this post?"
+                description="You won't be able to see this post again."
+                handleDelete={handleDelete}
+              />
             )}
           </div>
         </div>

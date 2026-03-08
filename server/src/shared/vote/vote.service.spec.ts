@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
 import { VoteService } from './vote.service';
@@ -15,11 +14,11 @@ describe('VoteService', () => {
   let mockDataSource: Partial<DataSource>;
   let mockQueryRunner: jest.Mocked<QueryRunner>;
   let mockPostRepository: Partial<jest.Mocked<Repository<Post>>> & {
-    findOneOrFail: jest.Mock;
+    findOne: jest.Mock;
   };
 
   let mockCommentRepository: Partial<jest.Mocked<Repository<Comment>>> & {
-    findOneOrFail: jest.Mock;
+    findOne: jest.Mock;
   };
 
   let mockPostVoteRepository: Partial<jest.Mocked<Repository<PostVote>>> & {
@@ -34,11 +33,11 @@ describe('VoteService', () => {
 
   beforeEach(async () => {
     mockPostRepository = {
-      findOneOrFail: jest.fn(),
+      findOne: jest.fn(),
     };
 
     mockCommentRepository = {
-      findOneOrFail: jest.fn(),
+      findOne: jest.fn(),
     };
 
     mockPostVoteRepository = {
@@ -101,7 +100,7 @@ describe('VoteService', () => {
 
     describe('for Posts', () => {
       it('should return counts + null user vote when no userId provided', async () => {
-        mockPostRepository.findOneOrFail.mockResolvedValue({
+        mockPostRepository.findOne.mockResolvedValue({
           upvotesCount: 42,
           downvotesCount: 3,
         } as Post);
@@ -119,7 +118,7 @@ describe('VoteService', () => {
       });
 
       it('should return existing LIKE vote + counts', async () => {
-        mockPostRepository.findOneOrFail.mockResolvedValue({
+        mockPostRepository.findOne.mockResolvedValue({
           upvotesCount: 19,
           downvotesCount: 2,
         } as Post);
@@ -140,7 +139,7 @@ describe('VoteService', () => {
       });
 
       it('should return null userVote when user has not voted', async () => {
-        mockPostRepository.findOneOrFail.mockResolvedValue({
+        mockPostRepository.findOne.mockResolvedValue({
           upvotesCount: 5,
           downvotesCount: 0,
         } as Post);
@@ -156,9 +155,7 @@ describe('VoteService', () => {
       });
 
       it('should throw NotFoundException when post does not exist', async () => {
-        mockPostRepository.findOneOrFail.mockRejectedValue(
-          new NotFoundException(),
-        );
+        mockPostRepository.findOne.mockResolvedValue(null);
 
         await expect(
           service.findVoteByEntity(
@@ -172,7 +169,7 @@ describe('VoteService', () => {
 
     describe('for Comments', () => {
       it('should return counts + DISLIKE user vote', async () => {
-        mockCommentRepository.findOneOrFail.mockResolvedValue({
+        mockCommentRepository.findOne.mockResolvedValue({
           upvotesCount: 8,
           downvotesCount: 14,
         } as Comment);

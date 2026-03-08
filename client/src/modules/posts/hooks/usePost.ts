@@ -110,12 +110,12 @@ export const usePost = () => {
       onSuccess: async () => {
         await queryClient.invalidateQueries({ queryKey: ["posts"] });
         await queryClient.invalidateQueries({ queryKey: ["userPosts"], exact: false });
+        await queryClient.invalidateQueries({ queryKey: ["tags", "popular"] });
 
         toast.success("Post deleted successfully!", {
           position: "bottom-center",
           className: "toast-success font-inter",
         });
-        await queryClient.invalidateQueries({ queryKey: ["tags", "popular"] });
       },
 
       onError: (error) => {
