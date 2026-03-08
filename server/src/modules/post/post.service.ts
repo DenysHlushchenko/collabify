@@ -179,7 +179,7 @@ export class PostService implements Voteable {
    */
   async getPostById(id: number): Promise<Post | null> {
     return await this.postRepository.findOneOrFail({
-      relations: ['user', 'postTags', 'postTags.tag', 'comments'],
+      relations: ['user', 'postTags', 'postTags.tag', 'comments', 'chats'],
       where: {
         id,
       },
@@ -273,6 +273,10 @@ export class PostService implements Voteable {
       for (const comment of comments) {
         await this.commentService.deleteComment(comment.id, comment.sender.id);
       }
+    }
+
+    for (const chat of post.chats) {
+      await this.chatService.removePostFromChat(chat.id, postId);
     }
 
     await this.postRepository.delete(postId);

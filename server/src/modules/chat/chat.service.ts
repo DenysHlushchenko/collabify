@@ -172,6 +172,14 @@ export class ChatService {
     }
   }
 
+  async removePostFromChat(chatId: number, postId: number): Promise<void> {
+    await this.chatRepository
+      .createQueryBuilder()
+      .relation(Chat, 'posts')
+      .of(chatId)
+      .remove(postId);
+  }
+
   /**
    * Deletes an existing chat by provided chat and owner IDs. It also removes all chat members, posts, comments and tags associated with the current chat.
    * @param chatId is required. It is used to find an existing chat in the database.
