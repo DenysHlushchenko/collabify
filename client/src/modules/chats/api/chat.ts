@@ -6,16 +6,16 @@ export const getAllChatsByUserId = async (userId: number): Promise<ChatType[]> =
   return res.data;
 };
 
-export const getChatById = async (chatId: number, userId: number): Promise<ChatType> => {
+export const getChatByUserId = async (chatId: number, userId: number): Promise<ChatType> => {
   const res = await request.get(`/chats/${chatId}/users/${userId}`);
   return res.data;
-};
-
-export const deleteChat = async (chatId: number, userId: number): Promise<void> => {
-  await request.delete(`/chats/${chatId}/users/${userId}`);
 };
 
 export const getChatByPostId = async (postId: number): Promise<ChatType | null> => {
   const res = await request.get(`/chats/posts/${postId}`);
   return res.data;
+};
+
+export const deleteChat = async (chatId: number, userId: number): Promise<void> => {
+  await request.delete(`/chats/${chatId}/users/${userId}`);
 };

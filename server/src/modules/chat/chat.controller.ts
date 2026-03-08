@@ -45,11 +45,4 @@ export class ChatController {
   ): Promise<void> {
     return await this.chatService.deleteChat(chatId, userId);
   }
-
-  @Get(':id')
-  async getChatById(
-    @Param('id', ParseIntPipe) id: number,
-  ): Promise<Chat | null> {
-    return await this.chatService.findById(id);
-  }
 }

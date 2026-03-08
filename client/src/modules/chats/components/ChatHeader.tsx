@@ -2,11 +2,13 @@ import type { ChatType } from "@/modules/shared/types/types";
 import { ChevronLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Error from "@/modules/shared/components/Error";
-import DeleteDialog from "@/modules/shared/components/DeleteDialog";
+import DeleteDialog from "@/modules/shared/components/dialogs/DeleteDialog";
 import { useAuthStore } from "@/modules/auth/store/userStore";
 import { useDeleteChatMutation } from "../hooks/useChat";
 import AvatarGroup from "./AvatarGroup";
 import User from "@/modules/shared/components/User";
+import { useState } from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/modules/shared/components/ui/Popover";
 
 interface ChatHeaderProps {
   chat: ChatType;
@@ -19,6 +21,8 @@ const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
 
   const currentUser = useAuthStore().getUser();
   const navigate = useNavigate();
+
+  const [popupOpen, setPopupOpen] = useState<boolean>(false);
 
   const mutation = useDeleteChatMutation(chat.id, currentUser!.id);
 
@@ -52,7 +56,7 @@ const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
           ) : (
             <>
               <div>{chat.title}</div>
-              <div className="text-sm font-light text-neutral-500">
+              <div className="text-sm font-light text-neutral-500" onClick={() => setPopupOpen(true)}>
                 {chat.members.length} {membersLabel}
               </div>
             </>
@@ -61,7 +65,29 @@ const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
         </div>
       </div>
 
-      {chat.isOwner && <DeleteDialog handleDelete={handleDelete} />}
+      <div className="flex items-center gap-4">
+        <Popover open={popupOpen} onOpenChange={setPopupOpen}>
+          <PopoverTrigger asChild>
+            <button className="cursor-pointer text-sm text-sky-500 hover:text-sky-300">View members</button>
+          </PopoverTrigger>
+          <PopoverContent className="w-48 rounded-md border-0 bg-white shadow-lg">
+            <p className="body-medium bg-gray-50 p-2">Chat members</p>
+            <ul className="p-2">
+              {chat.members.map((member) => (
+                <li key={member.user.id} className="flex-start gap-x-2 rounded-md p-1 transition hover:bg-gray-100">
+                  <User
+                    userId={member.user.id}
+                    username={member.user.username}
+                    className={"flex-center small-medium size-full h-6 w-6 bg-[#D9D9D9] text-gray-500"}
+                  />
+                  <p className="text-xs text-gray-500">{member.user.username}</p>
+                </li>
+              ))}
+            </ul>
+          </PopoverContent>
+        </Popover>
+        {chat.isOwner && <DeleteDialog handleDelete={handleDelete} />}
+      </div>
     </div>
   );
 };
