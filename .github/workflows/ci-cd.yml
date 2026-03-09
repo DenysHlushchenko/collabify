@@ -17,9 +17,13 @@ jobs:
               with:
                   node-version: 25
             - name: Install dependencies
-              run: npm ci
+              run: |
+                  cd client && npm ci
+                  cd ../server && npm ci
             - name: Run lint
-              run: npm run lint
+              run: |
+                  cd client && npm run lint
+                  cd ../server && npm run lint
 
     test:
         runs-on: ubuntu-latest
@@ -32,9 +36,12 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: 25
-            - run: npm ci
+            - name: Install dependencies
+              run: |
+                  cd client && npm ci
+                  cd ../server && npm ci
             - name: Run tests
-              run: npm test
+              run: cd server && npm run test
 
     build:
         runs-on: ubuntu-latest
@@ -50,13 +57,15 @@ jobs:
                   node-version: 25
             - name: Install dependencies and build
               run: |
-                  npm ci
-                  npm run build --if-present
+                  cd client && npm ci && npm run build
+                  cd ../server && npm ci && npm run build
             - name: Upload build artifact
               uses: actions/upload-artifact@v4
               with:
                   name: dist
-                  path: dist/
+                  path: |
+                      client/dist/
+                      server/dist/
 
     release:
         needs:
