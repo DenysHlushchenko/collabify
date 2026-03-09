@@ -39,7 +39,7 @@ interface AuthenticatedSocket extends Socket {
 
 @WebSocketGateway(5001, {
   cors: {
-    origin: ['http://localhost:5173'],
+    origin: ['http://localhost:5173', 'http://localhost'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   },
 })
