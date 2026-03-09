@@ -97,7 +97,7 @@ jobs:
               uses: softprops/action-gh-release@v2
               with:
                   title: Dev Build ${{ github.sha }}
-                  tag: dev-${{ github.sha }}
+                  tag_name: dev-${{ github.sha }}
                   files: |
                       dist/client/dist/**/*
                       dist/server/dist/**/*
