@@ -7,11 +7,15 @@ on:
     paths:
       - aws/**
       - .github/workflows/terraform.yml
+  pull_request:
+    paths:
+      - aws/**
+      - .github/workflows/terraform.yml
   workflow_dispatch:
 
 jobs:
   terraform-apply:
-    name: Terraform Apply
+    name: ${{ github.event_name == 'pull_request' && 'Terraform Plan' || 'Terraform Apply' }}
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -47,4 +51,5 @@ jobs:
         run: terraform plan -out=tfplan
 
       - name: Terraform Apply
+        if: github.event_name != 'pull_request'
         run: terraform apply -auto-approve tfplan
