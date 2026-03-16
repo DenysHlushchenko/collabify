@@ -33,7 +33,7 @@ sudo docker stop collabify-backend 2>/dev/null || true
 sudo docker rm collabify-backend 2>/dev/null || true
 
 # Run the backend container
-docker compose -f docker-compose.prod.yml pull
-docker compose -f docker-compose.prod.yml up -d --force-recreate
+sudo docker compose -f docker-compose.prod.yml pull
+sudo docker compose -f docker-compose.prod.yml up -d --force-recreate
 
 echo "Backend deployment completed!"
