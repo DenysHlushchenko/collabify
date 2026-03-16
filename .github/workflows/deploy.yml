@@ -17,6 +17,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set lowercase repository name
+        id: repo
+        run: echo "name=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
       - name: Create app directory on EC2
         uses: appleboy/ssh-action@v1.2.0
         with:
@@ -37,15 +41,15 @@ jobs:
       - name: Deploy backend to EC2
         uses: appleboy/ssh-action@v1.2.0
         env:
-          IMAGE: ghcr.io/${{ github.repository }}/backend:latest
-          GHCR_USERNAME: ${{ github.actor }} # GitHub username
-          GHCR_TOKEN: ${{ secrets.GHCR_READ_TOKEN }} # Personal access token with read access to the GHCR registry
-          DB_HOST: ${{ secrets.DATABASE_HOST }} # RDS endpoint
-          DB_PORT: ${{ secrets.DATABASE_PORT }} # RDS port
-          DB_NAME: ${{ secrets.DATABASE_NAME }} # RDS database name
-          DB_USER: ${{ secrets.DATABASE_USERNAME }} # RDS username
-          DB_PASS: ${{ secrets.DATABASE_PASSWORD }} # RDS password
-          JWT_SECRET: ${{ secrets.JWT_SECRET_KEY }} # JWT secret key
+          IMAGE: ghcr.io/${{ steps.repo.outputs.name }}/backend:latest
+          GHCR_USERNAME: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GHCR_READ_TOKEN }}
+          DB_HOST: ${{ secrets.DATABASE_HOST }}
+          DB_PORT: ${{ secrets.DATABASE_PORT }}
+          DB_NAME: ${{ secrets.DATABASE_NAME }}
+          DB_USER: ${{ secrets.DATABASE_USERNAME }}
+          DB_PASS: ${{ secrets.DATABASE_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET_KEY }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
