@@ -43,10 +43,7 @@ export const databaseConfig: DataSourceOptions = {
     Tag,
   ],
   synchronize: process.env.NODE_ENV !== 'production',
-  ssl:
-    process.env.NODE_ENV === 'production'
-      ? {
-          rejectUnauthorized: false,
-        }
-      : false,
+  ssl: {
+    rejectUnauthorized: false,
+  },
 };
