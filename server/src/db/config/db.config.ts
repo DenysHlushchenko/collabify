@@ -16,7 +16,7 @@ import * as dotenv from 'dotenv';
 import { PostVote } from 'src/modules/post/entities/post_vote.entity';
 import { CommentVote } from 'src/modules/comment/entities/comment_vote.entity';
 
-dotenv.config()
+dotenv.config();
 
 export const databaseConfig: DataSourceOptions = {
   type: 'postgres',
@@ -41,7 +41,7 @@ export const databaseConfig: DataSourceOptions = {
     PostVote,
     Tag,
   ],
-  synchronize: process.env.NODE_ENV !== 'production',
+  synchronize: true,
   ssl: {
     rejectUnauthorized: false,
   },
