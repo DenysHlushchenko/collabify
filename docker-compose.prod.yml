@@ -1,0 +1,9 @@
+services:
+  server:
+    image: ${IMAGE}
+    container_name: collabify-backend
+    ports:
+      - "5000:5000"
+    env_file: .env.docker
+
+    restart: unless-stopped
