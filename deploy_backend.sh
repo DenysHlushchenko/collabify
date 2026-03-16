@@ -26,9 +26,10 @@ fi
 echo "Logging in to GHCR..."
 echo "$GHCR_TOKEN" | sudo docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
 sudo docker pull "$IMAGE"
+pwd "$IMAGE"
 echo "Pulling backend image completed!"
 
 # Run the backend container
-sudo docker-compose -f docker-compose.prod.yml --env-file .env.docker up -d
+sudo docker-compose -f docker-compose.prod.yml --env-file .env.docker up -d -pull always --remove-orphans
 
 echo "Backend deployment completed!"
