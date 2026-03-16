@@ -1,0 +1,3 @@
+ec2_key_name = "your-existing-aws-keypair-name"
+db_username  = "replace-with-your-username"
+db_password  = "replace-with-strong-password"
