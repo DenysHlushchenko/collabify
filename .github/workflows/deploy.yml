@@ -1,0 +1,48 @@
+name: Deploy
+
+on:
+  workflow_run:
+    workflows: ["Build"]
+    types: [completed]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  deploy-backend:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy backend to EC2
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          IMAGE: ghcr.io/${{ github.repository }}/backend:latest
+          GHCR_USERNAME: ${{ github.actor }} # GitHub username
+          GHCR_TOKEN: ${{ secrets.GHCR_READ_TOKEN }} # Personal access token with read access to the GHCR registry
+          DB_HOST: ${{ secrets.DATABASE_HOST }} # RDS endpoint
+          DB_PORT: ${{ secrets.DATABASE_PORT }} # RDS port
+          DB_NAME: ${{ secrets.DATABASE_NAME }} # RDS database name
+          DB_USER: ${{ secrets.DATABASE_USERNAME }} # RDS username
+          DB_PASS: ${{ secrets.DATABASE_PASSWORD }} # RDS password
+          JWT_SECRET: ${{ secrets.JWT_SECRET_KEY }} # JWT secret key
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          envs: IMAGE,GHCR_USERNAME,GHCR_TOKEN,DB_HOST,DB_PORT,DB_NAME,DB_USER,DB_PASS,JWT_SECRET
+          script: |
+            mkdir -p /home/ubuntu/app
+            cd /home/ubuntu/app
+            cat > .env.docker << EOF
+            DATABASE_HOST=$DB_HOST
+            DATABASE_PORT=$DB_PORT
+            DATABASE=$DB_NAME
+            DATABASE_USERNAME=$DB_USER
+            DATABASE_PASSWORD=$DB_PASS
+            JWT_SECRET=$JWT_SECRET
+            EOF
+            chmod +x ./deploy_backend.sh
+            ./deploy_backend.sh
+
+# References
+# https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry
