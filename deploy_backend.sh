@@ -28,12 +28,7 @@ echo "$GHCR_TOKEN" | sudo docker login ghcr.io -u "$GHCR_USERNAME" --password-st
 sudo docker pull "$IMAGE"
 echo "Pulling backend image completed!"
 
-# Stop and remove existing backend container if running
-sudo docker stop collabify-backend 2>/dev/null || true
-sudo docker rm collabify-backend 2>/dev/null || true
-
 # Run the backend container
-sudo docker-compose -f docker-compose.prod.yml pull
-sudo docker-compose -f docker-compose.prod.yml up -d --force-recreate
+sudo docker-compose -f docker-compose.prod.yml --env-file .env.docker up -d
 
 echo "Backend deployment completed!"
