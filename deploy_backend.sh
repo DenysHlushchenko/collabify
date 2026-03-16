@@ -13,11 +13,13 @@ else
     echo "Docker already installed."
 fi
 
-# Install Docker Compose v2 plugin if missing
-if ! docker compose version >/dev/null 2>&1; then
-    echo "Installing Docker Compose plugin..."
-    sudo apt-get update -y
-    sudo apt-get install -y docker-compose-plugin
+# Install Docker Compose if not present
+if ! command -v docker-compose >/dev/null 2>&1; then
+    echo "Installing Docker Compose..."
+    sudo curl -L "https://github.com/docker/compose/releases/download/v2.31.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
+else
+    echo "Docker Compose already installed."
 fi
 
 # Login to GHCR and pull the latest image
