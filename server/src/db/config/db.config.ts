@@ -15,9 +15,8 @@ import { DataSourceOptions } from 'typeorm';
 import * as dotenv from 'dotenv';
 import { PostVote } from 'src/modules/post/entities/post_vote.entity';
 import { CommentVote } from 'src/modules/comment/entities/comment_vote.entity';
-import { join } from 'path';
 
-dotenv.config({ path: join(__dirname, '..', '.env.docker') });
+dotenv.config()
 
 export const databaseConfig: DataSourceOptions = {
   type: 'postgres',
