@@ -13,6 +13,13 @@ else
     echo "Docker already installed."
 fi
 
+# Install Docker Compose v2 plugin if missing
+if ! docker compose version >/dev/null 2>&1; then
+    echo "Installing Docker Compose plugin..."
+    sudo apt-get update -y
+    sudo apt-get install -y docker-compose-plugin
+fi
+
 # Login to GHCR and pull the latest image
 echo "Logging in to GHCR..."
 echo "$GHCR_TOKEN" | sudo docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
@@ -24,7 +31,7 @@ sudo docker stop collabify-backend 2>/dev/null || true
 sudo docker rm collabify-backend 2>/dev/null || true
 
 # Run the backend container
-docker-compose -f docker-compose.prod.yml pull
-docker-compose -f docker-compose.prod.yml up -d --force-recreate
+docker compose -f docker-compose.prod.yml pull
+docker compose -f docker-compose.prod.yml up -d --force-recreate
 
 echo "Backend deployment completed!"
