@@ -30,6 +30,6 @@ pwd "$IMAGE"
 echo "Pulling backend image completed!"
 
 # Run the backend container
-sudo docker-compose -f docker-compose.prod.yml --env-file .env.docker up -d -pull always --remove-orphans
+sudo docker-compose -f docker-compose.prod.yml --env-file .env.docker up -d
 
 echo "Backend deployment completed!"
