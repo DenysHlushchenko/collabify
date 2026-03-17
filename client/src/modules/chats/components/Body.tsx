@@ -13,7 +13,7 @@ const Body = () => {
   }, [messages]);
 
   return (
-    <div className="flex-1 overflow-y-auto">
+    <div className="no-scrollbar flex-1 overflow-y-auto">
       {messages?.length ? (
         messages?.map((message) => <MessageBox key={message.id} data={message} />)
       ) : (
