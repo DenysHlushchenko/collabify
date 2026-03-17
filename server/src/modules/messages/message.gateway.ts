@@ -30,6 +30,7 @@ interface AuthenticatedSocket extends Socket {
       process.env.FRONTEND_URL,
     ].filter(Boolean),
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
   },
 })
 export class MessageGateway
