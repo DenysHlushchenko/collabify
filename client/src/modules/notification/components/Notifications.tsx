@@ -47,13 +47,16 @@ const Notifications = () => {
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="no-scrollbar max-h-60 w-100 overflow-y-scroll rounded-md border-none bg-white shadow-lg">
+      <PopoverContent
+        align="center"
+        className="no-scrollbar max-h-60 w-75 overflow-y-scroll rounded-md border-none bg-white shadow-lg"
+      >
         <PopoverHeader>
           <PopoverTitle className="rounded-t-md bg-gray-100 px-3 pt-3 pb-2">Pending Invitations</PopoverTitle>
           {isPending && <Skeleton className="h-full w-full" />}
           {isError && <Error message={error.message} />}
         </PopoverHeader>
-        <div className="px-2.5 pt-2 pb-3">
+        <div className="pt-2 pr-5 pb-3 pl-3.5">
           {data?.notifications.length !== 0 ? (
             data?.notifications.map((notification: NotificationType) => (
               <Notification key={notification.id} notification={notification} />

@@ -8,6 +8,7 @@ import { deleteNotification } from "../api/notification";
 import { useAuthStore } from "@/modules/auth/store/userStore";
 import { convertToDateString } from "@/modules/shared/lib";
 import User from "@/modules/shared/components/User";
+import { Button } from "@/modules/shared/components/ui/Button";
 
 interface NotificationProps {
   notification: NotificationType;
@@ -44,49 +45,57 @@ const Notification = ({ notification }: NotificationProps) => {
   };
 
   return (
-    <div>
-      <div className="flex-start my-2 gap-x-2">
+    <div className="relative pt-1.5">
+      <div className="flex items-start gap-x-3">
         <User
           username={notification.fromUser.username}
           userId={notification.fromUser.id}
-          className="h-8 w-8 bg-[#D9D9D9] font-bold text-gray-500"
+          className="h-8 w-8 shrink-0 bg-[#D9D9D9] font-bold text-gray-500"
         />
-        <div className="flex flex-col">
-          <PopoverDescription className="small-semibold">{notification.content}</PopoverDescription>
-          <PopoverDescription className="text-xs text-gray-500">
-            {convertToDateString(notification.created_at)}
-          </PopoverDescription>
-        </div>
-        {isJoinRequest ? (
-          <div className="flex-center ml-auto gap-x-1">
-            <Check
-              size={15}
-              role="button"
-              aria-label="Approve join request"
-              onClick={() => handleJoinRequest("approve")}
-              className="cursor-pointer hover:text-gray-400"
-            />
-            <X
-              size={15}
-              role="button"
-              aria-label="Reject join request"
-              onClick={() => handleJoinRequest("reject")}
-              className="cursor-pointer hover:text-gray-400"
-            />
+
+        <div className="flex flex-1 flex-col gap-2">
+          <div className="space-y-0.5">
+            <PopoverDescription className="small-semibold leading-snug">{notification.content}</PopoverDescription>
+            <PopoverDescription className="text-xs text-gray-500">
+              {convertToDateString(notification.created_at)}
+            </PopoverDescription>
           </div>
-        ) : (
-          <div className="flex-center ml-auto gap-x-1">
-            <X
-              size={15}
-              role="button"
-              aria-label="Dismiss notification"
+
+          {isJoinRequest ? (
+            <div className="flex items-center gap-x-2">
+              <Button
+                type="button"
+                onClick={() => handleJoinRequest("approve")}
+                aria-label="Approve join request"
+                className="flex cursor-pointer items-center gap-1.5 rounded-md text-xs font-medium text-green-700 transition-colors hover:bg-green-600/20"
+              >
+                <Check size={16} />
+                Approve
+              </Button>
+
+              <Button
+                type="button"
+                onClick={() => handleJoinRequest("reject")}
+                aria-label="Reject join request"
+                className="flex cursor-pointer items-center gap-1.5 rounded-md text-xs font-medium text-red-700 transition-colors hover:bg-red-600/20"
+              >
+                <X size={16} />
+                Reject
+              </Button>
+            </div>
+          ) : (
+            <Button
+              type="button"
               onClick={handleRemoveResponseNotification}
-              className="cursor-pointer hover:text-gray-400"
-            />
-          </div>
-        )}
+              aria-label="Dismiss notification"
+              className="absolute top-0 right-0 cursor-pointer p-1.5 text-gray-500 transition-colors hover:text-gray-800"
+            >
+              <X size={16} />
+            </Button>
+          )}
+        </div>
       </div>
-      <Separator className="bg-gray-200" />
+      <Separator className="mt-3 bg-gray-200" />
     </div>
   );
 };
