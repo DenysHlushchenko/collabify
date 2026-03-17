@@ -18,7 +18,7 @@ $ npm install
 Build and start the database container:
 
 ```bash
-$ docker compose --env-file .env.docker up --build -d database
+$ docker compose --env-file .env up --build -d database
 ```
 
 Run the application in `/server` directory:

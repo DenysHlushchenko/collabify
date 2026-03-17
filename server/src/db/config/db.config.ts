@@ -18,6 +18,10 @@ import { CommentVote } from 'src/modules/comment/entities/comment_vote.entity';
 
 dotenv.config();
 
+const ssl = process.env.NODE_ENV === 'production' && {
+  rejectUnauthorized: false,
+};
+
 export const databaseConfig: DataSourceOptions = {
   type: 'postgres',
   host: process.env.DATABASE_HOST,
@@ -42,7 +46,5 @@ export const databaseConfig: DataSourceOptions = {
     Tag,
   ],
   synchronize: true,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  ssl,
 };
