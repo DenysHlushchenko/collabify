@@ -3,7 +3,7 @@ name: Build
 on:
   pull_request:
   workflow_run:
-    workflows: ["Terraform"]
+    workflows: ["CI"]
     types: [completed]
 
 env:
@@ -71,6 +71,9 @@ jobs:
           cache-dependency-path: client/package-lock.json
 
       - name: Build frontend
+        env:
+          VITE_API_URL: http://${{ secrets.EC2_HOST }}:5000
+          VITE_SOCKET_URL: http://${{ secrets.EC2_HOST }}:5001
         run: |
           cd client
           npm ci

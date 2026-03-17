@@ -174,6 +174,13 @@ resource "aws_security_group" "backend_sg" {
 	}
 
 	ingress {
+		from_port   = 5001
+		to_port     = 5001
+		protocol    = "tcp"
+		cidr_blocks = var.backend_ingress_cidrs
+	}
+
+	ingress {
         // Allow SSH access to EC2 from specified CIDR
 		from_port   = 22
 		to_port     = 22
