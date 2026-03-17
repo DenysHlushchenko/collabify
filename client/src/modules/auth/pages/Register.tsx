@@ -24,7 +24,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/modules/shared/components/ui/command";
+} from "@/modules/shared/components/ui/Command";
 import { cn } from "@/modules/shared/lib/utils";
 
 const Register = () => {
