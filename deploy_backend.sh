@@ -30,6 +30,6 @@ sudo docker pull "$IMAGE"
 echo "Pulling image: $IMAGE completed!"
 
 # Run the backend container
-sudo IMAGE="$IMAGE" docker compose -f docker-compose.prod.yml --env-file .env.docker up -d
+sudo IMAGE="$IMAGE" docker compose -f docker-compose.prod.yml --env-file .env.production up -d
 
 echo "Backend deployment completed!"
