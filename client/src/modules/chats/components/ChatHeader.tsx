@@ -1,5 +1,5 @@
 import type { ChatType } from "@/modules/shared/types/types";
-import { ChevronLeft, Crown } from "lucide-react";
+import { ChevronLeft, Crown, Users } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Error from "@/modules/shared/components/Error";
 import DeleteDialog from "@/modules/shared/components/dialogs/DeleteDialog";
@@ -56,7 +56,7 @@ const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
           ) : (
             <>
               <div>{chat.title}</div>
-              <div className="text-sm font-light text-neutral-500" onClick={() => setPopupOpen(true)}>
+              <div className="hidden text-sm font-light text-neutral-500 md:block" onClick={() => setPopupOpen(true)}>
                 {chat.members.length} {membersLabel}
               </div>
             </>
@@ -68,7 +68,9 @@ const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
       <div className="flex items-center gap-4">
         <Popover open={popupOpen} onOpenChange={setPopupOpen}>
           <PopoverTrigger asChild>
-            <button className="cursor-pointer text-sm text-sky-500 hover:text-sky-300">View members</button>
+            <button className="cursor-pointer text-sm text-sky-500 hover:text-sky-300">
+              <Users />
+            </button>
           </PopoverTrigger>
           <PopoverContent className="w-48 rounded-md border-0 bg-white shadow-lg">
             <p className="body-medium bg-gray-50 p-2">Chat members</p>
