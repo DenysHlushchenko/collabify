@@ -23,7 +23,7 @@ const LeftsideBar = () => {
           onClick={handleLogout}
         >
           <LogOut size={20} />
-          <span className="max-lg:hidden">Logout</span>
+          <span className="cursor-pointer max-lg:hidden">Logout</span>
         </Button>
       </div>
     </section>
