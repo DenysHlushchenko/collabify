@@ -17,7 +17,7 @@ const Body = () => {
       {messages?.length ? (
         messages?.map((message) => <MessageBox key={message.id} data={message} />)
       ) : (
-        <p className="flex-center h-full">No messages yet!</p>
+        <p className="pt-30 text-center">No messages yet!</p>
       )}
       <div className="pt-24" ref={bottomRef} />
     </div>

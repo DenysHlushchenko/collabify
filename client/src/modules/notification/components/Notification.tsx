@@ -88,7 +88,7 @@ const Notification = ({ notification }: NotificationProps) => {
               type="button"
               onClick={handleRemoveResponseNotification}
               aria-label="Dismiss notification"
-              className="absolute top-0 right-0 cursor-pointer p-1.5 text-gray-500 transition-colors hover:text-gray-800"
+              className="absolute top-1.5 right-0 cursor-pointer p-1.5 text-gray-500 transition-colors hover:text-gray-800"
             >
               <X size={16} />
             </Button>
