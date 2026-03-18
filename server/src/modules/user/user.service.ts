@@ -10,6 +10,8 @@ import { EditUserDto } from './dtos/EditUserDto';
 import { UserDoesNotExistException } from 'src/shared/exceptions/UserDoesNotExist.exception';
 import { FeedbackStats, VoteStats, UserWithStats } from 'src/shared/types';
 import { assignBadges } from 'src/shared/utils/libs';
+import { PostVote } from 'src/modules/post/entities/post_vote.entity';
+import { VoteType } from 'src/shared/enums/enums';
 
 enum Auth {
   SALT_ROUNDS = 10,
@@ -95,11 +97,18 @@ export class UserService {
       });
 
     const postStats = await this.usersRepository.manager
-      .getRepository('posts')
-      .createQueryBuilder('post')
-      .where('post.user_id = :userId', { userId: id })
-      .select('SUM(post.upvotesCount)', 'upvotesCount')
-      .addSelect('SUM(post.downvotesCount)', 'downvotesCount')
+      .getRepository(PostVote)
+      .createQueryBuilder('vote')
+      .where('vote.user_id = :userId', { userId: id })
+      .select(
+        'SUM(CASE WHEN vote.type = :like THEN 1 ELSE 0 END)',
+        'upvotesCount',
+      )
+      .addSelect(
+        'SUM(CASE WHEN vote.type = :dislike THEN 1 ELSE 0 END)',
+        'downvotesCount',
+      )
+      .setParameters({ like: VoteType.LIKE, dislike: VoteType.DISLIKE })
       .getRawOne<VoteStats>();
 
     const totalUpvotes = postStats?.upvotesCount
@@ -113,7 +122,7 @@ export class UserService {
       .getRepository('feedbacks')
       .count({
         where: {
-          user: { id },
+          sender: { id },
         },
       });
 
