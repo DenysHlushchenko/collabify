@@ -206,6 +206,15 @@ const PostForm = ({ type, postDetails, submitPost, isSubmitting }: PostFormProps
                           className="no-focus paragraph-regular border disabled:cursor-not-allowed disabled:bg-gray-100"
                           placeholder={field.value.length >= 3 ? "Maximum 3 tags reached" : "Add tags..."}
                           onKeyDown={(e) => handleInputKeyDown(e, field)}
+                          onBlur={(e) => {
+                            const value = e.target.value.trim();
+                            if (value !== "" && !field.value.includes(value)) {
+                              form.setValue("tags", [...field.value, value], {
+                                shouldValidate: true,
+                              });
+                              e.target.value = "";
+                            }
+                          }}
                         />
 
                         {field.value.length > 0 && (

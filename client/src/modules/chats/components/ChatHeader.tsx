@@ -56,7 +56,7 @@ const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
           ) : (
             <>
               <div>{chat.title}</div>
-              <div className="text-sm font-light text-neutral-500" onClick={() => setPopupOpen(true)}>
+              <div className="hidden text-sm font-light text-neutral-500 md:block" onClick={() => setPopupOpen(true)}>
                 {chat.members.length} {membersLabel}
               </div>
             </>

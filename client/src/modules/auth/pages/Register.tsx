@@ -7,7 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { registerUser } from "../api/user";
 
 import { Input } from "@/modules/shared/components/ui/Input";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/modules/shared/components/ui/Form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/modules/shared/components/ui/Form";
 import { RegisterSchema } from "@/modules/shared/lib/validators";
 import { Button } from "@/modules/shared/components/ui/Button";
 import { genders, roles } from "@/modules/shared/components/constants/links";
@@ -15,6 +15,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useState } from "react";
 import Error from "@/modules/shared/components/Error";
 import { countries } from "country-data-list";
+import { Popover, PopoverContent, PopoverTrigger } from "@/modules/shared/components/ui/Popover";
+import { Check, ChevronsUpDown } from "lucide-react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/modules/shared/components/ui/Command";
+import { cn } from "@/modules/shared/lib/utils";
 
 const Register = () => {
   const [error, setError] = useState<string | null>(null);
@@ -56,6 +67,7 @@ const Register = () => {
       password: values.password,
     });
   }
+
   return (
     <div className="flex h-screen w-full items-center justify-center">
       <div className="w-full max-w-lg space-y-5 p-6">
@@ -82,30 +94,56 @@ const Register = () => {
             <FormField
               control={form.control}
               name="country"
-              render={({ field, fieldState }) => (
-                <FormItem>
+              render={({ field }) => (
+                <FormItem className="flex flex-col gap-1.5">
                   <FormLabel>Country</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select your country" />
-                      </SelectTrigger>
-                    </FormControl>
-
-                    <SelectContent className="bg-white">
-                      {countries.all.map((country) => (
-                        <SelectItem
-                          key={country.name}
-                          value={country.name}
-                          className="flex cursor-pointer items-center gap-3 hover:bg-gray-100"
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className="w-full cursor-pointer justify-between text-left font-normal"
                         >
-                          <p>{country.emoji}</p>
-                          <span>{country.name}</span>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {fieldState.error && <Error message={fieldState.error.message} />}
+                          {field.value ? countries.all.find((c) => c.name === field.value)?.name : "Select country"}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+
+                    <PopoverContent className="w-(--radix-popover-trigger-width) bg-white p-0" align="start">
+                      <Command>
+                        <CommandInput placeholder="Search country..." />
+                        <CommandList className="max-h-64">
+                          <CommandEmpty>No country found.</CommandEmpty>
+                          <CommandGroup>
+                            {countries.all.map((country) => (
+                              <CommandItem
+                                className="cursor-pointer hover:bg-gray-100"
+                                key={country.name}
+                                value={country.name.toLowerCase()}
+                                onSelect={() => {
+                                  form.setValue("country", country.name, { shouldValidate: true });
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    country.name === field.value ? "opacity-100" : "opacity-0"
+                                  )}
+                                />
+                                <div className="flex items-center gap-2">
+                                  <span>{country.emoji}</span>
+                                  <span>{country.name}</span>
+                                </div>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -118,7 +156,7 @@ const Register = () => {
                   <FormLabel>Gender</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger className="w-full">
+                      <SelectTrigger className="w-full cursor-pointer">
                         <SelectValue placeholder="Select your gender" />
                       </SelectTrigger>
                     </FormControl>
@@ -144,7 +182,7 @@ const Register = () => {
                   <FormLabel>Role</FormLabel>
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <FormControl>
-                      <SelectTrigger className="w-full">
+                      <SelectTrigger className="w-full cursor-pointer">
                         <SelectValue placeholder="Select your role" />
                       </SelectTrigger>
                     </FormControl>
