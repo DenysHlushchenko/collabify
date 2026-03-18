@@ -33,7 +33,8 @@ const ConversationPage = () => {
       <div className="flex-1 overflow-y-auto pb-2">
         <Body />
       </div>
-      <div className="fixed bottom-0 z-40 md:relative">
+
+      <div className="fixed right-0 bottom-0 z-40 w-full sm:w-[84%] md:relative md:w-full">
         <MessageForm />
       </div>
     </div>
