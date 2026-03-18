@@ -9,6 +9,9 @@ import AvatarGroup from "./AvatarGroup";
 import User from "@/modules/shared/components/User";
 import { useState } from "react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/modules/shared/components/ui/Popover";
+import { Avatar } from "@/modules/shared/components/ui/Avatar";
+import { cn } from "@/modules/shared/lib/utils";
+import { useSocket } from "@/modules/socket/context/SocketContext";
 
 interface ChatHeaderProps {
   chat: ChatType;
@@ -18,6 +21,8 @@ interface ChatHeaderProps {
 
 const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
   const membersLabel = chat.members.length > 1 ? "members" : "member";
+
+  const { activeUsersIds } = useSocket();
 
   const currentUser = useAuthStore().getUser();
   const navigate = useNavigate();
@@ -65,25 +70,6 @@ const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
         </div>
       </div>
 
-      <div className="g mr-auto ml-3 flex">
-        {chat.members.length > 0 &&
-          chat.members.map((member, index) => {
-            const randomBgColor = `bg-[#${Math.floor(Math.random() * 0xffffff).toString(16)}]`;
-            return (
-              <User
-                key={member.user.id}
-                userId={member.user.id}
-                username={member.user.username}
-                className={
-                  "flex-center small-medium absolute top-6 size-full h-6 w-6 bg-[#D9D9D9] text-gray-500" +
-                  (index > 0 ? " ml-2" : "") +
-                  (index === chat.members.length - 1 ? " ml-4" : "")
-                }
-              />
-            );
-          })}
-      </div>
-
       <div className="flex items-center gap-4">
         <Popover open={popupOpen} onOpenChange={setPopupOpen}>
           <PopoverTrigger asChild>
@@ -96,21 +82,32 @@ const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
               Chat members <span className="small-medium text-gray-500">Max: {chat.max_members}</span>
             </p>
             <ul className="p-2">
-              {chat.members.map((member) => (
-                <li key={member.user.id} className="flex-start gap-x-2 rounded-md p-1 transition hover:bg-gray-100">
-                  <User
-                    userId={member.user.id}
-                    username={member.user.username}
-                    className={"flex-center small-medium size-full h-6 w-6 bg-[#D9D9D9] text-gray-500"}
-                  />
-                  <p className="text-xs text-gray-500">{member.user.username}</p>
-                  {chat.posts.some((post) => post.user.id === member.user.id) && (
-                    <span className="ml-auto text-xs text-gray-400">
-                      <Crown size={18} className="fill-amber-400 text-amber-400" />
-                    </span>
-                  )}
-                </li>
-              ))}
+              {chat.members.map((member) => {
+                return (
+                  <li key={member.user.id} className="flex-start gap-x-2 rounded-md p-1 transition hover:bg-gray-100">
+                    <div className="relative">
+                      <User
+                        userId={member.user.id}
+                        username={member.user.username}
+                        className={"flex-center small-medium size-full h-6 w-6 bg-[#D9D9D9] text-gray-500"}
+                      />
+
+                      <Avatar
+                        className={cn(
+                          "absolute top-0 right-0 h-2 w-2 rounded-full",
+                          activeUsersIds.some((userId) => userId === member.user.id) ? "bg-green-500" : "bg-red-500"
+                        )}
+                      />
+                    </div>
+                    <p className="text-xs text-gray-500">{member.user.username}</p>
+                    {chat.posts.some((post) => post.user.id === member.user.id) && (
+                      <span className="ml-auto text-xs text-gray-400">
+                        <Crown size={18} className="fill-amber-400 text-amber-400" />
+                      </span>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </PopoverContent>
         </Popover>

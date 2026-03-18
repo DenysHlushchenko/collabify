@@ -84,6 +84,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       );
 
       this.sessions.set(id, client);
+
+      this.server.emit(
+        'activeUsers',
+        Array.from(this.sessions.values()).map((socket) => socket.data.user.id),
+      );
     } catch {
       client.disconnect();
     }
@@ -95,6 +100,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.sessions.delete(userId);
     }
     console.log(`Client ${client.id} disconnected...`);
+
+    this.server.emit(
+      'activeUsers',
+      Array.from(this.sessions.values()).map((socket) => socket.data.user.id),
+    );
   }
 
   async findUserById(id: number) {

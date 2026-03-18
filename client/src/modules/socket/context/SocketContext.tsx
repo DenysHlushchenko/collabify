@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { useAuthStore } from "@/modules/auth/store/userStore";
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { socket } from "../socket";
 import type { Socket } from "socket.io-client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 interface SocketContextType {
   socket: Socket;
+  activeUsersIds: number[];
 }
 
 const SocketContext = createContext<SocketContextType | null>(null);
@@ -27,15 +28,17 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
   const currentUser = useAuthStore().getUser();
   const queryClient = useQueryClient();
 
+  const [activeUsersIds, setActiveUsersIds] = useState<number[]>([]);
+
   useEffect(() => {
     if (!isAuthenticated || !token) {
       socket.disconnect();
       return;
     }
 
-    /**
-     * Socket responses from the server
-     */
+    socket.on("activeUsers", (usersIds: number[]) => {
+      setActiveUsersIds(usersIds);
+    });
 
     // post creator receives the join request
     socket.on("notification_join_request", () => {
@@ -101,6 +104,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     <SocketContext.Provider
       value={{
         socket,
+        activeUsersIds,
       }}
     >
       {children}

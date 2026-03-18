@@ -14,9 +14,13 @@ import ProfileDialog from "../components/ProfileDialog";
 import { useParams } from "react-router-dom";
 import { useAuthStore } from "@/modules/auth/store/userStore";
 import Feedbacks from "@/modules/feedback/components/Feedbacks";
+import { Avatar } from "@/modules/shared/components/ui/Avatar";
+import { cn } from "@/modules/shared/lib/utils";
+import { useSocket } from "@/modules/socket/context/SocketContext";
 
 const UserProfile = () => {
   const { userId } = useParams();
+  const { activeUsersIds } = useSocket();
   const { getUser } = useAuthStore();
   const loggedInUserId = getUser()?.id;
   const { isPending, isPlaceholderData, isError, data: currentUser, error } = useCurrentUser(Number(userId));
@@ -36,9 +40,18 @@ const UserProfile = () => {
           />
 
           <div className="flex flex-col items-center gap-4 lg:items-start lg:gap-5">
-            <h2 className="h2-bold whitespace-nowrap">
-              @{currentUser.user.username} <span className="text-sm text-gray-700">({currentUser.user.gender})</span>
-            </h2>
+            <div className="flex-center gap-x-3">
+              <h2 className="h2-bold whitespace-nowrap">
+                @{currentUser.user.username} <span className="text-sm text-gray-700">({currentUser.user.gender})</span>
+              </h2>
+
+              <Avatar
+                className={cn(
+                  "h-4 w-4 rounded-full",
+                  activeUsersIds.some((userId) => userId === Number(userId)) ? "bg-green-500" : "bg-red-500"
+                )}
+              />
+            </div>
 
             <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-5 lg:justify-start">
               <ProfileLink imgUrl={location} title={currentUser.user.country.name} />
