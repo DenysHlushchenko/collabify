@@ -19,6 +19,22 @@
     scrollbar-gutter: stable;
   }
 
+  @media (max-width: 767px) {
+    html {
+      scrollbar-gutter: auto;
+      scrollbar-width: none;
+      overflow: hidden;
+    }
+
+    html::-webkit-scrollbar {
+      display: none;
+    }
+
+    body {
+      overflow: hidden;
+    }
+  }
+
   body[data-scroll-locked] {
     padding-right: 0 !important;
     margin-right: 0 !important;
