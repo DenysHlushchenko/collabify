@@ -65,6 +65,25 @@ const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
         </div>
       </div>
 
+      <div className="g mr-auto ml-3 flex">
+        {chat.members.length > 0 &&
+          chat.members.map((member, index) => {
+            const randomBgColor = `bg-[#${Math.floor(Math.random() * 0xffffff).toString(16)}]`;
+            return (
+              <User
+                key={member.user.id}
+                userId={member.user.id}
+                username={member.user.username}
+                className={
+                  "flex-center small-medium absolute top-6 size-full h-6 w-6 bg-[#D9D9D9] text-gray-500" +
+                  (index > 0 ? " ml-2" : "") +
+                  (index === chat.members.length - 1 ? " ml-4" : "")
+                }
+              />
+            );
+          })}
+      </div>
+
       <div className="flex items-center gap-4">
         <Popover open={popupOpen} onOpenChange={setPopupOpen}>
           <PopoverTrigger asChild>
@@ -73,7 +92,9 @@ const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
             </button>
           </PopoverTrigger>
           <PopoverContent className="w-48 rounded-md border-0 bg-white shadow-lg">
-            <p className="body-medium bg-gray-50 p-2">Chat members</p>
+            <p className="body-medium bg-gray-50 p-2">
+              Chat members <span className="small-medium text-gray-500">Max: {chat.max_members}</span>
+            </p>
             <ul className="p-2">
               {chat.members.map((member) => (
                 <li key={member.user.id} className="flex-start gap-x-2 rounded-md p-1 transition hover:bg-gray-100">
