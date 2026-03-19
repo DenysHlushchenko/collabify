@@ -16,7 +16,7 @@ import Votes from "@/modules/votes/components/Votes";
 import useVote from "@/modules/votes/hooks/useVote";
 import { useSocket } from "@/modules/socket/context/SocketContext";
 import { useAuthStore } from "@/modules/auth/store/userStore";
-import { convertToDateString } from "@/modules/shared/lib";
+import { adjustText, convertToDateString } from "@/modules/shared/lib";
 import User from "@/modules/shared/components/User";
 import { useQuery } from "@tanstack/react-query";
 import { isPostJoinRequestForCurrentPostByUserId } from "@/modules/notification/api/notification";
@@ -30,7 +30,7 @@ interface PostProps {
 
 const Post = ({ post }: PostProps) => {
   const desc = post.description;
-  const adjustedDesc = desc.length >= MAX_DESCRIPTION_LENGTH ? `${desc.substring(0, MAX_DESCRIPTION_LENGTH)}...` : desc;
+  const adjustedDesc = adjustText(desc, MAX_DESCRIPTION_LENGTH);
 
   const { socket } = useSocket();
   const currentUser = useAuthStore().getUser();

@@ -1,3 +1,4 @@
+import { adjustText } from "@/modules/shared/lib";
 import { cn } from "@/modules/shared/lib/utils";
 import { Link, useParams } from "react-router-dom";
 
@@ -12,6 +13,8 @@ const ChatItem = ({ chat }: ChatItemProps) => {
   const { chatId } = useParams();
   const isActive = chat.id === Number(chatId);
 
+  const chatTitle = adjustText(chat.title, 20);
+
   return (
     <Link
       to={`/chats/${chat.id}`}
@@ -20,7 +23,7 @@ const ChatItem = ({ chat }: ChatItemProps) => {
         isActive && "rounded-lg bg-[#e8edf3] font-semibold"
       )}
     >
-      {chat.title}
+      {chatTitle}
     </Link>
   );
 };
