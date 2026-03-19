@@ -5,10 +5,12 @@ import MessageForm from "../forms/MessageForm";
 import { useChatQuery } from "../hooks/useChat";
 import { useParams } from "react-router-dom";
 import { useSocket } from "@/modules/socket/context/SocketContext";
+import { useAuthStore } from "@/modules/auth/store/userStore";
 
 const ConversationPage = () => {
   const { chatId } = useParams();
   const { socket } = useSocket();
+  const currentUser = useAuthStore().getUser();
   const id = Number(chatId);
   const { data: chat, isPending, error } = useChatQuery(id);
 

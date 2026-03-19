@@ -6,4 +6,6 @@ export class CreateMessageDto {
 
   @IsNumber()
   chatId: number;
+
+  isChatJoinMessage?: boolean;
 }

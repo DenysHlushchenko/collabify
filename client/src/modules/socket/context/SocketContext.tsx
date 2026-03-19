@@ -49,6 +49,10 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       queryClient.invalidateQueries({ queryKey: ["notification-status", token, data.postId] });
     });
 
+    socket.on("member_joined_chat", (data: { chatId: string }) => {
+      queryClient.invalidateQueries({ queryKey: ["messages", data.chatId] });
+    });
+
     // request join user receives the join response
     socket.on("notification_join_response", (data) => {
       queryClient.invalidateQueries({ queryKey: ["notifications", token] });

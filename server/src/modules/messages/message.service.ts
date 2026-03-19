@@ -29,6 +29,7 @@ export class MessageService {
       message: createMessageDto.message,
       chat: { id: createMessageDto.chatId },
       sender: { id: senderId },
+      isChatJoinMessage: createMessageDto.isChatJoinMessage || false,
       created_at: new Date(),
     });
 
