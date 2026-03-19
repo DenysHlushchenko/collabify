@@ -89,3 +89,7 @@ export function convertToDateString(date: Date): string {
 export function convertNameToInitial(name: string | undefined): string {
   return name ? name.charAt(0).toUpperCase() : "";
 }
+
+export function adjustText(text: string, length: number) {
+  return text.length >= length ? `${text.substring(0, length)}...` : text;
+}

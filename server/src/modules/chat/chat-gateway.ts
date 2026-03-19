@@ -17,6 +17,7 @@ import jwt from 'jsonwebtoken';
 import { JoinResponse } from 'src/shared/enums/enums';
 import { ChatService } from './chat.service';
 import { NotFoundException } from '@nestjs/common';
+import { MessageService } from '../messages/message.service';
 
 type JoinRequestType = {
   requestUserId: number;
@@ -56,6 +57,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly userService: UserService,
     private readonly chatService: ChatService,
     private readonly notificationService: NotificationService,
+    private readonly messageService: MessageService,
   ) {}
 
   /**
@@ -84,6 +86,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       );
 
       this.sessions.set(id, client);
+
+      this.server.emit(
+        'activeUsers',
+        Array.from(this.sessions.values()).map((socket) => socket.data.user.id),
+      );
     } catch {
       client.disconnect();
     }
@@ -95,6 +102,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.sessions.delete(userId);
     }
     console.log(`Client ${client.id} disconnected...`);
+
+    this.server.emit(
+      'activeUsers',
+      Array.from(this.sessions.values()).map((socket) => socket.data.user.id),
+    );
   }
 
   async findUserById(id: number) {
@@ -185,6 +197,20 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // join the sender to the chat
       // connect the sender to the chat room
       await this.chatService.makeUserMemberOfChat(requestUserId, chat.id);
+
+      // create a message in the chat that the user has joined
+      await this.messageService.createMessage(
+        {
+          chatId: chat.id,
+          message: `${requestUser.username} has joined the chat.`,
+          isChatJoinMessage: true,
+        },
+        postCreatorId,
+      );
+
+      this.server.to(`chat_${chat.id}`).emit('member_joined_chat', {
+        chatId: chat.id,
+      });
     } else if (response === JoinResponse.REJECT) {
       // handle reject
       notification.content = `${postCreator.username} declined your request.`;

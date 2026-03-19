@@ -6,8 +6,8 @@ export const getAllChatsByUserId = async (userId: number): Promise<ChatType[]> =
   return res.data;
 };
 
-export const getChatByUserId = async (chatId: number, userId: number): Promise<ChatType> => {
-  const res = await request.get(`/chats/${chatId}/users/${userId}`);
+export const getChatById = async (chatId: number): Promise<ChatType> => {
+  const res = await request.get(`/chats/${chatId}`);
   return res.data;
 };
 

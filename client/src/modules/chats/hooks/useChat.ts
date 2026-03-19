@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteChat, getAllChatsByUserId, getChatByUserId } from "../api/chat";
+import { deleteChat, getAllChatsByUserId, getChatById } from "../api/chat";
 import { toast } from "sonner";
 import type { FilterType } from "@/modules/shared/types/types";
 import { useSearchParams } from "react-router-dom";
@@ -14,10 +14,10 @@ export const useChatsQuery = (userId?: number, edit?: boolean) => {
   });
 };
 
-export const useChatQuery = (chatId: number, userId: number) => {
+export const useChatQuery = (chatId: number) => {
   return useQuery({
     queryKey: ["chat", chatId],
-    queryFn: () => getChatByUserId(chatId, userId),
+    queryFn: () => getChatById(chatId),
     staleTime: 1000 * 10,
     retry: 2,
   });

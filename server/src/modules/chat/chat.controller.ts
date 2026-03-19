@@ -10,6 +10,8 @@ import { AuthGuard } from '../user/auth/auth.guard';
 import { ChatService } from './chat.service';
 import { ChatWithOwner } from 'src/shared/types';
 import { Chat } from './entities/chat.entity';
+import { CurrentUser } from 'src/shared/decorators/current-user.decorator';
+import { User } from '../user/entities/user.entity';
 
 @UseGuards(AuthGuard)
 @Controller('chats')
@@ -23,12 +25,12 @@ export class ChatController {
     return await this.chatService.findByPostId(postId);
   }
 
-  @Get(':id/users/:userId')
-  async getChatByUserId(
+  @Get(':id')
+  async getChatById(
     @Param('id', ParseIntPipe) id: number,
-    @Param('userId', ParseIntPipe) userId: number,
+    @CurrentUser() user: User,
   ): Promise<ChatWithOwner> {
-    return await this.chatService.findByUserId(id, userId);
+    return await this.chatService.findByUserId(id, user.id);
   }
 
   @Get('users/:userId')
