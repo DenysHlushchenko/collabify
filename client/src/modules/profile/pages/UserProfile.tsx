@@ -28,6 +28,8 @@ const UserProfile = () => {
 
   if (isError) return <Error message={error.message} />;
 
+  const isUserActive = activeUsersIds.some((id) => id === Number(userId));
+
   return (
     <>
       <div className="flex flex-col-reverse items-center justify-between gap-6 sm:flex-row sm:items-start">
@@ -44,13 +46,6 @@ const UserProfile = () => {
               <h2 className="h2-bold whitespace-nowrap">
                 @{currentUser.user.username} <span className="text-sm text-gray-700">({currentUser.user.gender})</span>
               </h2>
-
-              <Avatar
-                className={cn(
-                  "h-4 w-4 rounded-full",
-                  activeUsersIds.some((userId) => userId === Number(userId)) ? "bg-green-500" : "bg-red-500"
-                )}
-              />
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-5 lg:justify-start">
@@ -58,6 +53,18 @@ const UserProfile = () => {
               <ProfileLink imgUrl={calendar} title={dayjs(currentUser.user.createdAt).format("MMMM YYYY")} />
               <ProfileLink imgUrl={rank} title={currentUser.user.reputation} />
               <ProfileLink imgUrl={role} title={currentUser.user.role} />
+            </div>
+
+            <div
+              className={cn(
+                "flex-center gap-x-2 rounded-xl border px-1.5",
+                isUserActive ? "border-green-500" : "border-red-500"
+              )}
+            >
+              <Avatar className={cn("h-1 w-1 rounded-full", isUserActive ? "bg-green-500" : "bg-red-500")} />
+              <span className={cn(isUserActive ? "text-green-500" : "text-red-500", "small-medium")}>
+                {isUserActive ? "Online" : "Disconnected"}
+              </span>
             </div>
 
             {currentUser.user.bio && (
