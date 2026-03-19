@@ -53,7 +53,7 @@ const Post = ({ post }: PostProps) => {
   });
 
   const isChatMember = chat?.members?.some((member) => member.user.id === userId) ?? false;
-  const isChatFull = chat ? chat.members.length >= post.group_size : false;
+  const isChatFull = chat ? chat.members.length >= chat.max_members : false;
 
   const handleJoinRequest = () => {
     socket.emit("joinRequest", {
