@@ -208,4 +208,45 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       .to(`user_${requestUserId}`)
       .emit('notification_join_response', { notification });
   }
+
+  /**
+   * Handles typing event when user starts typing. It emits to all users in the chat that the user is typing.
+   * @param data - contains chatId to know which chat room to emit the event to.
+   * @param client - the socket of the user that is typing, used to get the user information to send to other users in the chat.
+   * @returns emits to all users in the chat that the user is typing, with the user information.
+   */
+  @SubscribeMessage('userTyping')
+  handleUserTyping(
+    @MessageBody() data: { chatId: number },
+    @ConnectedSocket() client: AuthenticatedSocket,
+  ) {
+    const userId = client.data.user?.id;
+    const username = client.data.user?.username;
+
+    if (!userId || !username) return;
+
+    this.server.to(`chat_${data.chatId}`).emit('userIsTyping', {
+      userId,
+      username,
+    });
+  }
+
+  /**
+   * Handles stopped typing event when user stops typing. It emits to all users in the chat that the user stopped typing.
+   * @param data - contains chatId to know which chat room to emit the event to.
+   * @param client - the socket of the user that stopped typing, used to get the user information to send to other users in the chat.
+   * @returns emits to all users in the chat that the user stopped typing, with the user information.
+   */
+  @SubscribeMessage('userStoppedTyping')
+  handleUserStoppedTyping(
+    @MessageBody() data: { chatId: number },
+    @ConnectedSocket() client: AuthenticatedSocket,
+  ) {
+    const userId = client.data.user?.id;
+    if (!userId) return;
+
+    this.server.to(`chat_${data.chatId}`).emit('userStoppedTyping', {
+      userId,
+    });
+  }
 }

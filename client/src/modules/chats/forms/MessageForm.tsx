@@ -10,6 +10,29 @@ const MessageForm = () => {
   const id = Number(chatId);
   const { socket } = useSocket();
   const inputRef = useRef<HTMLInputElement>(null);
+  const typingTimeoutRef = useRef<number | null>(null);
+  const isTypingRef = useRef(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    // Emit typing event only when users start typing
+    if (!isTypingRef.current && value.length > 0) {
+      socket.emit("userTyping", { chatId: id });
+      isTypingRef.current = true;
+    }
+
+    // Clear existing timeout
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+
+    // Emit stopped typing after 1 second of inactivity
+    typingTimeoutRef.current = setTimeout(() => {
+      socket.emit("userStoppedTyping", { chatId: id });
+      isTypingRef.current = false;
+    }, 1000);
+  };
 
   const sentMessage = (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -18,6 +41,12 @@ const MessageForm = () => {
       message: inputRef.current?.value,
       chatId: id,
     });
+
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    socket.emit("userStoppedTyping", { chatId: id });
+    isTypingRef.current = false;
 
     if (inputRef.current) {
       inputRef.current.value = "";
@@ -34,6 +63,7 @@ const MessageForm = () => {
             required
             aria-label="Message input"
             placeholder="Write a message"
+            onChange={handleInputChange}
             className="w-full rounded-full border-none bg-neutral-100 px-4 py-2 font-light text-black"
           />
         </div>
