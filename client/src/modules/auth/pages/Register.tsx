@@ -12,7 +12,7 @@ import { RegisterSchema } from "@/modules/shared/lib/validators";
 import { Button } from "@/modules/shared/components/ui/Button";
 import { genders, roles } from "@/modules/shared/components/constants/links";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/modules/shared/components/ui/Select";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Error from "@/modules/shared/components/Error";
 import { countries } from "country-data-list";
 import { Popover, PopoverContent, PopoverTrigger } from "@/modules/shared/components/ui/Popover";
@@ -30,6 +30,12 @@ import { cn } from "@/modules/shared/lib/utils";
 const Register = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [inputRef]);
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -84,7 +90,7 @@ const Register = () => {
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your username..." {...field} type="text" />
+                    <Input placeholder="Enter your username..." {...field} type="text" ref={inputRef} />
                   </FormControl>
                   {fieldState.error && <Error message={fieldState.error.message} />}
                 </FormItem>
