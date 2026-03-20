@@ -3,7 +3,7 @@ import User from "@/modules/shared/components/User";
 import { convertToDateString } from "@/modules/shared/lib";
 import { cn } from "@/modules/shared/lib/utils";
 import type { MessagesType } from "@/modules/shared/types/types";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { SmilePlus } from "lucide-react";
 import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
 import { useMessageReaction } from "../hooks/useMessageReaction";
@@ -17,7 +17,9 @@ interface MessageBoxProps {
 const MessageBox = ({ data }: MessageBoxProps) => {
   const [showReactionPicker, setShowReactionPicker] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [pickerPosition, setPickerPosition] = useState({ top: 0, left: 0 });
   const pickerRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const { chatId } = useParams();
   const { react } = useMessageReaction(Number(chatId));
@@ -28,6 +30,23 @@ const MessageBox = ({ data }: MessageBoxProps) => {
     react(data.id, emojiData.emoji);
     setShowReactionPicker(false);
   };
+
+  // Calculate picker position to avoid overflow
+  useEffect(() => {
+    if (showReactionPicker && buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom - 10;
+      const PICKER_HEIGHT = 350;
+
+      // Position above or below depending on available space
+      const top = spaceBelow < PICKER_HEIGHT ? rect.top - PICKER_HEIGHT - 10 : rect.bottom + 10;
+
+      setPickerPosition({
+        top: Math.max(10, top),
+        left: rect.left + (isOwn ? rect.width - 300 : 0),
+      });
+    }
+  }, [showReactionPicker, isOwn]);
 
   const container = cn("flex gap-3 p-4", isOwn && "justify-end");
   const avatar = cn(isOwn && "order-2");
@@ -71,9 +90,11 @@ const MessageBox = ({ data }: MessageBoxProps) => {
             setIsHovered(false);
             setShowReactionPicker(false);
           }}
+          onTouchStart={(e) => e.preventDefault()}
         >
           {isOwn && (
             <button
+              ref={buttonRef}
               onClick={() => setShowReactionPicker((prev) => !prev)}
               aria-label="Add reaction"
               className={cn(
@@ -91,6 +112,7 @@ const MessageBox = ({ data }: MessageBoxProps) => {
 
           {!isOwn && (
             <button
+              ref={buttonRef}
               onClick={() => setShowReactionPicker((prev) => !prev)}
               aria-label="Add reaction"
               className={cn(
@@ -103,8 +125,23 @@ const MessageBox = ({ data }: MessageBoxProps) => {
           )}
 
           {showReactionPicker && (
-            <div ref={pickerRef} className={cn("absolute top-8 z-50", isOwn ? "right-0" : "left-0")}>
-              <EmojiPicker onEmojiClick={handleEmojiClick} height={350} width={300} />
+            <div
+              ref={pickerRef}
+              className="fixed z-50"
+              style={{
+                top: `${pickerPosition.top}px`,
+                left: `${Math.max(10, Math.min(pickerPosition.left, window.innerWidth - 310))}px`,
+                pointerEvents: "auto",
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <EmojiPicker
+                onEmojiClick={handleEmojiClick}
+                height={350}
+                width={300}
+                searchDisabled
+                autoFocusSearch={false}
+              />
             </div>
           )}
         </div>
