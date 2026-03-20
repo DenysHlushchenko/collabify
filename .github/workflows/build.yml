@@ -57,11 +57,23 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    strategy:
+      matrix:
+        environment: [acceptance, production]
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
         with:
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Set backend host
+        id: config
+        run: |
+          if [ "${{ matrix.environment }}" = "acceptance" ]; then
+            echo "backend_host=${{ secrets.ACCEPTANCE_EC2_HOST }}" >> $GITHUB_OUTPUT
+          else
+            echo "backend_host=${{ secrets.EC2_HOST }}" >> $GITHUB_OUTPUT
+          fi
 
       - name: Set up Node.js
         uses: actions/setup-node@v5
@@ -70,16 +82,19 @@ jobs:
           cache: npm
           cache-dependency-path: client/package-lock.json
 
-      - name: Build frontend
+      - name: Build frontend for ${{ matrix.environment }}
+        env:
+          VITE_API_URL: http://${{ steps.config.outputs.backend_host }}:5000
+          VITE_SOCKET_URL: http://${{ steps.config.outputs.backend_host }}:5001
         run: |
           cd client
           npm ci
           npm run build
 
-      - name: Upload frontend build artifact
+      - name: Upload frontend build artifact (${{ matrix.environment }})
         uses: actions/upload-artifact@v4
         with:
-          name: frontend-dist
+          name: frontend-dist-${{ matrix.environment }}
           path: client/dist/
 
 # References
