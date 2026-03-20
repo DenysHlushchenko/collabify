@@ -8,12 +8,14 @@ import { NotificationModule } from '../notification/notification.module';
 import { ChatService } from './chat.service';
 import { ChatController } from './chat.controller';
 import { PostModule } from '../post/post.module';
+import { MessagesModule } from '../messages/messages.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Chat, ChatMember]),
     UserModule,
     NotificationModule,
+    forwardRef(() => MessagesModule),
     forwardRef(() => PostModule),
   ],
   controllers: [ChatController],

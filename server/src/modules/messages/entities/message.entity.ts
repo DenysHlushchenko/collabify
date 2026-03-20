@@ -20,6 +20,9 @@ export class Message {
   @Column()
   message: string;
 
+  @Column({ default: false })
+  isChatJoinMessage: boolean;
+
   @CreateDateColumn()
   created_at: Date;
 

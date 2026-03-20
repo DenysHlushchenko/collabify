@@ -107,6 +107,7 @@ export type MessagesType = {
   chat: ChatType;
   sender: UserType;
   reactions: MessageReactionType[];
+  isChatJoinMessage?: boolean;
 };
 
 export type ChatMemberType = {

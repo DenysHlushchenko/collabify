@@ -17,6 +17,7 @@ import jwt from 'jsonwebtoken';
 import { JoinResponse } from 'src/shared/enums/enums';
 import { ChatService } from './chat.service';
 import { NotFoundException } from '@nestjs/common';
+import { MessageService } from '../messages/message.service';
 
 type JoinRequestType = {
   requestUserId: number;
@@ -56,6 +57,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly userService: UserService,
     private readonly chatService: ChatService,
     private readonly notificationService: NotificationService,
+    private readonly messageService: MessageService,
   ) {}
 
   /**
@@ -84,6 +86,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       );
 
       this.sessions.set(id, client);
+
+      this.server.emit(
+        'activeUsers',
+        Array.from(this.sessions.values()).map((socket) => socket.data.user.id),
+      );
     } catch {
       client.disconnect();
     }
@@ -95,6 +102,11 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       this.sessions.delete(userId);
     }
     console.log(`Client ${client.id} disconnected...`);
+
+    this.server.emit(
+      'activeUsers',
+      Array.from(this.sessions.values()).map((socket) => socket.data.user.id),
+    );
   }
 
   async findUserById(id: number) {
@@ -185,6 +197,20 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // join the sender to the chat
       // connect the sender to the chat room
       await this.chatService.makeUserMemberOfChat(requestUserId, chat.id);
+
+      // create a message in the chat that the user has joined
+      await this.messageService.createMessage(
+        {
+          chatId: chat.id,
+          message: `${requestUser.username} has joined the chat.`,
+          isChatJoinMessage: true,
+        },
+        postCreatorId,
+      );
+
+      this.server.to(`chat_${chat.id}`).emit('member_joined_chat', {
+        chatId: chat.id,
+      });
     } else if (response === JoinResponse.REJECT) {
       // handle reject
       notification.content = `${postCreator.username} declined your request.`;
@@ -197,5 +223,46 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server
       .to(`user_${requestUserId}`)
       .emit('notification_join_response', { notification });
+  }
+
+  /**
+   * Handles typing event when user starts typing. It emits to all users in the chat that the user is typing.
+   * @param data - contains chatId to know which chat room to emit the event to.
+   * @param client - the socket of the user that is typing, used to get the user information to send to other users in the chat.
+   * @returns emits to all users in the chat that the user is typing, with the user information.
+   */
+  @SubscribeMessage('userTyping')
+  handleUserTyping(
+    @MessageBody() data: { chatId: number },
+    @ConnectedSocket() client: AuthenticatedSocket,
+  ) {
+    const userId = client.data.user?.id;
+    const username = client.data.user?.username;
+
+    if (!userId || !username) return;
+
+    this.server.to(`chat_${data.chatId}`).emit('userIsTyping', {
+      userId,
+      username,
+    });
+  }
+
+  /**
+   * Handles stopped typing event when user stops typing. It emits to all users in the chat that the user stopped typing.
+   * @param data - contains chatId to know which chat room to emit the event to.
+   * @param client - the socket of the user that stopped typing, used to get the user information to send to other users in the chat.
+   * @returns emits to all users in the chat that the user stopped typing, with the user information.
+   */
+  @SubscribeMessage('userStoppedTyping')
+  handleUserStoppedTyping(
+    @MessageBody() data: { chatId: number },
+    @ConnectedSocket() client: AuthenticatedSocket,
+  ) {
+    const userId = client.data.user?.id;
+    if (!userId) return;
+
+    this.server.to(`chat_${data.chatId}`).emit('userStoppedTyping', {
+      userId,
+    });
   }
 }
