@@ -187,6 +187,14 @@ export class ChatService {
   }
 
   /**
+   * Updates an instance of passed chat property.
+   * @param chat is required.
+   */
+  async updateChat(chat: Chat) {
+    await this.chatRepository.save(chat);
+  }
+
+  /**
    * Deletes an existing chat by provided chat and owner IDs. It also removes all chat members, posts, comments and tags associated with the current chat.
    * @param chatId is required. It is used to find an existing chat in the database.
    * @param ownerId is required to look up for an actual owner of the current chat.

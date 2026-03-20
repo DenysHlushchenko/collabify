@@ -78,7 +78,10 @@ const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
             </button>
           </PopoverTrigger>
           <PopoverContent className="w-48 rounded-md border-0 bg-white shadow-lg">
-            <p className="small-medium bg-gray-50 p-2">Chat members</p>
+            <p className="small-medium flex-between bg-gray-50 p-2">
+              <span>Chat members</span>
+              <span className="small-medium text-gray-500">Max: {chat.max_members}</span>
+            </p>
             <ul className="p-2">
               {chat.members.map((member) => {
                 return (

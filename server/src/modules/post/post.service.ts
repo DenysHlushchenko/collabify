@@ -235,6 +235,15 @@ export class PostService implements Voteable {
       });
     }
 
+    // update chat max_members property
+    const chat = await this.chatService.findByPostId(id);
+    if (!chat) {
+      throw new NotFoundException('Chat does not exist for this post!');
+    }
+
+    chat.max_members = groupSize;
+    await this.chatService.updateChat(chat);
+
     await this.postRepository.save(post);
 
     // cleanup tags what are not used anymore
