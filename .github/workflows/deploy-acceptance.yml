@@ -94,8 +94,8 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: us-east-1
 
-      - name: Deploy to Acceptance S3
-        run: aws s3 sync ./dist s3://${{ secrets.ACCEPTANCE_AWS_S3_BUCKET }} --delete
+      # - name: Deploy to Acceptance S3
+      #   run: aws s3 sync ./dist s3://${{ secrets.ACCEPTANCE_AWS_S3_BUCKET }} --delete
 
   verify-acceptance:
     if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main'

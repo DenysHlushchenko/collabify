@@ -95,8 +95,8 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: us-east-1
 
-      - name: Deploy to Production S3
-        run: aws s3 sync ./dist s3://${{ secrets.AWS_S3_BUCKET }} --delete
+      # - name: Deploy to Production S3
+      #   run: aws s3 sync ./dist s3://${{ secrets.AWS_S3_BUCKET }} --delete
 
   notify-deployment:
     if: always()
