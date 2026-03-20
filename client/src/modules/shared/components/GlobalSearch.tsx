@@ -42,7 +42,7 @@ const GlobalSearch = () => {
   return (
     <div className="relative w-full lg:max-w-150">
       {/* Desktop view */}
-      <div className="relative hidden min-h-8 grow items-center gap-1 rounded-lg bg-[#487EBD] px-2 sm:flex sm:min-h-9 sm:gap-1.5 sm:rounded-xl sm:px-4">
+      <div className="global-gray-theme relative hidden min-h-8 grow items-center gap-1 rounded-lg px-2 sm:flex sm:min-h-9 sm:gap-1.5 sm:rounded-xl sm:px-4">
         <Search className="size-4 shrink-0 cursor-pointer sm:size-5" />
         <Input
           value={search}

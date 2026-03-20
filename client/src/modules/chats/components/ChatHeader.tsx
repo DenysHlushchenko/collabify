@@ -42,7 +42,7 @@ const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
         <Link
           to="/chats"
           aria-label="Back to chats"
-          className="block cursor-pointer text-sky-500 transition hover:text-sky-500 lg:hidden"
+          className="global-gray-theme block cursor-pointer transition hover:bg-gray-700 lg:hidden"
         >
           <ChevronLeft size={32} />
         </Link>
@@ -73,7 +73,7 @@ const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
       <div className="flex items-center gap-4">
         <Popover open={popupOpen} onOpenChange={setPopupOpen}>
           <PopoverTrigger asChild>
-            <button className="cursor-pointer text-sm text-sky-500 hover:text-sky-300">
+            <button className="cursor-pointer text-sm text-gray-800 hover:text-gray-500">
               <p className="hidden md:block">View members</p>
               <UsersRound className="block md:hidden" />
             </button>

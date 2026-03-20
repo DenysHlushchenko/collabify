@@ -69,7 +69,12 @@ body {
   }
 
   .background-blue {
-    background-color: #1b5fad;
+    /* background-color: #1b5fad; */
+    @apply bg-gray-800;
+  }
+
+  .global-gray-theme {
+    @apply /* @apply bg-[#487EBD]; */ bg-[#304153];
   }
 
   .text-blue {

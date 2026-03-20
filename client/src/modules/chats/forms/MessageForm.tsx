@@ -70,7 +70,7 @@ const MessageForm = () => {
         <Button
           type="submit"
           aria-label="Send message"
-          className="cursor-pointer rounded-full bg-sky-500 transition hover:bg-sky-600"
+          className="global-gray-theme cursor-pointer rounded-full transition hover:bg-sky-600"
         >
           <SendHorizontal size={18} className="text-white" />
         </Button>
