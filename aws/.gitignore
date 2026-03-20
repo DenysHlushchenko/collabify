@@ -1,5 +1,6 @@
 terraform.tfstate
 terraform.tfvars
+terraform.tfvars.acceptance
 terraform.tfstate.backup
 .terraform/
 .terraform.lock.hcl
