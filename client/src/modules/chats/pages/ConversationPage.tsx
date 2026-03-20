@@ -30,7 +30,7 @@ const ConversationPage = () => {
   return (
     <div className="relative flex h-[calc(100vh-10rem)] flex-col md:h-[calc(100vh-6.5rem)]">
       {chat && <ChatHeader chat={chat} isPending={isPending} error={error?.message} />}
-      <div className="flex-1 overflow-y-auto pb-2">
+      <div className="no-scrollbar flex-1 overflow-y-auto pb-2">
         <Body />
       </div>
 
