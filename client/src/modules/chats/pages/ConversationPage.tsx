@@ -9,11 +9,10 @@ import { useAuthStore } from "@/modules/auth/store/userStore";
 
 const ConversationPage = () => {
   const { chatId } = useParams();
-  const currentUser = useAuthStore().getUser();
-
   const { socket } = useSocket();
+  const currentUser = useAuthStore().getUser();
   const id = Number(chatId);
-  const { data: chat, isPending, error } = useChatQuery(id, currentUser!.id);
+  const { data: chat, isPending, error } = useChatQuery(id);
 
   useEffect(() => {
     if (id) {

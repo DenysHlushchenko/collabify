@@ -46,7 +46,7 @@ function App() {
         </section>
 
         {isChatsRoute ? (
-          <section className="md:custom-scrollbar sticky top-0 right-0 flex h-screen w-40 flex-col gap-6 overflow-y-auto border-l border-l-gray-300 p-6 pt-36 max-md:hidden">
+          <section className="md:custom-scrollbar sticky top-0 right-0 flex h-screen w-60 flex-col gap-6 overflow-y-auto border-l border-l-gray-300 p-6 pt-36 max-md:hidden">
             <UserChats />
           </section>
         ) : (

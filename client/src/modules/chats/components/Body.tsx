@@ -65,7 +65,16 @@ const Body = ({ userId }: BodyProps) => {
   return (
     <div className="flex-1 overflow-y-auto">
       {messages?.length ? (
-        messages?.map((message) => <MessageBox key={message.id} data={message} />)
+        messages?.map((message) => {
+          if (message.isChatJoinMessage) {
+            return (
+              <div key={message.id} className="flex-center my-2">
+                <p className="text-sm text-gray-500">{message.message}</p>
+              </div>
+            );
+          }
+          return <MessageBox key={message.id} data={message} />;
+        })
       ) : (
         <p className="flex-center h-full">No messages yet!</p>
       )}
