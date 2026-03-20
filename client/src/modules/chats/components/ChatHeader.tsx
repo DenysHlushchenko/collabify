@@ -1,5 +1,5 @@
 import type { ChatType } from "@/modules/shared/types/types";
-import { ChevronLeft, Crown, Users } from "lucide-react";
+import { ChevronLeft, Crown, UsersRound } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Error from "@/modules/shared/components/Error";
 import DeleteDialog from "@/modules/shared/components/dialogs/DeleteDialog";
@@ -74,7 +74,8 @@ const ChatHeader = ({ chat, isPending, error }: ChatHeaderProps) => {
         <Popover open={popupOpen} onOpenChange={setPopupOpen}>
           <PopoverTrigger asChild>
             <button className="cursor-pointer text-sm text-sky-500 hover:text-sky-300">
-              <Users />
+              <p className="hidden md:block">View members</p>
+              <UsersRound className="block md:hidden" />
             </button>
           </PopoverTrigger>
           <PopoverContent className="w-48 rounded-md border-0 bg-white shadow-lg">

@@ -63,7 +63,7 @@ const Body = ({ userId }: BodyProps) => {
   const isCurrentUserTyping = typingUsers.some((u) => u.userId === userId);
 
   return (
-    <div className="flex-1 overflow-y-auto">
+    <div className="no-scrollbar flex-1 overflow-y-auto">
       {messages?.length ? (
         messages?.map((message) => {
           if (message.isChatJoinMessage) {
@@ -76,7 +76,7 @@ const Body = ({ userId }: BodyProps) => {
           return <MessageBox key={message.id} data={message} />;
         })
       ) : (
-        <p className="flex-center h-full">No messages yet!</p>
+        <p className="pt-30 text-center">No messages yet!</p>
       )}
       {typingUsers.length > 0 && !isCurrentUserTyping && (
         <div className="flex items-center gap-2 px-4 py-2">
