@@ -10,7 +10,7 @@ env:
 
 jobs:
   deploy-backend-acceptance:
-    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main'
+    environment: acceptance
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -50,7 +50,7 @@ jobs:
           DB_NAME: ${{ secrets.ACCEPTANCE_DATABASE_NAME }}
           DB_USER: ${{ secrets.ACCEPTANCE_DATABASE_USERNAME }}
           DB_PASS: ${{ secrets.ACCEPTANCE_DATABASE_PASSWORD }}
-          JWT_SECRET: ${{ secrets.ACCEPTANCE_JWT_SECRET_KEY }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET_KEY }}
           FRONTEND_URL: ${{ secrets.ACCEPTANCE_FRONTEND_URL }}
         with:
           host: ${{ secrets.ACCEPTANCE_EC2_HOST }}
@@ -74,7 +74,7 @@ jobs:
             ./deploy_backend.sh
 
   deploy-frontend-acceptance:
-    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main'
+    environment: acceptance
     needs: deploy-backend-acceptance
     runs-on: ubuntu-latest
     steps:
@@ -98,7 +98,7 @@ jobs:
       #   run: aws s3 sync ./dist s3://${{ secrets.ACCEPTANCE_AWS_S3_BUCKET }} --delete
 
   verify-acceptance:
-    if: github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main'
+    environment: acceptance
     needs: [deploy-backend-acceptance, deploy-frontend-acceptance]
     runs-on: ubuntu-latest
     steps:
