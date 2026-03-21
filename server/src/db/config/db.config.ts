@@ -10,19 +10,20 @@ import { Post } from '../../modules/post/entities/post.entity';
 import { PostTag } from '../../modules/tag/entities/post_tag.entity';
 import { Tag } from '../../modules/tag/entities/tag.entity';
 import { User } from '../../modules/user/entities/user.entity';
-import { DataSourceOptions } from 'typeorm';
+import { DataSourceOptions, DataSource } from 'typeorm';
 
 import * as dotenv from 'dotenv';
-import { PostVote } from 'src/modules/post/entities/post_vote.entity';
-import { CommentVote } from 'src/modules/comment/entities/comment_vote.entity';
+import { PostVote } from '../../modules/post/entities/post_vote.entity';
+import { CommentVote } from '../../modules/comment/entities/comment_vote.entity';
+import { InitialSchema1774095708085 } from 'src/migrations/1774095708085-initial-schema';
 
 dotenv.config();
 
-const ssl = process.env.NODE_ENV === 'production' && {
+const ssl = process.env.NODE_ENV !== 'development' && {
   rejectUnauthorized: false,
 };
 
-const synchronize = process.env.NODE_ENV === 'production' ? false : true;
+const synchronize = process.env.NODE_ENV === 'development';
 
 export const databaseConfig: DataSourceOptions = {
   type: 'postgres',
@@ -49,4 +50,9 @@ export const databaseConfig: DataSourceOptions = {
   ],
   synchronize,
   ssl,
+  migrations: [InitialSchema1774095708085],
+  migrationsTableName: 'migrations',
+  migrationsRun: process.env.NODE_ENV !== 'development',
 };
+
+export const AppDataSource = new DataSource(databaseConfig);

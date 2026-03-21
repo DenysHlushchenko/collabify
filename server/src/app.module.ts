@@ -12,6 +12,7 @@ import { MessagesModule } from './modules/messages/messages.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { TagModule } from './modules/tag/tag.module';
 import { VoteModule } from './shared/vote/vote.module';
+import { HealthModule } from './modules/health/health.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { VoteModule } from './shared/vote/vote.module';
     NotificationModule,
     TagModule,
     VoteModule,
+    HealthModule,
   ],
 })
 export class AppModule {}

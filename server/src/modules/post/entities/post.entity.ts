@@ -1,6 +1,6 @@
-import { PostTag } from 'src/modules/tag/entities/post_tag.entity';
+import { PostTag } from '../../tag/entities/post_tag.entity';
 import { User } from '../../user/entities/user.entity';
-import { Comment } from 'src/modules/comment/entities/comment.entity';
+import { Comment } from '../../comment/entities/comment.entity';
 import {
   Column,
   CreateDateColumn,
@@ -12,7 +12,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Chat } from 'src/modules/chat/entities/chat.entity';
+import { Chat } from '../../chat/entities/chat.entity';
 
 @Entity('posts')
 export class Post {

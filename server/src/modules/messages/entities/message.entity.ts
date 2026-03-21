@@ -1,5 +1,5 @@
-import { Chat } from 'src/modules/chat/entities/chat.entity';
-import { User } from 'src/modules/user/entities/user.entity';
+import { Chat } from '../../chat/entities/chat.entity';
+import { User } from '../../user/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
