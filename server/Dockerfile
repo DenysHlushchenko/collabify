@@ -10,5 +10,5 @@ RUN npm run build
 
 EXPOSE 5000
 
-CMD ["sh", "-c", "npx typeorm migration:run && node dist/main.js"]
+CMD ["sh", "-c", "npx typeorm migration:run -d dist/db/config/db.config.js && node dist/main.js"]
 
