@@ -68,7 +68,7 @@ jobs:
             JWT_SECRET_KEY=$JWT_SECRET
             SERVER_PORT=5000
             FRONTEND_URL=$FRONTEND_URL
-            NODE_ENV=production
+            NODE_ENV=acceptance
             EOF
             chmod +x ./deploy_backend.sh
             ./deploy_backend.sh
