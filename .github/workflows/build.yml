@@ -54,6 +54,7 @@ jobs:
 
   build-frontend:
     if: github.event_name == 'pull_request' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+    environment: ${{ matrix.environment }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
