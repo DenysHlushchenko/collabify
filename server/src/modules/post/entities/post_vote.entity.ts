@@ -1,4 +1,4 @@
-import { User } from 'src/modules/user/entities/user.entity';
+import { User } from '../../user/entities/user.entity';
 import { Post } from './post.entity';
 import {
   Column,
@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
-import { VoteType } from 'src/shared/enums/enums';
+import { VoteType } from '../../../shared/enums/enums';
 import { IsOptional } from 'class-validator';
 
 @Unique(['user', 'post'])

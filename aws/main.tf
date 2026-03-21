@@ -16,9 +16,30 @@ provider "aws" {
 // Import variables from variables.tf
 locals {
 	project_name = "collabify"
+	environment  = terraform.workspace
+	
+	// Environment-specific configuration
+	environment_config = {
+		acceptance = {
+			ec2_instance_type = "t3.micro"
+			db_instance_class = "db.t3.micro"
+			db_allocated_storage = 20
+			multi_az = false
+		}
+		production = {
+			ec2_instance_type = "t3.small"
+			db_instance_class = "db.t3.small"
+			db_allocated_storage = 100
+			multi_az = true
+		}
+	}
+	
+	current_env = local.environment_config[local.environment]
+	
 	common_tags = {
-		Project   = local.project_name
-		ManagedBy = "terraform"
+		Project     = local.project_name
+		Environment = local.environment
+		ManagedBy   = "terraform"
 	}
 }
 
@@ -49,7 +70,7 @@ resource "aws_vpc" "main" {
 	enable_dns_support   = true
 
 	tags = merge(local.common_tags, {
-		Name = "${local.project_name}-vpc"
+		Name = "${local.project_name}-${local.environment}-vpc"
 	})
 }
 
@@ -61,7 +82,7 @@ resource "aws_subnet" "public" {
 	map_public_ip_on_launch = true
 
 	tags = merge(local.common_tags, {
-		Name = "${local.project_name}-public-subnet"
+		Name = "${local.project_name}-${local.environment}-public-subnet"
 	})
 }
 
@@ -72,7 +93,7 @@ resource "aws_subnet" "private_1" {
 	availability_zone = data.aws_availability_zones.available.names[1]
 
 	tags = merge(local.common_tags, {
-		Name = "${local.project_name}-private-subnet-1"
+		Name = "${local.project_name}-${local.environment}-private-subnet-1"
 	})
 }
 
@@ -82,7 +103,7 @@ resource "aws_subnet" "private_2" {
 	availability_zone = data.aws_availability_zones.available.names[0]
 
 	tags = merge(local.common_tags, {
-		Name = "${local.project_name}-private-subnet-2"
+		Name = "${local.project_name}-${local.environment}-private-subnet-2"
 	})
 }
 
@@ -91,7 +112,7 @@ resource "aws_internet_gateway" "igw" {
 	vpc_id = aws_vpc.main.id
 
 	tags = merge(local.common_tags, {
-		Name = "${local.project_name}-igw"
+		Name = "${local.project_name}-${local.environment}-igw"
 	})
 }
 
@@ -105,7 +126,7 @@ resource "aws_route_table" "public" {
 	}
 
 	tags = merge(local.common_tags, {
-		Name = "${local.project_name}-public-rt"
+		Name = "${local.project_name}-${local.environment}-public-rt"
 	})
 }
 
@@ -120,7 +141,7 @@ resource "aws_eip" "nat_eip" {
 	domain = "vpc"
 
 	tags = merge(local.common_tags, {
-		Name = "${local.project_name}-nat-eip"
+		Name = "${local.project_name}-${local.environment}-nat-eip"
 	})
 }
 
@@ -131,7 +152,7 @@ resource "aws_nat_gateway" "nat" {
 	depends_on    = [aws_internet_gateway.igw]
 
 	tags = merge(local.common_tags, {
-		Name = "${local.project_name}-nat-gw"
+		Name = "${local.project_name}-${local.environment}-nat-gw"
 	})
 }
 
@@ -145,7 +166,7 @@ resource "aws_route_table" "private" {
 	}
 
 	tags = merge(local.common_tags, {
-		Name = "${local.project_name}-private-rt"
+		Name = "${local.project_name}-${local.environment}-private-rt"
 	})
 }
 
@@ -162,8 +183,8 @@ resource "aws_route_table_association" "private_2" {
 
 // Create security groups for backend EC2 and RDS PostgreSQL
 resource "aws_security_group" "backend_sg" {
-	name        = "${local.project_name}-backend-sg"
-	description = "Security group for Collabify backend EC2"
+	name        = "${local.project_name}-${local.environment}-backend-sg"
+	description = "Security group for Collabify backend EC2 (${local.environment})"
 	vpc_id      = aws_vpc.main.id
 
 	ingress {
@@ -197,14 +218,14 @@ resource "aws_security_group" "backend_sg" {
 	}
 
 	tags = merge(local.common_tags, {
-		Name = "${local.project_name}-backend-sg"
+		Name = "${local.project_name}-${local.environment}-backend-sg"
 	})
 }
 
 // Security group for RDS that only allows inbound traffic from backend EC2 security group
 resource "aws_security_group" "db_sg" {
-	name        = "${local.project_name}-db-sg"
-	description = "Security group for Collabify PostgreSQL RDS"
+	name        = "${local.project_name}-${local.environment}-db-sg"
+	description = "Security group for Collabify PostgreSQL RDS (${local.environment})"
 	vpc_id      = aws_vpc.main.id
 
 	ingress {
@@ -224,27 +245,27 @@ resource "aws_security_group" "db_sg" {
 	}
 
 	tags = merge(local.common_tags, {
-		Name = "${local.project_name}-db-sg"
+		Name = "${local.project_name}-${local.environment}-db-sg"
 	})
 }
 
 // Create RDS subnet group for the private subnets
 resource "aws_db_subnet_group" "main" {
-	name       = "${local.project_name}-db-subnet-group"
+	name       = "${local.project_name}-${local.environment}-db-subnet-group"
 	subnet_ids = [aws_subnet.private_1.id, aws_subnet.private_2.id]
 
 	tags = merge(local.common_tags, {
-		Name = "${local.project_name}-db-subnet-group"
+		Name = "${local.project_name}-${local.environment}-db-subnet-group"
 	})
 }
 
 // Create RDS PostgreSQL instance in private subnets
 resource "aws_db_instance" "postgres" {
-	identifier             = "${local.project_name}-db"
+	identifier             = "${local.project_name}-${local.environment}-db"
 	engine                 = "postgres"
 	engine_version         = "16"
-	instance_class         = var.db_instance_class
-	allocated_storage      = var.db_allocated_storage
+	instance_class         = local.current_env.db_instance_class
+	allocated_storage      = local.current_env.db_allocated_storage
 	db_name                = var.db_name
 	username               = var.db_username
 	password               = var.db_password
@@ -252,39 +273,23 @@ resource "aws_db_instance" "postgres" {
 	vpc_security_group_ids = [aws_security_group.db_sg.id]
 	skip_final_snapshot    = true
 	publicly_accessible    = false
-	multi_az               = false
+	multi_az               = local.current_env.multi_az
 
 	tags = merge(local.common_tags, {
-		Name = "${local.project_name}-postgres"
+		Name = "${local.project_name}-${local.environment}-postgres"
 	})
 }
 
 // Create EC2 instance for backend application in public subnet
 resource "aws_instance" "backend" {
 	ami                         = data.aws_ami.amazon_linux_2023.id
-	instance_type               = var.ec2_instance_type
+	instance_type               = local.current_env.ec2_instance_type
 	subnet_id                   = aws_subnet.public.id
 	associate_public_ip_address = true
 	vpc_security_group_ids      = [aws_security_group.backend_sg.id]
 	key_name                    = var.ec2_key_name
 
 	tags = merge(local.common_tags, {
-		Name = "${local.project_name}-backend"
+		Name = "${local.project_name}-${local.environment}-backend"
 	})
-}
-
-output "backend_public_ip" {
-	value = aws_instance.backend.public_ip
-}
-
-output "backend_url" {
-	value = "http://${aws_instance.backend.public_ip}:${var.backend_port}"
-}
-
-output "rds_endpoint" {
-	value = aws_db_instance.postgres.endpoint
-}
-
-output "rds_database_name" {
-	value = aws_db_instance.postgres.db_name
 }

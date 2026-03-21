@@ -1,3 +1,12 @@
+variable "environment" {
+  description = "Environment name (acceptance/production)"
+  type        = string
+  validation {
+    condition     = contains(["acceptance", "production"], var.environment)
+    error_message = "Environment must be either 'acceptance' or 'production'."
+  }
+}
+
 variable "aws_region" {
   description = "AWS region to deploy infrastructure"
   type        = string
