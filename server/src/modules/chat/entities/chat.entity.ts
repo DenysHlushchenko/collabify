@@ -30,6 +30,8 @@ export class Chat {
   })
   @JoinTable({
     name: 'chat_posts',
+    joinColumn: { name: 'chat_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'post_id', referencedColumnName: 'id' },
   })
   posts: Post[];
 

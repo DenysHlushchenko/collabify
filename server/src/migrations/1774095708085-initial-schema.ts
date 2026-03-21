@@ -57,14 +57,19 @@ export class InitialSchema1774095708085 implements MigrationInterface {
       `CREATE TABLE IF NOT EXISTS "post_tags" ("post_id" integer NOT NULL, "tag_id" integer NOT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), PRIMARY KEY ("post_id", "tag_id"), CONSTRAINT "FK_post_tags_post" FOREIGN KEY ("post_id") REFERENCES "posts"("id") ON DELETE CASCADE, CONSTRAINT "FK_post_tags_tag" FOREIGN KEY ("tag_id") REFERENCES "tags"("id") ON DELETE CASCADE)`,
     );
 
+    // Create vote_type enum
+    await queryRunner.query(
+      `DO $$ BEGIN IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'vote_type_enum') THEN CREATE TYPE "vote_type_enum" AS ENUM('like', 'dislike'); END IF; END $$`,
+    );
+
     // Create post_votes table
     await queryRunner.query(
-      `CREATE TABLE IF NOT EXISTS "post_votes" ("id" SERIAL NOT NULL, "type" character varying DEFAULT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "post_id" integer, "user_id" integer, PRIMARY KEY ("id"), UNIQUE ("post_id", "user_id"), CONSTRAINT "FK_post_votes_post" FOREIGN KEY ("post_id") REFERENCES "posts"("id") ON DELETE CASCADE, CONSTRAINT "FK_post_votes_user" FOREIGN KEY ("user_id") REFERENCES "users"("id"))`,
+      `CREATE TABLE IF NOT EXISTS "post_votes" ("id" SERIAL NOT NULL, "type" "vote_type_enum" DEFAULT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "post_id" integer, "user_id" integer, PRIMARY KEY ("id"), UNIQUE ("post_id", "user_id"), CONSTRAINT "FK_post_votes_post" FOREIGN KEY ("post_id") REFERENCES "posts"("id") ON DELETE CASCADE, CONSTRAINT "FK_post_votes_user" FOREIGN KEY ("user_id") REFERENCES "users"("id"))`,
     );
 
     // Create comment_votes table
     await queryRunner.query(
-      `CREATE TABLE IF NOT EXISTS "comment_votes" ("id" SERIAL NOT NULL, "type" character varying DEFAULT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "comment_id" integer, "user_id" integer, PRIMARY KEY ("id"), UNIQUE ("comment_id", "user_id"), CONSTRAINT "FK_comment_votes_comment" FOREIGN KEY ("comment_id") REFERENCES "comments"("id") ON DELETE CASCADE, CONSTRAINT "FK_comment_votes_user" FOREIGN KEY ("user_id") REFERENCES "users"("id"))`,
+      `CREATE TABLE IF NOT EXISTS "comment_votes" ("id" SERIAL NOT NULL, "type" "vote_type_enum" DEFAULT NULL, "created_at" TIMESTAMP NOT NULL DEFAULT now(), "comment_id" integer, "user_id" integer, PRIMARY KEY ("id"), UNIQUE ("comment_id", "user_id"), CONSTRAINT "FK_comment_votes_comment" FOREIGN KEY ("comment_id") REFERENCES "comments"("id") ON DELETE CASCADE, CONSTRAINT "FK_comment_votes_user" FOREIGN KEY ("user_id") REFERENCES "users"("id"))`,
     );
 
     // Create feedbacks table
@@ -95,5 +100,6 @@ export class InitialSchema1774095708085 implements MigrationInterface {
     await queryRunner.query(`DROP TABLE IF EXISTS "users" CASCADE`);
     await queryRunner.query(`DROP TABLE IF EXISTS "tags" CASCADE`);
     await queryRunner.query(`DROP TABLE IF EXISTS "countries" CASCADE`);
+    await queryRunner.query(`DROP TYPE IF EXISTS "vote_type_enum"`);
   }
 }
