@@ -1,4 +1,4 @@
-import { Comment } from 'src/modules/comment/entities/comment.entity';
+import { Comment } from '../../comment/entities/comment.entity';
 import { Post } from '../../post/entities/post.entity';
 import { GenderType, RoleType } from '../../../shared/enums/enums';
 import {
@@ -11,12 +11,12 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ChatMember } from 'src/modules/chat/entities/chat_members.entity';
-import { Message } from 'src/modules/messages/entities/message.entity';
-import { MessageReaction } from 'src/modules/messages/entities/message_reaction.entity';
-import { Feedback } from 'src/modules/feedback/entities/feedback.entity';
-import { Notification } from 'src/modules/notification/entities/notification.entity';
-import { Country } from 'src/modules/country/entities/country.entity';
+import { ChatMember } from '../../chat/entities/chat_members.entity';
+import { Message } from '../../messages/entities/message.entity';
+import { MessageReaction } from '../../messages/entities/message_reaction.entity';
+import { Feedback } from '../../feedback/entities/feedback.entity';
+import { Notification } from '../../notification/entities/notification.entity';
+import { Country } from '../../country/entities/country.entity';
 
 @Entity('users')
 export class User {

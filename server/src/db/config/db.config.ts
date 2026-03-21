@@ -10,11 +10,11 @@ import { Post } from '../../modules/post/entities/post.entity';
 import { PostTag } from '../../modules/tag/entities/post_tag.entity';
 import { Tag } from '../../modules/tag/entities/tag.entity';
 import { User } from '../../modules/user/entities/user.entity';
-import { DataSourceOptions } from 'typeorm';
+import { DataSourceOptions, DataSource } from 'typeorm';
 
 import * as dotenv from 'dotenv';
-import { PostVote } from 'src/modules/post/entities/post_vote.entity';
-import { CommentVote } from 'src/modules/comment/entities/comment_vote.entity';
+import { PostVote } from '../../modules/post/entities/post_vote.entity';
+import { CommentVote } from '../../modules/comment/entities/comment_vote.entity';
 
 dotenv.config();
 
@@ -49,4 +49,12 @@ export const databaseConfig: DataSourceOptions = {
   ],
   synchronize,
   ssl,
+  migrations:
+    process.env.NODE_ENV === 'production'
+      ? ['dist/migrations/*.js']
+      : ['src/migrations/*.ts'],
+  migrationsTableName: 'migrations',
+  migrationsRun: process.env.NODE_ENV === 'production',
 };
+
+export const AppDataSource = new DataSource(databaseConfig);

@@ -1,4 +1,4 @@
-import { Post } from 'src/modules/post/entities/post.entity';
+import { Post } from '../../post/entities/post.entity';
 import {
   Column,
   CreateDateColumn,
@@ -9,7 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ChatMember } from './chat_members.entity';
-import { Message } from 'src/modules/messages/entities/message.entity';
+import { Message } from '../../messages/entities/message.entity';
 
 @Entity('chats')
 export class Chat {
