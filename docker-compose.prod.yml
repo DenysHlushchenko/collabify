@@ -9,9 +9,7 @@ services:
         restart: unless-stopped
 
     client:
-        build:
-            context: ./client
-            dockerfile: Dockerfile
+        image: ghcr.io/${{ github.repository }}/frontend:latest-production
         ports:
             - "80:80"
             - "443:443"
