@@ -18,7 +18,7 @@ import { CommentVote } from 'src/modules/comment/entities/comment_vote.entity';
 
 dotenv.config();
 
-const ssl = process.env.NODE_ENV === 'production' && {
+const ssl = process.env.NODE_ENV !== 'development' && {
   rejectUnauthorized: false,
 };
 
