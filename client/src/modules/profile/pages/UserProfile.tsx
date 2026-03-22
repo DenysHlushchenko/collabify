@@ -38,7 +38,7 @@ const UserProfile = () => {
             userId={Number(userId)}
             username={currentUser.user.username}
             className="h-24 w-24 shrink-0 sm:h-28 sm:w-28 lg:h-32 lg:w-32"
-            fallbackClassName="text-3xl bg-[#6395CD] text-white"
+            fallbackClassName="text-3xl global-gray-theme text-white"
           />
 
           <div className="flex flex-col items-center gap-4 lg:items-start lg:gap-5">

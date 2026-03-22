@@ -29,7 +29,7 @@ const Navbar = () => {
               username={currentUser.user.username}
               userId={currentUser.user.id}
               className="h-8 w-8"
-              fallbackClassName="bg-[#6395CD] text-white"
+              fallbackClassName="global-gray-theme text-white"
             />
           )}
           <MobileNavigation />

@@ -53,7 +53,7 @@ const MessageBox = ({ data }: MessageBoxProps) => {
   const body = cn("flex flex-col gap-2", isOwn && "items-end");
   const message = cn(
     "text-sm py-2 px-3 w-fit overflow-hidden rounded-lg",
-    isOwn ? "bg-sky-500 text-white" : "bg-gray-100"
+    isOwn ? "global-gray-theme text-white" : "bg-gray-100"
   );
 
   // Group reactions by emoji

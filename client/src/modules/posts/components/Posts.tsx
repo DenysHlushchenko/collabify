@@ -24,7 +24,7 @@ const Posts = ({ posts }: { posts: PostType[] }) => {
 
   return (
     <div>
-      <div className="flex-between mb-4 gap-x-1.5">
+      <div className="flex-between mb-7 gap-x-1.5">
         <Filters />
         <PostForm type="create" submitPost={submitPost} postError={error} />
       </div>

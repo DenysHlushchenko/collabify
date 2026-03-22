@@ -14,7 +14,7 @@ import { ProfileSchema } from "@/modules/shared/lib/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCurrentUser } from "../hooks/useCurrentUser";
 import * as z from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel } from "@/modules/shared/components/ui/Form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/modules/shared/components/ui/Form";
 import { Button } from "@/modules/shared/components/ui/Button";
 import { Input } from "@/modules/shared/components/ui/Input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/modules/shared/components/ui/Select";
@@ -25,6 +25,17 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { updateUser } from "../api/user";
 import Error from "@/modules/shared/components/Error";
+import { Popover, PopoverContent, PopoverTrigger } from "@/modules/shared/components/ui/Popover";
+import { Check, ChevronsUpDown } from "lucide-react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/modules/shared/components/ui/Command";
+import { cn } from "@/modules/shared/lib/utils";
 
 interface ProfileDialogProps {
   userId: number;
@@ -134,24 +145,56 @@ const ProfileDialog = ({ userId }: ProfileDialogProps) => {
             <FormField
               control={form.control}
               name="country"
-              render={({ field, fieldState }) => (
-                <FormItem>
+              render={({ field }) => (
+                <FormItem className="flex flex-col gap-1.5">
                   <FormLabel>Country</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select your country" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="bg-white">
-                      {countries.all.map((c) => (
-                        <SelectItem key={c.name} value={c.name} className="cursor-pointer hover:bg-gray-100">
-                          {c.emoji} {c.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {fieldState.error && <Error message={fieldState.error.message} />}
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          className="w-full cursor-pointer justify-between text-left font-normal"
+                        >
+                          {field.value ? countries.all.find((c) => c.name === field.value)?.name : "Select country"}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+
+                    <PopoverContent className="w-(--radix-popover-trigger-width) bg-white p-0" align="start">
+                      <Command>
+                        <CommandInput placeholder="Search country..." />
+                        <CommandList className="max-h-64">
+                          <CommandEmpty>No country found.</CommandEmpty>
+                          <CommandGroup>
+                            {countries.all.map((country) => (
+                              <CommandItem
+                                className="cursor-pointer hover:bg-gray-100"
+                                key={country.name}
+                                value={country.name.toLowerCase()}
+                                onSelect={() => {
+                                  form.setValue("country", country.name, { shouldValidate: true });
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4",
+                                    country.name === field.value ? "opacity-100" : "opacity-0"
+                                  )}
+                                />
+                                <div className="flex items-center gap-2">
+                                  <span>{country.emoji}</span>
+                                  <span>{country.name}</span>
+                                </div>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
                 </FormItem>
               )}
             />
