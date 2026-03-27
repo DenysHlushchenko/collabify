@@ -19,6 +19,7 @@ import { InitialSchema1774095708085 } from 'src/migrations/1774095708085-initial
 
 dotenv.config({
   path: process.env.NODE_ENV === 'development' ? '.env' : '.env.production',
+  override: true,
 });
 
 const ssl = process.env.NODE_ENV !== 'development' && {
