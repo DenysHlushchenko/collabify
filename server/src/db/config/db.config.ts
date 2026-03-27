@@ -17,10 +17,7 @@ import { PostVote } from '../../modules/post/entities/post_vote.entity';
 import { CommentVote } from '../../modules/comment/entities/comment_vote.entity';
 import { InitialSchema1774095708085 } from 'src/migrations/1774095708085-initial-schema';
 
-dotenv.config({
-  path: process.env.NODE_ENV === 'development' ? '.env' : '.env.production',
-  override: true,
-});
+dotenv.config();
 
 const ssl = process.env.NODE_ENV !== 'development' && {
   rejectUnauthorized: false,
