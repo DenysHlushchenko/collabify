@@ -5,17 +5,17 @@ output "environment" {
 
 output "backend_public_ip" {
 	description = "Public IP of the backend EC2 instance"
-	value       = aws_instance.backend.public_ip
+	value       = aws_eip.backend.public_ip
 }
 
 output "backend_url" {
 	description = "Backend API URL"
-	value       = "http://${aws_instance.backend.public_ip}:${var.backend_port}"
+	value       = "http://${aws_eip.backend.public_ip}:${var.backend_port}"
 }
 
 output "backend_socket_url" {
 	description = "Backend Socket.io URL"
-	value       = "http://${aws_instance.backend.public_ip}:5001"
+	value       = "http://${aws_eip.backend.public_ip}:5001"
 }
 
 output "rds_endpoint" {

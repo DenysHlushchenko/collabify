@@ -293,3 +293,13 @@ resource "aws_instance" "backend" {
 		Name = "${local.project_name}-${local.environment}-backend"
 	})
 }
+
+// Create Elastic IP for Backend Application EC2 instance
+resource "aws_eip" "backend" {
+	instance = aws_instance.backend.id
+	domain   = "vpc"
+
+	tags = merge(local.common_tags, {
+		Name = "${local.project_name}-${local.environment}-backend-eip"
+	})
+}
