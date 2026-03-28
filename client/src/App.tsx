@@ -17,6 +17,7 @@ import { Toaster } from "@/modules/shared/components/ui/Sonner";
 import ChatsPage from "./modules/chats/pages/ChatsPage";
 import ConversationPage from "./modules/chats/pages/ConversationPage";
 import UserChats from "./modules/chats/components/UserChats";
+import PageTitle from "./modules/shared/components/PageTitle";
 
 function App() {
   const { pathname } = useLocation();
@@ -61,24 +62,96 @@ function AppRoutes() {
   return (
     <Routes>
       <Route element={<PublicRoute />}>
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+        <Route
+          path="/register"
+          element={
+            <>
+              <PageTitle title="Register" />
+              <Register />
+            </>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <>
+              <PageTitle title="Login" />
+              <Login />
+            </>
+          }
+        />
       </Route>
 
       <Route element={<ProtectedRoute />}>
         <Route element={<App />}>
-          <Route index element={<HomePage />} />
+          <Route
+            index
+            element={
+              <>
+                <PageTitle title="Home" />
+                <HomePage />
+              </>
+            }
+          />
           <Route path="chats">
-            <Route index element={<ChatsPage />} />
-            <Route path=":chatId" element={<ConversationPage />} />
+            <Route
+              index
+              element={
+                <>
+                  <PageTitle title="Chats" />
+                  <ChatsPage />
+                </>
+              }
+            />
+            <Route
+              path=":chatId"
+              element={
+                <>
+                  <PageTitle title="Conversation" />
+                  <ConversationPage />
+                </>
+              }
+            />
           </Route>
-          <Route path="posts" element={<PostsPage />} />
-          <Route path="posts/:postId" element={<PostDetails />} />
-          <Route path="/profile/:userId" element={<UserProfile />} />
+          <Route
+            path="posts"
+            element={
+              <>
+                <PageTitle title="Posts" />
+                <PostsPage />
+              </>
+            }
+          />
+          <Route
+            path="posts/:postId"
+            element={
+              <>
+                <PageTitle title="Post Details" />
+                <PostDetails />
+              </>
+            }
+          />
+          <Route
+            path="/profile/:userId"
+            element={
+              <>
+                <PageTitle title="Profile" />
+                <UserProfile />
+              </>
+            }
+          />
         </Route>
       </Route>
 
-      <Route path="*" element={<NotFoundPage />} />
+      <Route
+        path="*"
+        element={
+          <>
+            <PageTitle title="Not Found" />
+            <NotFoundPage />
+          </>
+        }
+      />
     </Routes>
   );
 }
