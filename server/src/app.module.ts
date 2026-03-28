@@ -16,7 +16,10 @@ import { HealthModule } from './modules/health/health.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      envFilePath:
+        process.env.NODE_ENV === 'development' ? '.env' : '.env.production',
+    }),
     DatabaseModule,
     UserModule,
     AuthModule,
