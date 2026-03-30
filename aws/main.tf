@@ -289,6 +289,12 @@ resource "aws_instance" "backend" {
 	vpc_security_group_ids      = [aws_security_group.backend_sg.id]
 	key_name                    = var.ec2_key_name
 
+	root_block_device {
+		volume_size           = 30
+		volume_type           = "gp3"
+		delete_on_termination = true
+	}
+
 	tags = merge(local.common_tags, {
 		Name = "${local.project_name}-${local.environment}-backend"
 	})
