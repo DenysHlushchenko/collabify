@@ -130,7 +130,6 @@ jobs:
         run: |
           S3_BUCKET="${{ secrets.ACCEPTANCE_AWS_S3_BUCKET }}"
           echo "✅ Frontend deployed to S3 bucket: $S3_BUCKET"
-          echo "Frontend URL: https://$S3_BUCKET.s3.amazonaws.com/index.html"
 
       - name: API Smoke Tests
         run: |
