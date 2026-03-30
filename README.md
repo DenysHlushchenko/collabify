@@ -8,18 +8,18 @@ This repository contains the source code for the Collabify application, a platfo
 
 ## Table of Contents
 
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-- [Backend Setup (Server)](#backend-setup-server)
-  - [Project setup](#project-setup)
-  - [Run NestJS locally, build and run PostgreSQL in docker environment](#run-nestjs-locally-build-and-run-postgresql-in-docker-environment)
-  - [Build and run the project using docker-compose.yml file](#build-and-run-the-project-using-docker-composeyml-file)
-  - [Run tests](#run-tests)
-  - [How to connect to the Postgres database using Docker Desktop container](#how-to-connect-to-the-postgres-database-using-docker-desktop-container)
-- [Frontend Setup (Client)](#frontend-setup-client)
-  - [Project setup](#project-setup-1)
-  - [Running the client](#running-the-client)
-- [Running the Full Application](#running-the-full-application)
+- [Welcome to the Collabify app repository!](#welcome-to-the-collabify-app-repository)
+    - [Table of Contents](#table-of-contents)
+    - [Getting Started](#getting-started)
+        - [Prerequisites](#prerequisites)
+    - [Backend Setup (Server)](#backend-setup-server)
+        - [Project setup](#project-setup)
+        - [Run NestJS locally, build and run PostgreSQL in docker environment](#run-nestjs-locally-build-and-run-postgresql-in-docker-environment)
+        - [Run tests](#run-tests)
+        - [How to connect to the Postgres database using Docker Desktop container](#how-to-connect-to-the-postgres-database-using-docker-desktop-container)
+    - [Frontend Setup (Client)](#frontend-setup-client)
+        - [Project setup](#project-setup-1)
+        - [Running the client](#running-the-client)
 
 ## Getting Started
 
