@@ -13,6 +13,7 @@ env:
 
 jobs:
   deploy-backend-production:
+    if: github.ref_name == 'main'
     environment: production
     runs-on: ubuntu-latest
     steps:
@@ -75,6 +76,7 @@ jobs:
             ./deploy_backend.sh
 
   deploy-frontend-production:
+    if: github.ref_name == 'main'
     environment: production
     needs: deploy-backend-production
     runs-on: ubuntu-latest
@@ -99,7 +101,7 @@ jobs:
       #   run: aws s3 sync ./dist s3://${{ secrets.AWS_S3_BUCKET }} --delete
 
   notify-deployment:
-    if: always()
+    if: always() && github.ref_name == 'main'
     needs: [deploy-backend-production, deploy-frontend-production]
     runs-on: ubuntu-latest
     steps:
