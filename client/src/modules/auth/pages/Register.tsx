@@ -62,7 +62,7 @@ const Register = () => {
     mutationFn: registerUser,
 
     onSuccess: () => {
-      navigate("/login");
+      navigate("/user-guide");
     },
     onError: (error) => {
       const axiosError = error as AxiosError<{ message: string }>;

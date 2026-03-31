@@ -18,6 +18,7 @@ import ChatsPage from "./modules/chats/pages/ChatsPage";
 import ConversationPage from "./modules/chats/pages/ConversationPage";
 import UserChats from "./modules/chats/components/UserChats";
 import PageTitle from "./modules/shared/components/PageTitle";
+import UserGuide from "./modules/navigation/pages/UserGuide";
 
 function App() {
   const { pathname } = useLocation();
@@ -68,6 +69,15 @@ function AppRoutes() {
             <>
               <PageTitle title="Register" />
               <Register />
+            </>
+          }
+        />
+        <Route
+          path="user-guide"
+          element={
+            <>
+              <PageTitle title="User Guide" />
+              <UserGuide />
             </>
           }
         />
