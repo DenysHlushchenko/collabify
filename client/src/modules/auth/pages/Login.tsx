@@ -12,9 +12,11 @@ import { Input } from "@/modules/shared/components/ui/Input";
 import { Button } from "@/modules/shared/components/ui/Button";
 import Error from "@/modules/shared/components/Error";
 import { useAuthStore } from "../store/userStore";
+import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -78,7 +80,20 @@ const Login = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="Enter your password..." {...field} type="password" />
+                    <div className="relative">
+                      <Input
+                        placeholder="Enter your password..."
+                        {...field}
+                        type={showPassword ? "text" : "password"}
+                      />
+                      <button
+                        type="button"
+                        className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
                   </FormControl>
                   {fieldState.error && <Error message={fieldState.error.message} />}
                 </FormItem>
