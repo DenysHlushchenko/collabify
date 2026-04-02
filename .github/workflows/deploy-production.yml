@@ -89,16 +89,28 @@ jobs:
           run-id: ${{ github.event.inputs.build_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Deploy frontend to EC2
+      - name: Upload frontend dist to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "dist/*"
-          target: "/var/www"
+          target: "~/frontend-dist"
           strip_components: 1
           overwrite: true
+
+      - name: Deploy frontend to /var/www
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo rm -rf /var/www/*
+            sudo cp -r ~/frontend-dist/* /var/www/
+            sudo chown -R caddy:caddy /var/www/
+            rm -rf ~/frontend-dist
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
