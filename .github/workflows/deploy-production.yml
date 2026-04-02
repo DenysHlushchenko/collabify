@@ -89,6 +89,9 @@ jobs:
           run-id: ${{ github.event.inputs.build_run_id }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Fix file permissions
+        run: chmod -R 755 dist/
+
       - name: Deploy frontend to EC2
         uses: appleboy/scp-action@v0.1.7
         with:
