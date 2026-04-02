@@ -2,7 +2,7 @@ import { request } from "@/modules/shared/api/request";
 import type { CreateFeedbackPayload, FeedbackType } from "@/modules/shared/types/types";
 
 export const getFeedbacks = async (userId: number): Promise<FeedbackType[]> => {
-  const res = await request.get(`feedbacks/users/${userId}`);
+  const res = await request.get(`/feedbacks/users/${userId}`);
   return res.data;
 };
 
