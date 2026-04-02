@@ -72,8 +72,12 @@ jobs:
         run: |
           if [ "${{ matrix.environment }}" = "acceptance" ]; then
             echo "backend_host=${{ secrets.ACCEPTANCE_EC2_HOST }}" >> $GITHUB_OUTPUT
+            echo "api_port=:5000" >> $GITHUB_OUTPUT
+            echo "socket_port=:5001" >> $GITHUB_OUTPUT
           else
-            echo "backend_host=${{ secrets.EC2_HOST }}" >> $GITHUB_OUTPUT
+            echo "backend_host=${{ secrets.PRODUCTION_API_DOMAIN }}" >> $GITHUB_OUTPUT
+            echo "api_port=" >> $GITHUB_OUTPUT
+            echo "socket_port=" >> $GITHUB_OUTPUT
           fi
 
       - name: Set up Node.js
@@ -85,8 +89,8 @@ jobs:
 
       - name: Build frontend for ${{ matrix.environment }}
         env:
-          VITE_API_URL: http://${{ steps.config.outputs.backend_host }}:5000
-          VITE_SOCKET_URL: http://${{ steps.config.outputs.backend_host }}:5001
+          VITE_API_URL: https://${{ steps.config.outputs.backend_host }}${{ steps.config.outputs.api_port }}
+          VITE_SOCKET_URL: https://${{ steps.config.outputs.backend_host }}${{ steps.config.outputs.socket_port }}
         run: |
           cd client
           npm ci
