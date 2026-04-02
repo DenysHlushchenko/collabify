@@ -1,11 +1,11 @@
 import type { AuthResponse, LoginType, RegisterType } from "@/modules/shared/types/types";
-import axios from "axios";
+import {request} from "@/modules/shared/api/request";
 
 export const registerUser = async (data: RegisterType): Promise<void> => {
-  await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, data);
+  await request.post(`/auth/register`, data);
 };
 
 export const loginUser = async (data: LoginType): Promise<AuthResponse> => {
-  const res = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, data);
+  const res = await request.post(`/auth/login`, data);
   return res.data;
 };
